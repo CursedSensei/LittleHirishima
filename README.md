@@ -1,11 +1,9 @@
+# OLD README MAY CONTAIN UNDESCRIBABLE BULL$%@^ 
 # Little-Hirishima-Pycord
 
 My Python Discord Bot
 
 # Extras
-
-lib/John Virus.exe
-  - Used to display MessageBox in TopMost state (C win32)
 
 lib/lib/youtube_search.py
   - Simple api that searches and extract the following: ```Title```, ```Channel```, ```ID```
