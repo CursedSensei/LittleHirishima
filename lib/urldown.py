@@ -6,7 +6,7 @@ def download_file(url, path, link):
 	global limiter
 
 	timeout = 0
-	while True:
+	while timeout <= 10:
 		try:
 			fd = os.path.join(path, url.split("/")[-1] + ".mp4")
 			rawfd = os.path.join(path, url.split("/")[-1] + ".bin")
@@ -33,14 +33,12 @@ def download_file(url, path, link):
 		except requests.exceptions.ConnectionError:
 			if os.path.exists(fd):
 				os.remove(fd)
-			if timeout == 10:
-				break
-			else:
-				timeout += 1
-				time.sleep(10)
 		except:
 			crash_reporter()
 			break
+
+		timeout += 1
+		time.sleep(10)
 
 	limiter -= 1
 
