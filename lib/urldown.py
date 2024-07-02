@@ -3,6 +3,8 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "lib"))
 import requests
 
 def download_file(url, path, link):
+	global limiter
+
 	timeout = 0
 	while True:
 		try:
@@ -40,6 +42,8 @@ def download_file(url, path, link):
 			crash_reporter()
 			break
 
+	limiter -= 1
+
 def get_link(url):
 	jar = requests.cookies.RequestsCookieJar()
 	jar.set('auth', '4mGRLICwi0PoZEQvhOb7Qbl1BTFu6Ibbb8sRh2ryYLWYWrqae%2Fcba0MzhSA7zyuxagc%2Bz9BZs2hi5LbgQuxIVA%3D%3D', domain=url.split("/")[2], path=r'/')
@@ -66,8 +70,13 @@ path = os.path.join("/var/www/html/Anime", "-".join(URL.split("/")[-1].split("-"
 if not os.path.exists(path):
 	os.makedirs(path)
 
+limiter = 0
+
 while True:
 	try:
+		while limiter >= 6:
+			time.sleep(3)
+		limiter += 1
 		threading.Thread(target=download_file, args=[URL, path, get_link(URL)]).start()
 		link = URL.split("-")
 		link[-1] = str(int(link[-1]) + 1)
