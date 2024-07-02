@@ -73,8 +73,14 @@ lock_path = os.path.join(path, ".lock")
 if (os.path.exists(lock_path)):
 	import psutil
 	with open(lock_path, "r") as fp:
-		if (psutil.pid_exists(int(fp.read()))):
-			exit()
+		try:
+			proc_cmd = psutil.Process(int(fp.read())).cmdline()
+			if (proc_cmd[-2] == sys.argv[0]):
+				exit()
+		except psutil.NoSuchProcess:
+			pass
+		except IndexError:
+			pass
 	os.remove(lock_path)
 
 with open(lock_path, "w") as fp:
