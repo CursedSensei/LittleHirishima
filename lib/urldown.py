@@ -68,6 +68,18 @@ path = os.path.join("/var/www/html/Anime", "-".join(URL.split("/")[-1].split("-"
 if not os.path.exists(path):
 	os.makedirs(path)
 
+lock_path = os.path.join(path, ".lock")
+
+if (os.path.exists(lock_path)):
+	import psutil
+	with open(lock_path, "r") as fp:
+		if (psutil.pid_exists(int(fp.read()))):
+			exit()
+	os.remove(lock_path)
+
+with open(lock_path, "w") as fp:
+	fp.write(os.getpid())
+
 limiter = 0
 
 while True:
@@ -84,3 +96,8 @@ while True:
 	except:
 		crash_reporter()
 		break
+
+while threading.active_count():
+	time.sleep(10)
+
+os.remove(lock_path)
