@@ -1,7 +1,7 @@
 import json
 from requests import post
 
-def youtube_search(keys):
+def youtube_search(keys, limit = 10):
 	
 	headers = {
 		"context": {
@@ -24,7 +24,7 @@ def youtube_search(keys):
 		contents = json.loads(res.content.decode())['contents']['twoColumnSearchResultsRenderer']['primaryContents']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents']
 
 		for i in contents:
-			if outLen == 20:
+			if outLen == limit:
 				break
 
 			contentType = list(i.keys())[0]
@@ -42,7 +42,7 @@ def youtube_search(keys):
 				j = i[contentType]['content']['verticalListRenderer']['items']
 
 				for k in j:
-					if outLen == 10:
+					if outLen == limit:
 						break
 
 					contentType = list(k.keys())[0]
