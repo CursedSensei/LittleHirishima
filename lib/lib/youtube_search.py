@@ -1,23 +1,65 @@
-from requests import get
+import json
+from requests import post
 
 def youtube_search(keys):
-	keys = "+".join(keys.split(" "))
+	
+	headers = {
+		"context": {
+			"client": {
+				"hl": "en",
+				"gl": "PH",
+				"clientName": "WEB",
+				"clientVersion": "2.20240702.09.00",
+			}
+		},
+		"query": keys
+	}
 
-	x= get("https://www.youtube.com/results?search_query={}".format(keys))
-	for i in x.content.decode().split("\n"):
-		if '"}],"accessibility":{"accessibilityData":{"label":"'in i:
-			buffed=i.split('"}],"accessibility":{"accessibilityData":{"label":"')
+	res = post("https://www.youtube.com/youtubei/v1/search?prettyPrint=false", json = headers)
 
 	out = []
+	outLen = 0
 
-	for order in range(1, 11):
-		try:
-			name = buffed[order - 1].split('}]},"title":{"runs":[{"text":"')[-1]
-			channel = buffed[order].split('"}}},"longBylineText":{"runs":[{"text":"')[1].split('","navigationEndpoint":')[0]
-			key = buffed[order].split(',"watchEndpoint":{"videoId":"')[1][:11]
-		except IndexError:
-			break
-		out.append((name, channel, key))
+	try:
+		contents = json.loads(res.content.decode())['contents']['twoColumnSearchResultsRenderer']['primaryContents']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents']
+
+		for i in contents:
+			if outLen == 20:
+				break
+
+			contentType = list(i.keys())[0]
+
+			if contentType == "videoRenderer":
+				key = i[contentType]["videoId"]
+				name = i[contentType]["title"]["runs"][0]["text"]
+				channel = i[contentType]["ownerText"]["runs"][0]["text"]
+				thumb = i[contentType]["thumbnail"]["thumbnails"][-1]["url"]
+
+				outLen += 1
+				out.append((name, channel, key, thumb))
+
+			elif contentType == "shelfRenderer":
+				j = i[contentType]['content']['verticalListRenderer']['items']
+
+				for k in j:
+					if outLen == 10:
+						break
+
+					contentType = list(k.keys())[0]
+
+					if contentType == "videoRenderer":
+						key = k[contentType]["videoId"]
+						name = k[contentType]["title"]["runs"][0]["text"]
+						channel = k[contentType]["ownerText"]["runs"][0]["text"]
+						thumb = k[contentType]["thumbnail"]["thumbnails"][-1]["url"]
+
+						outLen += 1
+						out.append((name, channel, key, thumb))
+	except IndexError:
+		pass
+	except KeyError:
+		pass
+
 	return out
 
 if __name__ == '__main__':
