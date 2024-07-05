@@ -1,8 +1,22 @@
 import json
 from requests import post
 
+def strToLength(length : str):
+	out = 0
+
+	try:
+		length = [int(i) for i in length.split(":")]
+
+		out += length[-1]
+		out += length[-2] * 60
+		out += length[-3] * 3600
+
+	except IndexError:
+		pass
+
+	return out
+
 def youtube_search(keys, limit = 10):
-	
 	headers = {
 		"context": {
 			"client": {
@@ -34,9 +48,10 @@ def youtube_search(keys, limit = 10):
 				name = i[contentType]["title"]["runs"][0]["text"]
 				channel = i[contentType]["ownerText"]["runs"][0]["text"]
 				thumb = i[contentType]["thumbnail"]["thumbnails"][-1]["url"]
+				length = strToLength(i[contentType]["lengthText"]['simpleText'])
 
 				outLen += 1
-				out.append((name, channel, key, thumb))
+				out.append((name, channel, key, thumb, length))
 
 			elif contentType == "shelfRenderer":
 				j = i[contentType]['content']['verticalListRenderer']['items']
@@ -52,9 +67,10 @@ def youtube_search(keys, limit = 10):
 						name = k[contentType]["title"]["runs"][0]["text"]
 						channel = k[contentType]["ownerText"]["runs"][0]["text"]
 						thumb = k[contentType]["thumbnail"]["thumbnails"][-1]["url"]
+						length = strToLength(k[contentType]["lengthText"]['simpleText'])
 
 						outLen += 1
-						out.append((name, channel, key, thumb))
+						out.append((name, channel, key, thumb, length))
 	except IndexError:
 		pass
 	except KeyError:
@@ -66,7 +82,7 @@ if __name__ == '__main__':
 	keys=input("search: ")
 	outs = youtube_search(keys)
 	for i in outs:
-		print(i[0])
-		print(i[1])
-		print(i[2] + "\n")
+		for j in i:
+			print(j)
+		print("\n")
 	input("END")
