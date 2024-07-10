@@ -2,7 +2,7 @@ import botPath
 import voiceClient
 import musicData
 
-import discord
+import discord, json
 from discord.ext import commands
 from aiohttp.client_exceptions import ClientConnectorError
 
@@ -17,6 +17,10 @@ try:
 
     voiceClient.initializeVoice(client)
 
+    with open(botPath.TOKENPATH, "r") as f:
+        TOKEN = json.load(f)['TOKEN']
+
+    client.run(TOKEN)
 except RuntimeError:
     pass
 except ClientConnectorError:

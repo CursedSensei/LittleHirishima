@@ -1,13 +1,6 @@
 import botPath
 import guildData
 import asyncio, discord
-from enum import Enum
-
-
-class loopState(Enum):
-    DEFAULT = 0
-    REPEAT_QUEUE = 1
-    REPEAT_SONG = 2
 
 
 class voiceClient:
@@ -64,4 +57,22 @@ def initializeVoice(client: discord.Bot) -> None:
         else:
             await ctx.respond("Bot is already connected to a voice channel", delete_after=3)
 
-    
+    @client.slash_command(name='disconnect', description="Disconnect bot from a voice channel")
+    async def disconnect(ctx: discord.ApplicationContext):
+        if (not ctx.author.voice):
+            await ctx.respond("You are not connected to a voice channel", delete_after=3)
+            return
+        
+        await ctx.defer()
+        vClient = voiceClient.query(ctx.guild_id)
+        vChannel = ctx.author.voice.channel
+
+        if (vClient == None):
+            await ctx.respond(f"Bot is not connected to a voice channel", delete_after=6)
+        elif (vClient.channel_id == vChannel.id):
+            await vClient.client.disconnect()
+            vClient.cleanup()
+
+            await ctx.respond("Bot successfully disconnected", delete_after=6)
+        else:
+            await ctx.respond("You are not connected to the Bot's voice channel", delete_after=3)

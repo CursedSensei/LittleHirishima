@@ -1,5 +1,5 @@
 import botPath
-from voiceClient import loopState
+from botConst import loopState
 
 def loadVoice(guild_id : int) -> tuple[list, loopState]:
     return ([], loopState.DEFAULT)
