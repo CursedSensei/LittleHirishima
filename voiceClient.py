@@ -26,7 +26,7 @@ class voiceClient:
             await asyncio.sleep(0.3)
 
     @staticmethod
-    def query(guild_id : int) -> object | None:
+    def query(guild_id : int):
         if (guild_id in voiceClient.__voiceClients):
             return voiceClient.__voiceClients[guild_id]
         return None
