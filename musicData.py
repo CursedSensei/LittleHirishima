@@ -1,4 +1,5 @@
 from time import time
+from lib.lib.youtube_search import youtube_search
 import guildData
 
 class Music:
@@ -25,3 +26,6 @@ class lovedMusic:
 
     async def log(self, id : str, file_path : str):
         pass
+
+def youtube_query(query : str) -> list[Music]:
+    return [Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in youtube_search(query)]

@@ -1,6 +1,7 @@
 import botPath
 import guildData
 import asyncio, discord
+from musicData import *
 
 
 class voiceClient:
@@ -41,7 +42,7 @@ class voiceClient:
 def initializeVoice(client: discord.Bot) -> None:
     @client.slash_command(description="Connect bot to your voice channel")
     async def connect(ctx: discord.ApplicationContext):
-        if (not ctx.author.voice):
+        if not ctx.author.voice:
             await ctx.respond("You are not connected to a voice channel", delete_after=3)
             return
 
@@ -49,17 +50,17 @@ def initializeVoice(client: discord.Bot) -> None:
         vClient = voiceClient.query(ctx.guild_id)
         vChannel = ctx.author.voice.channel
 
-        if (vClient == None):
+        if vClient == None:
             voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect(), client)
             await ctx.respond(f"Bot is connected to {vChannel.mention}", delete_after=6)
-        elif (vClient.channel_id == vChannel.id):
+        elif vClient.channel_id == vChannel.id:
             await ctx.respond("Bot is already connected to your voice channel", delete_after=3)
         else:
             await ctx.respond("Bot is already connected to a voice channel", delete_after=3)
 
     @client.slash_command(name='disconnect', description="Disconnect bot from a voice channel")
     async def disconnect(ctx: discord.ApplicationContext):
-        if (not ctx.author.voice):
+        if not ctx.author.voice:
             await ctx.respond("You are not connected to a voice channel", delete_after=3)
             return
         
@@ -67,12 +68,35 @@ def initializeVoice(client: discord.Bot) -> None:
         vClient = voiceClient.query(ctx.guild_id)
         vChannel = ctx.author.voice.channel
 
-        if (vClient == None):
+        if vClient == None:
             await ctx.respond(f"Bot is not connected to a voice channel", delete_after=6)
-        elif (vClient.channel_id == vChannel.id):
+        elif vClient.channel_id == vChannel.id:
             await vClient.client.disconnect()
             vClient.cleanup()
 
             await ctx.respond("Bot successfully disconnected", delete_after=6)
         else:
             await ctx.respond("You are not connected to the Bot's voice channel", delete_after=3)
+
+    @client.slash_command(name='play', description="Plays a song. If paused, resumes the song.")
+    async def play(ctx, query: discord.Option(str, "Song to search from youtube", required=True)):
+        await ctx.defer()
+        result = youtube_query(query)
+
+        if len(result) == 0:
+            await ctx.respond(f"No results for \"{query}\"", delete_after=3)
+            return
+
+
+        if not ctx.author.voice:
+            await ctx.respond("You are not connected to a voice channel", delete_after=3)
+            return
+
+        vClient = voiceClient.query(ctx.guild_id)
+        vChannel = ctx.author.voice.channel
+
+        if vClient == None:
+            vClient = voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect(), client)
+        elif vClient.channel_id != vChannel.id:
+            await ctx.respond("You must be connected with the bot's channel to play music", delete_after=3)
+            return
