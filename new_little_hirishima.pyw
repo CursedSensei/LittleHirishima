@@ -1,6 +1,7 @@
 import botPath
 import voiceClient
 import musicData
+import botControl
 
 import json
 from lib.lib import discord
@@ -17,6 +18,7 @@ try:
     client = commands.Bot(intents=intents)
 
     voiceClient.initializeVoice(client, musicLogger)
+    botControl.initializeAdmin(client)
 
     with open(botPath.TOKENPATH, "r") as f:
         TOKEN = json.load(f)['TOKEN']
