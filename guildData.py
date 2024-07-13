@@ -28,7 +28,10 @@ def updateVoice(guild_id : int, loop : loopState, queue = []) -> None:
 
 
 def loadPopular() -> list[list[str, int]]:
-    return []
+    with open(LIBRARYLOG, "r") as r:
+        library = json.load(r)
+    return library
 
-def updatePopular(library : list[list[str, int]]):
-    pass
+def updatePopular(library : list[list[str, int]]) -> None:
+    with open(LIBRARYLOG, "w") as w:
+        json.dump(library, w)
