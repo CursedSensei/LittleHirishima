@@ -1,15 +1,34 @@
-import botPath
+from botPath import *
 from botConst import loopState
+import json
 
 def loadVoice(guild_id : int) -> tuple[list, loopState]:
-    return ([], loopState.DEFAULT)
+    guildSpace = os.path.join(GUILDPATH, str(guild_id))
+    
+    if not os.path.exists(guildSpace):
+        os.mkdir(guildSpace)
+    
+    guildSpace = os.path.join(guildSpace, 'voice.json')
+    if not os.path.exists(guildSpace):
+        with open(guildSpace, "w") as w:
+            json.dump([loopState.DEFAULT], w)
+        return ([], loopState.DEFAULT)
+    
+    with open(guildSpace, "r") as r:
+        voice = json.load(r)
+    loop = voice.pop(-1)
 
-def updateVoice(guild_id : int, loop : loopState, queue = []):
-    pass
+    return (voice, loop)
+
+def updateVoice(guild_id : int, loop : loopState, queue = []) -> None:
+    guildSpace = os.path.join(GUILDPATH, str(guild_id), 'voice.json')
+
+    with open(guildSpace, "w") as w:
+        json.dump(queue + [loop], w)
 
 
 def loadPopular() -> list[list[str, int]]:
-    return {}
+    return []
 
 def updatePopular(library : list[list[str, int]]):
     pass

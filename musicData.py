@@ -1,6 +1,10 @@
+import guildData, asyncio, os
+from lib.lib import discord
+from botPath import *
 from time import time
+
+import shutil
 from lib.lib.youtube_search import youtube_search
-import guildData
 
 class Music:
     def __init__(self, start = False, **kwargs) -> None:
@@ -19,13 +23,68 @@ class Music:
     def pause(self):
         self.offset += time() - self.time
 
+    def embed(self, bot : discord.Bot, title = "Now Playing") -> discord.Embed:
+        embed = discord.Embed(title=self.name, color=discord.Colour.dark_purple())
+        embed.set_thumbnail(self.thumb)
+        embed.set_author(name=title)
+        embed.add_field(name="Channel", value=self.channel)
+        embed.add_field(name="Duration", value=self.length)
+        embed.set_footer(text="Little Hirishima", icon_url=bot.user.avatar.url)
+
+        return embed
+
 
 class lovedMusic:
     def __init__(self) -> None:
         self.library = guildData.loadPopular()
 
-    async def log(self, id : str, file_path : str):
+    def log(self, id : str, file_path : str):
         pass
 
-def youtube_query(query : str) -> list[Music]:
-    return [Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in youtube_search(query)]
+    def get(self, id : str, out_path : str):
+        for i in range(0, 10 if len(self.library) > 10 else len(self.library)):
+            if self.library[i][0] == id:
+                shutil.copy(os.path.join(LIBRARYPATH, str(id) + ".mp3"), out_path)
+                return True
+            
+        return False
+
+class youtubeQuery:
+    result: list[Music]
+    length: int
+    
+    def __init__(self, query : str) -> None:
+        self.result = [Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in youtube_search(query)]
+        self.length = len(self.result)
+
+    async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music | None:
+        response = "**Choose a song:**\n\n"
+        for i in range(0, self.length):
+            response += '**' +str(i + 1) + ":** " + self.result[i].name + " *- " + self.result[i].channel + "*" + "\n"
+
+        response = await ctx.respond(response)
+
+        def checker(message: discord.Message):
+            try:
+                if ctx.author != message.author or ctx.channel != message.channel:
+                    raise ValueError
+                self.result[int(message.content)]
+            except ValueError:
+                return False
+            except IndexError:
+                return False
+            return True
+
+        try:
+            message = await bot.wait_for('message', check=checker, timeout=20)
+        except asyncio.TimeoutError:
+            await response.delete()
+            return None
+        
+        await response.delete()
+        await message.delete()
+
+        return self.result[int(message.content)]
+
+    def get(self, index: int):
+        return self.result[index - 1]

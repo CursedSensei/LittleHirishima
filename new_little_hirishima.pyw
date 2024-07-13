@@ -2,9 +2,10 @@ import botPath
 import voiceClient
 import musicData
 
-import discord, json
-from discord.ext import commands
-from aiohttp.client_exceptions import ClientConnectorError
+import json
+from lib.lib import discord
+from lib.lib.discord.ext import commands
+from lib.lib.aiohttp.client_exceptions import ClientConnectorError
 
 try:
     musicLogger = musicData.lovedMusic()
@@ -15,7 +16,7 @@ try:
 
     client = commands.Bot(intents=intents)
 
-    voiceClient.initializeVoice(client)
+    voiceClient.initializeVoice(client, musicLogger)
 
     with open(botPath.TOKENPATH, "r") as f:
         TOKEN = json.load(f)['TOKEN']
