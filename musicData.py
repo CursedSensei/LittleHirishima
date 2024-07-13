@@ -28,10 +28,21 @@ class Music:
         embed.set_thumbnail(self.thumb)
         embed.set_author(name=title)
         embed.add_field(name="Channel", value=self.channel)
-        embed.add_field(name="Duration", value=self.length)
+        embed.add_field(name="Duration", value=self.__humanLength())
         embed.set_footer(text="Little Hirishima", icon_url=bot.user.avatar.url)
 
         return embed
+    
+    def __humanLength(self):
+        seconds = self.length % 60
+        minutes = (self.length // 60) % 60
+        hours = self.length // 3600
+
+        out = str(seconds)
+        out = (str(minutes) + ":" if minutes > 0 or hours > 0 else "") + out
+        out = (str(hours) + ":" if hours > 0 else "") + out
+
+        return out
 
 
 class lovedMusic:
