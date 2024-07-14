@@ -54,7 +54,7 @@ class voiceClient(__baseClient):
                 if not self.client.is_connected():
                     download.terminate()
                     return True
-                await asyncio.sleep(0.3)
+                await asyncio.sleep(0)
 
         self.client.play(discord.FFmpegPCMAudio(source=songPath))
         song.play()
