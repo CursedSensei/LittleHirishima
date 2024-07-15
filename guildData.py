@@ -1,8 +1,8 @@
 from botPath import *
-from botConst import loopState
+from botConst import *
 import json
 
-def loadVoice(guild_id : int) -> tuple[list, loopState]:
+def loadVoice(guild_id : int) -> tuple[list, int]:
     guildSpace = os.path.join(GUILDPATH, str(guild_id))
     
     if not os.path.exists(guildSpace):
@@ -11,8 +11,8 @@ def loadVoice(guild_id : int) -> tuple[list, loopState]:
     guildSpace = os.path.join(guildSpace, 'voice.json')
     if not os.path.exists(guildSpace):
         with open(guildSpace, "w") as w:
-            json.dump([loopState.DEFAULT], w)
-        return ([], loopState.DEFAULT)
+            json.dump([DEFAULT], w)
+        return ([], DEFAULT)
     
     with open(guildSpace, "r") as r:
         voice = json.load(r)
@@ -20,7 +20,7 @@ def loadVoice(guild_id : int) -> tuple[list, loopState]:
 
     return (voice, loop)
 
-def updateVoice(guild_id : int, loop : loopState, queue = []) -> None:
+def updateVoice(guild_id : int, loop : int, queue = []) -> None:
     guildSpace = os.path.join(GUILDPATH, str(guild_id), 'voice.json')
 
     with open(guildSpace, "w") as w:
