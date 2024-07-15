@@ -38,11 +38,17 @@ class Music:
         minutes = (self.length // 60) % 60
         hours = self.length // 3600
 
-        out = str(seconds)
-        out = (str(minutes) + ":" if minutes > 0 or hours > 0 else "") + out
-        out = (str(hours) + ":" if hours > 0 else "") + out
+        seconds = "0" + str(seconds) if seconds < 10 else str(seconds)
 
-        return out
+        if minutes > 0 or hours > 0:
+            minutes = "0" + str(minutes) if minutes < 10 else str(minutes)
+            minutes += ":"
+        else:
+            minutes = ""
+
+        hours = str(hours) + ":" if hours > 0 else ""
+
+        return f"{hours}{minutes}{seconds}"
 
 
 class lovedMusic:
@@ -95,11 +101,21 @@ class youtubeQuery:
         self.length = len(self.result)
 
     async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music:
-        response = "**Choose a song:**\n\n"
-        for i in range(0, self.length):
-            response += '**' +str(i + 1) + ":** " + self.result[i].name + " *- " + self.result[i].channel + "*" + "\n"
+        embed = discord.Embed(title=self.name, color=discord.Colour.blue())
+        embed.set_footer(text="Little Hirishima", icon_url=bot.user.avatar.url)
+        embed.set_author(name="Choose a song:")
+        embed.add_field(name="#", value="")
+        embed.add_field(name="Name", value="")
+        embed.add_field(name="Channel", value="")
+        embed.add_field(name="", value="", inline=False)
 
-        response = await ctx.respond(response)
+        for i in range(0, self.length):
+            embed.add_field(name="", value=str(i + 1))
+            embed.add_field(name="", value=self.result[i].name)
+            embed.add_field(name="", value=self.result[i].channel)
+            embed.add_field(name="", value="", inline=False)
+
+        response = await ctx.respond(embed=embed)
 
         def checker(message: discord.Message):
             try:
