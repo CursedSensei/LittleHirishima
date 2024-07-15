@@ -105,7 +105,7 @@ class youtubeQuery:
             try:
                 if ctx.author != message.author or ctx.channel != message.channel:
                     raise ValueError
-                self.result[int(message.content)]
+                self.result[int(message.content) - 1]
             except ValueError:
                 return False
             except IndexError:
@@ -121,7 +121,7 @@ class youtubeQuery:
         await response.delete()
         await message.delete()
 
-        return self.result[int(message.content)]
+        return self.result[int(message.content) - 1]
 
     def get(self, index: int):
         return self.result[index - 1]
