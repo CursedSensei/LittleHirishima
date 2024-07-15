@@ -1,10 +1,10 @@
 import guildData, asyncio, os
-from lib.lib import discord
+import discord
 from botPath import *
 from time import time
 
 import shutil
-from lib.lib.youtube_search import youtube_search
+from youtube_search import youtube_search
 
 class Music:
     def __init__(self, start = False, **kwargs) -> None:

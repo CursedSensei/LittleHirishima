@@ -1,4 +1,4 @@
-from lib.lib import discord
+import discord
 from botPath import *
 import subprocess, os, shutil, sys, time, random
 
