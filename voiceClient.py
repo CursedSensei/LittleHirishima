@@ -10,7 +10,7 @@ class __baseClient:
     client: discord.VoiceClient     # Voice Client Handle
     song: Music = None              # Music currently playing
     queue: list[Music]              # Queued List
-    loop: int                 # Play normally, repeat the queued list or repeat the current song
+    loop: int                       # Play normally, repeat the queued list or repeat the current song
 
     is_paused: bool = False         # Song is paused
     is_loading: bool = False        # A song is being loaded
