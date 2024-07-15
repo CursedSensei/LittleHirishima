@@ -65,6 +65,8 @@ class voiceClient(__baseClient):
         self.song = song
 
         musicLogger.log(song.id, songPath)
+
+        self.is_loading = False
         
         return True
 

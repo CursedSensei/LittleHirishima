@@ -113,9 +113,9 @@ try:
         
         if not query:
             if vClient.unpause():
-                await ctx.respond("Bot is paused")
+                await ctx.respond("Bot is unpaused")
             else:
-                await ctx.respond("Bot is already paused", delete_after=6)
+                await ctx.respond("Bot is already unpaused", delete_after=6)
         else:
             if await vClient.play(song, musicLogger):
                 await ctx.respond(embed = song.embed(client))
