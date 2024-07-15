@@ -33,6 +33,7 @@ def youtube_search(keys, limit = 10):
 
 	out = []
 	outLen = 0
+	limit = limit if limit != 0 else -1
 
 	try:
 		contents = json.loads(res.content.decode())['contents']['twoColumnSearchResultsRenderer']['primaryContents']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents']
@@ -67,7 +68,11 @@ def youtube_search(keys, limit = 10):
 						name = k[contentType]["title"]["runs"][0]["text"]
 						channel = k[contentType]["ownerText"]["runs"][0]["text"]
 						thumb = k[contentType]["thumbnail"]["thumbnails"][-1]["url"]
-						length = strToLength(k[contentType]["lengthText"]['simpleText'])
+
+						try:
+							length = strToLength(k[contentType]["lengthText"]['simpleText'])
+						except KeyError:
+							continue
 
 						outLen += 1
 						out.append((name, channel, key, thumb, length))
