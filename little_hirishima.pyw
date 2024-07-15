@@ -117,7 +117,6 @@ try:
             else:
                 await ctx.respond("Bot is already unpaused", delete_after=6)
         else:
-            await ctx.defer()
             if await vClient.play(song, musicLogger):
                 await ctx.respond(embed = song.embed(client))
             else:
