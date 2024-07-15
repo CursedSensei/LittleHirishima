@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "/home/aoi/Documents/hirishima_bot/new_little_hirishima.pyw", line 20, in <module>
+    voiceClient.initializeVoice(client, musicLogger)
+  File "/home/aoi/Documents/hirishima_bot/voiceClient.py", line 172, in initializeVoice
+    async def play(ctx: discord.ApplicationContext, query: discord.Option(str, "Song to search from youtube", required=False)):
+  File "/home/aoi/Documents/hirishima_bot/lib/lib/discord/bot.py", line 931, in decorator
+    self.add_application_command(result)
+  File "/home/aoi/Documents/hirishima_bot/lib/lib/discord/bot.py", line 127, in add_application_command
+    command._set_cog(None)
+  File "/home/aoi/Documents/hirishima_bot/lib/lib/discord/commands/core.py", line 603, in _set_cog
+    self.cog = cog
+  File "/home/aoi/Documents/hirishima_bot/lib/lib/discord/commands/core.py", line 830, in cog
+    self._validate_parameters()
+  File "/home/aoi/Documents/hirishima_bot/lib/lib/discord/commands/core.py", line 708, in _validate_parameters
+    self.options: list[Option] = self._parse_options(params)
+  File "/home/aoi/Documents/hirishima_bot/lib/lib/discord/commands/core.py", line 748, in _parse_options
+    option = Option(option)
+  File "/home/aoi/Documents/hirishima_bot/lib/lib/discord/commands/options.py", line 225, in __init__
+    self.input_type = SlashCommandOptionType.from_datatype(input_type)
+  File "/home/aoi/Documents/hirishima_bot/lib/lib/discord/enums.py", line 786, in from_datatype
+    if datatype.__name__ in ["Member", "User"]:
+AttributeError: 'Option' object has no attribute '__name__'

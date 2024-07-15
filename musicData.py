@@ -91,7 +91,7 @@ class youtubeQuery:
         self.result = [Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in youtube_search(query)]
         self.length = len(self.result)
 
-    async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music | None:
+    async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music:
         response = "**Choose a song:**\n\n"
         for i in range(0, self.length):
             response += '**' +str(i + 1) + ":** " + self.result[i].name + " *- " + self.result[i].channel + "*" + "\n"

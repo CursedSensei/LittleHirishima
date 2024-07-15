@@ -4,9 +4,9 @@ import musicData
 import botControl
 
 import json
-from lib.lib import discord
-from lib.lib.discord.ext import commands
-from lib.lib.aiohttp.client_exceptions import ClientConnectorError
+import discord
+from discord.ext import commands
+from aiohttp.client_exceptions import ClientConnectorError
 
 try:
     musicLogger = musicData.lovedMusic()
@@ -17,7 +17,9 @@ try:
 
     client = commands.Bot(intents=intents)
 
-    voiceClient.initializeVoice(client, musicLogger)
+    @client.slash_command(name='play', description="Plays a song. If paused, resumes the song.")
+    async def play(ctx: discord.ApplicationContext, query: discord.Option(str, "Song to search from youtube", required=False)):
+        pass
     botControl.initializeAdmin(client)
 
     with open(botPath.TOKENPATH, "r") as f:

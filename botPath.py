@@ -1,4 +1,4 @@
-import os
+import os, sys
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 ERRORPATH = os.path.join(ROOT_DIR,'Little Hirishima Crash Report.txt')
@@ -11,3 +11,7 @@ LIBRARYLOG = os.path.join(LIBRARYPATH, 'library.json')
 ANIMEDIRECTORY = "/var/www/html/Anime"
 ANIMEDOWNLOADER = os.path.join(ROOT_DIR, 'lib/urldown.py')
 CHATLOG = os.path.join(ROOT_DIR, 'Chat log.txt')
+
+
+if not os.path.join(ROOT_DIR, "lib", "lib") in sys.path:
+    sys.path.append(os.path.join(ROOT_DIR, "lib", "lib"))

@@ -1,6 +1,6 @@
 import guildData
 import asyncio, subprocess
-from lib.lib import discord
+import discord
 from musicData import *
 from botConst import loopState
 
