@@ -1,5 +1,5 @@
 import botPath
-import voiceClient
+from voiceClient import *
 import musicData
 import botControl
 
