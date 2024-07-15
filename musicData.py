@@ -101,7 +101,7 @@ class youtubeQuery:
         self.length = len(self.result)
 
     async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music:
-        embed = discord.Embed(title=self.name, color=discord.Colour.blue())
+        embed = discord.Embed(title="", color=discord.Colour.blue())
         embed.set_footer(text="Little Hirishima", icon_url=bot.user.avatar.url)
         embed.set_author(name="Choose a song:")
         embed.add_field(name="#", value="")
