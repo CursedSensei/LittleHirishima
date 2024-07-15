@@ -25,6 +25,9 @@ class voiceClient(__baseClient):
 
         asyncio.run_coroutine_threadsafe(self.worker(), bot.loop)
 
+    async def disconnect(self) -> None:
+        await self.client.disconnect()
+
     async def worker(self) -> None:
         while self.client.is_connected():
             if not self.is_loading:
@@ -107,6 +110,23 @@ class voiceClient(__baseClient):
 
 
 def initializeVoice(client: discord.Bot, musicLogger : lovedMusic) -> None:
+    @client.event
+    async def on_voice_state_update(author : discord.Member, before_vcstate : discord.VoiceState, after_vcstate : discord.VoiceState):
+        if before_vcstate.channel == None:
+            return
+        elif author == client.user:
+            if after_vcstate.channel == None:
+                return
+            elif before_vcstate.channel != after_vcstate.channel:
+                vClient = voiceClient.query(before_vcstate.channel.guild.id)
+                if (vClient != None):
+                    await vClient.disconnect()
+        elif len(before_vcstate.channel.members) == 1 and before_vcstate.channel.members[0] == client.user:
+            vClient = voiceClient.query(before_vcstate.channel.guild.id)
+            if (vClient != None):
+                await vClient.disconnect()
+
+
     async def userInVoice(ctx: discord.ApplicationContext):
         if not ctx.author.voice:
             await ctx.respond("You are not connected to a voice channel", delete_after=3)
@@ -142,7 +162,7 @@ def initializeVoice(client: discord.Bot, musicLogger : lovedMusic) -> None:
         if vClient == None:
             await ctx.respond(f"Bot is not connected to a voice channel", delete_after=6)
         elif vClient.channel_id == vChannel.id:
-            await vClient.client.disconnect()
+            await vClient.disconnect()
 
             await ctx.respond("Bot successfully disconnected", delete_after=6)
         else:
