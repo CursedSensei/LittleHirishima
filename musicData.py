@@ -24,7 +24,7 @@ class Music:
         self.offset += time() - self.time
 
     def embed(self, bot : discord.Bot, title = "Now Playing") -> discord.Embed:
-        embed = discord.Embed(title=self.name, color=discord.Colour.dark_purple())
+        embed = discord.Embed(title=self.name, color=discord.Colour.blue(), url="https://www.youtube.com/watch?v=" + self.id)
         embed.set_thumbnail(url=self.thumb)
         embed.set_author(name=title)
         embed.add_field(name="Channel", value=self.channel)
