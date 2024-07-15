@@ -25,7 +25,7 @@ class Music:
 
     def embed(self, bot : discord.Bot, title = "Now Playing") -> discord.Embed:
         embed = discord.Embed(title=self.name, color=discord.Colour.dark_purple())
-        embed.set_thumbnail(self.thumb)
+        embed.set_thumbnail(url=self.thumb)
         embed.set_author(name=title)
         embed.add_field(name="Channel", value=self.channel)
         embed.add_field(name="Duration", value=self.__humanLength())

@@ -90,7 +90,7 @@ try:
                 await ctx.respond(f"No results for \"{query}\"", delete_after=3)
                 return
             
-            song = await result.display()
+            song = await result.display(ctx, client)
 
             if song == None:
                 return
