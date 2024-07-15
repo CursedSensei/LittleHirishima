@@ -101,21 +101,11 @@ class youtubeQuery:
         self.length = len(self.result)
 
     async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music:
-        embed = discord.Embed(title="", color=discord.Colour.blue())
-        embed.set_footer(text="Little Hirishima", icon_url=bot.user.avatar.url)
-        embed.set_author(name="Choose a song:")
-        embed.add_field(name="#", value="")
-        embed.add_field(name="Name", value="")
-        embed.add_field(name="Channel", value="")
-        embed.add_field(name="", value="", inline=False)
-
+        response = "**Choose a song:**\n\n"
         for i in range(0, self.length):
-            embed.add_field(name="", value=str(i + 1))
-            embed.add_field(name="", value=self.result[i].name)
-            embed.add_field(name="", value=self.result[i].channel)
-            embed.add_field(name="", value="", inline=False)
+            response += '**' +str(i + 1) + ":** " + self.result[i].name + " *- " + self.result[i].channel + "*" + "\n"
 
-        response = await ctx.respond(embed=embed)
+        response = await ctx.respond(response)
 
         def checker(message: discord.Message):
             try:
