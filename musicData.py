@@ -74,10 +74,10 @@ class lovedMusic:
                     self.library[ind] = temp
                     ind -= 1
 
-                    if ind == 9:
-                        os.remove(os.path.join(LIBRARYPATH, self.library[10][0] + ".mp3"))
+                    if ind == 19:
+                        os.remove(os.path.join(LIBRARYPATH, self.library[20][0] + ".mp3"))
 
-        if ind < 10:
+        if ind < 20:
             if not os.path.exists(os.path.join(LIBRARYPATH, id + ".mp3")):
                 shutil.copy(file_path, os.path.join(LIBRARYPATH, id + ".mp3"))
 
@@ -85,7 +85,7 @@ class lovedMusic:
         
 
     def get(self, id : str, out_path : str):
-        for i in range(0, 10 if len(self.library) > 10 else len(self.library)):
+        for i in range(0, 20 if len(self.library) > 20 else len(self.library)):
             if self.library[i][0] == id:
                 shutil.copy(os.path.join(LIBRARYPATH, id + ".mp3"), out_path)
                 return True
