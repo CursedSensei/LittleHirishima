@@ -119,11 +119,11 @@ def initializeVoice(client: discord.Bot, musicLogger : lovedMusic) -> None:
                 return
             elif before_vcstate.channel != after_vcstate.channel:
                 vClient = voiceClient.query(before_vcstate.channel.guild.id)
-                if (vClient != None):
+                if vClient != None:
                     await vClient.disconnect()
         elif len(before_vcstate.channel.members) == 1 and before_vcstate.channel.members[0] == client.user:
             vClient = voiceClient.query(before_vcstate.channel.guild.id)
-            if (vClient != None):
+            if vClient != None:
                 await vClient.disconnect()
 
 
