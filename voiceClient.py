@@ -51,13 +51,17 @@ class voiceClient(__baseClient):
         # if not musicLogger.get(song.id, songPath):
             # Cache Miss...  * Nerd Smug *
 
-        download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - {song.id}', shell = True, stdout=subprocess.PIPE)
+        download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - {song.id}', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         # while download.poll() == None:
         #     if not self.client.is_connected():
         #         download.terminate()
         #         return True
         #     await asyncio.sleep(0.1)
+
+        for i in download.stderr:
+            if i.decode().startswith("[download]"):
+                break
 
         self.client.play(discord.FFmpegPCMAudio(source=download.stdout))
         song.play()
