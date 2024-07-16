@@ -118,6 +118,12 @@ try:
             vClient.play(song)
             await ctx.respond(embed = song.embed(client))
 
+    @client.slash_command(name='queue', description="Add, remove, or list songs in queue")
+    async def queue(ctx, query: discord.Option(str, "Add song from youtube to queue", required=False),
+            remove: discord.Option(str, 'Remove a song from queue. type "all" to remove all songs in queue', required=False,)):
+        if not query and not remove:
+            pass
+
     @client.slash_command(name='pause', description="Pauses the bot")
     async def pause(ctx: discord.ApplicationContext):
         if not await userInVoice(ctx):

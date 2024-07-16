@@ -25,13 +25,3 @@ def updateVoice(guild_id : int, loop : int, queue = []) -> None:
 
     with open(guildSpace, "w") as w:
         json.dump(queue + [loop], w)
-
-
-def loadPopular() -> list[list[str, int]]:
-    with open(LIBRARYLOG, "r") as r:
-        library = json.load(r)
-    return library
-
-def updatePopular(library : list[list[str, int]]) -> None:
-    with open(LIBRARYLOG, "w") as w:
-        json.dump(library, w)

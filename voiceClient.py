@@ -105,20 +105,24 @@ class voiceClient(__baseClient):
             self.loop += 1
 
         if self.loop == DEFAULT:
-            return "Bot will play normally through the queued songs."
+            out = "Bot will play normally through the queued songs."
         elif self.loop == REPEAT_QUEUE:
             if self.song != None:
                 self.queue.insert(0, self.song)
             self.loop_ind = 0
-            return "Bot will repeat songs in queue."
+            out = "Bot will repeat songs in queue."
         elif self.loop == REPEAT_SONG:
             try:
                 self.queue = self.queue[self.loop_ind + 1:len(self.queue)]
             except IndexError:
                 pass
-            return "Bot will repeat current song."
+            out = "Bot will repeat current song."
         else:
-            return ""
+            out = ""
+
+        guildData.updateVoice(self.guild_id, self.loop, self.queue)
+
+        return out
 
     def cleanup(self) -> None:
         self.client.stop()
