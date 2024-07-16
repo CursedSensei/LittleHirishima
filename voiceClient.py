@@ -43,28 +43,28 @@ class voiceClient(__baseClient):
         else:
             self.is_loading = True
         
-        songPath = os.path.join(GUILDPATH, str(self.guild_id), 'song.mp3')
+        # songPath = os.path.join(GUILDPATH, str(self.guild_id), 'song.mp3')
         
-        if os.path.exists(songPath):
-            os.remove(songPath)
+        # if os.path.exists(songPath):
+        #     os.remove(songPath)
 
-        if not musicLogger.get(song.id, songPath):
+        # if not musicLogger.get(song.id, songPath):
             # Cache Miss...  * Nerd Smug *
 
-            download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o "{songPath[:-4]}" {song.id}', shell = True)
-            
-            while download.poll() == None:
-                if not self.client.is_connected():
-                    download.terminate()
-                    return True
-                await asyncio.sleep(0)
+        download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - {song.id}', shell = True, stdout=subprocess.PIPE)
+        
+        # while download.poll() == None:
+        #     if not self.client.is_connected():
+        #         download.terminate()
+        #         return True
+        #     await asyncio.sleep(0.1)
 
-        self.client.play(discord.FFmpegPCMAudio(source=songPath))
+        self.client.play(discord.FFmpegPCMAudio(source=download.stdout))
         song.play()
         self.is_paused = False
         self.song = song
 
-        musicLogger.log(song.id, songPath)
+        # musicLogger.log(song.id, songPath)
 
         self.is_loading = False
         

@@ -40,11 +40,8 @@ class Music:
 
         seconds = "0" + str(seconds) if seconds < 10 else str(seconds)
 
-        if minutes > 0 or hours > 0:
-            minutes = "0" + str(minutes) if minutes < 10 else str(minutes)
-            minutes += ":"
-        else:
-            minutes = ""
+        minutes = "0" + str(minutes) if minutes < 10 else str(minutes)
+        minutes += ":"
 
         hours = str(hours) + ":" if hours > 0 else ""
 
