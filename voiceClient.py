@@ -63,7 +63,7 @@ class voiceClient(__baseClient):
             if i.decode().startswith("[download]"):
                 break
 
-        self.client.play(discord.FFmpegPCMAudio(source=download.stdout))
+        self.client.play(discord.FFmpegPCMAudio(source=download.stdout, pipe=True))
         song.play()
         self.is_paused = False
         self.song = song
