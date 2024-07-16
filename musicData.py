@@ -48,47 +48,6 @@ class Music:
         return f"{hours}{minutes}{seconds}"
 
 
-class lovedMusic:
-    def __init__(self) -> None:
-        self.library = guildData.loadPopular()
-
-    def log(self, id : str, file_path : str):
-        ind = 0
-
-        for i in self.library:
-            if i[0] == id:
-                break
-            ind += 1
-
-        if ind == len(self.library):
-            self.library.append([id, 1])
-        else:
-            self.library[ind][1] += 1
-            if ind != 0:
-                if self.library[ind - 1][1] < self.library[ind][1]:
-                    temp = self.library[ind - 1]
-                    self.library[ind - 1] = self.library[ind]
-                    self.library[ind] = temp
-                    ind -= 1
-
-                    if ind == 19:
-                        os.remove(os.path.join(LIBRARYPATH, self.library[20][0] + ".mp3"))
-
-        if ind < 20:
-            if not os.path.exists(os.path.join(LIBRARYPATH, id + ".mp3")):
-                shutil.copy(file_path, os.path.join(LIBRARYPATH, id + ".mp3"))
-
-        guildData.updatePopular(self.library)
-        
-
-    def get(self, id : str, out_path : str):
-        for i in range(0, 20 if len(self.library) > 20 else len(self.library)):
-            if self.library[i][0] == id:
-                shutil.copy(os.path.join(LIBRARYPATH, id + ".mp3"), out_path)
-                return True
-            
-        return False
-
 class youtubeQuery:
     result: list[Music]
     length: int

@@ -5,15 +5,17 @@ from musicData import *
 from botConst import *
 
 class __baseClient:
-    guild_id: int                   # Guild/Server ID
-    channel_id: int                 # Voice Channel ID
-    client: discord.VoiceClient     # Voice Client Handle
-    song: Music = None              # Music currently playing
-    queue: list[Music]              # Queued List
-    loop: int                       # Play normally, repeat the queued list or repeat the current song
+    guild_id: int                           # Guild/Server ID
+    channel_id: int                         # Voice Channel ID
+    client: discord.VoiceClient             # Voice Client Handle
+    song: Music = None                      # Music currently playing
+    queue: list[Music]                      # Queued List
+    loop: int                               # Play normally, repeat the queued list or repeat the current song
 
-    is_paused: bool = False         # Song is paused
-    is_loading: bool = False        # A song is being loaded
+    is_paused: bool = False                 # Song is paused
+    is_loading: bool = False                # A song is being loaded
+
+    ytdlp_Proc: subprocess.Popen = None     # Youtube Downloader Handle
 
 class voiceClient(__baseClient):
     def __init__(self, guild_id : int, channel_id : int, client : discord.VoiceClient, bot : discord.Bot) -> None:
@@ -26,6 +28,7 @@ class voiceClient(__baseClient):
         asyncio.run_coroutine_threadsafe(self.worker(), bot.loop)
 
     async def disconnect(self) -> None:
+        self.client.stop()
         await self.client.disconnect()
 
     async def worker(self) -> None:
@@ -37,38 +40,28 @@ class voiceClient(__baseClient):
         
         self.cleanup()
 
-    async def play(self, song : Music, musicLogger : lovedMusic) -> bool:
+    async def play(self, song : Music) -> bool:
         if self.is_loading:
             return False
         else:
             self.is_loading = True
-        
-        # songPath = os.path.join(GUILDPATH, str(self.guild_id), 'song.mp3')
-        
-        # if os.path.exists(songPath):
-        #     os.remove(songPath)
-
-        # if not musicLogger.get(song.id, songPath):
-            # Cache Miss...  * Nerd Smug *
 
         download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - {song.id}', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        
-        # while download.poll() == None:
-        #     if not self.client.is_connected():
-        #         download.terminate()
-        #         return True
-        #     await asyncio.sleep(0.1)
 
         for i in download.stderr:
             if i.decode().startswith("[download]"):
                 break
 
-        self.client.play(discord.FFmpegPCMAudio(source=download.stdout, pipe=True))
+        self.client.stop()
+        if self.ytdlp_Proc != None and not self.ytdlp_Proc.poll():
+            self.ytdlp_Proc.terminate()
+
+        self.ytdlp_Proc = download
+
+        self.client.play(discord.FFmpegPCMAudio(source=self.ytdlp_Proc.stdout, pipe=True))
         song.play()
         self.is_paused = False
         self.song = song
-
-        # musicLogger.log(song.id, songPath)
 
         self.is_loading = False
         
@@ -95,6 +88,7 @@ class voiceClient(__baseClient):
             return False
 
     def cleanup(self) -> None:
+        self.client.stop()
         self.client.cleanup()
         if self.guild_id in voiceClient.__voiceClients:
             voiceClient.__voiceClients.pop(self.guild_id)

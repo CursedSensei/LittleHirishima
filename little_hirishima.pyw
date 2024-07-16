@@ -9,8 +9,6 @@ from discord.ext import commands
 from aiohttp.client_exceptions import ClientConnectorError
 
 try:
-    musicLogger = musicData.lovedMusic()
-
     intents = discord.Intents.default()
     intents.members = True
     intents.message_content = True
@@ -117,7 +115,7 @@ try:
             else:
                 await ctx.respond("Bot is already unpaused", delete_after=6)
         else:
-            if await vClient.play(song, musicLogger):
+            if await vClient.play(song):
                 await ctx.respond(embed = song.embed(client))
             else:
                 await ctx.respond("A song is already being loaded. Please wait")
