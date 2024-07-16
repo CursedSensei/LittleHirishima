@@ -115,10 +115,8 @@ try:
             else:
                 await ctx.respond("Bot is already unpaused", delete_after=6)
         else:
-            if await vClient.play(song):
-                await ctx.respond(embed = song.embed(client))
-            else:
-                await ctx.respond("A song is already being loaded. Please wait")
+            vClient.play(song)
+            await ctx.respond(embed = song.embed(client))
 
     @client.slash_command(name='pause', description="Pauses the bot")
     async def pause(ctx: discord.ApplicationContext):
@@ -139,6 +137,14 @@ try:
             await ctx.respond("Bot is paused")
         else:
             await ctx.respond("Bot is already paused", delete_after=6)
+
+    @client.slash_command(name='loop', description="Change mode for loop")
+    async def loop(ctx):
+        vClient = voiceClient.query(ctx.guild_id)
+        if vClient:
+            await ctx.respond(vClient.loopState())
+        else:
+            await ctx.respond("Bot is not in a voice channel", delete_after=3)
 
     with open(botPath.TOKENPATH, "r") as f:
         TOKEN = json.load(f)['TOKEN']

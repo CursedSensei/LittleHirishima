@@ -11,9 +11,8 @@ class __baseClient:
     song: Music = None                      # Music currently playing
     queue: list[Music]                      # Queued List
     loop: int                               # Play normally, repeat the queued list or repeat the current song
-
+    loop_ind: int = 0
     is_paused: bool = False                 # Song is paused
-    is_loading: bool = False                # A song is being loaded
 
     ytdlp_Proc: subprocess.Popen = None     # Youtube Downloader Handle
 
@@ -33,19 +32,33 @@ class voiceClient(__baseClient):
 
     async def worker(self) -> None:
         while self.client.is_connected():
-            if not self.is_loading:
-                # to implement
-                pass
-            await asyncio.sleep(0.3)
+            if not self.client.is_playing() and not self.is_paused:
+                if self.loop == DEFAULT:
+                    self.song = None
+                    try:
+                        self.play(self.queue.pop(0))
+                    except IndexError:
+                        pass
+                elif self.loop == REPEAT_QUEUE:
+                    self.song = None
+                    if len(self.queue) == 0:
+                        self.loop_ind = 0
+                    else:
+                        self.loop_ind += 1
+                        try:
+                            self.play(self.queue[self.loop_ind])
+                        except IndexError:
+                            self.loop_ind = 0
+                            self.play(self.queue[self.loop_ind])
+                elif self.loop == REPEAT_SONG:
+                    if self.song != None:
+                        self.play(self.song)
+
+            await asyncio.sleep(0.5)
         
         self.cleanup()
 
-    async def play(self, song : Music) -> bool:
-        if self.is_loading:
-            return False
-        else:
-            self.is_loading = True
-
+    def play(self, song : Music):
         download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - {song.id}', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         for i in download.stderr:
@@ -64,8 +77,6 @@ class voiceClient(__baseClient):
         self.song = song
 
         self.is_loading = False
-        
-        return True
 
     def pause(self) -> bool:
         if not self.is_paused:
@@ -86,6 +97,28 @@ class voiceClient(__baseClient):
             return True
         else:
             return False
+
+    def loopState(self) -> str:
+        if self.loop == REPEAT_SONG:
+            self.loop = DEFAULT
+        else:
+            self.loop += 1
+
+        if self.loop == DEFAULT:
+            return "Bot will play normally through the queued songs."
+        elif self.loop == REPEAT_QUEUE:
+            if self.song != None:
+                self.queue.insert(0, self.song)
+            self.loop_ind = 0
+            return "Bot will repeat songs in queue."
+        elif self.loop == REPEAT_SONG:
+            try:
+                self.queue = self.queue[self.loop_ind + 1:len(self.queue)]
+            except IndexError:
+                pass
+            return "Bot will repeat current song."
+        else:
+            return ""
 
     def cleanup(self) -> None:
         self.client.stop()
