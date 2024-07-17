@@ -180,6 +180,8 @@ class voiceClient(__baseClient):
     def cleanup(self) -> None:
         self.client.stop()
         self.client.cleanup()
+        if self.ytdlp_Proc != None and not self.ytdlp_Proc.poll():
+            self.ytdlp_Proc.terminate()
         if self.guild_id in voiceClient.__voiceClients:
             voiceClient.__voiceClients.pop(self.guild_id)
 
