@@ -53,6 +53,8 @@ class voiceClient(__baseClient):
                 elif self.loop == REPEAT_SONG:
                     if self.song != None:
                         self.play(self.song)
+                    elif len(self.queue) != 0:
+                        self.play(self.queue.pop(0))
 
             await asyncio.sleep(0.5)
         

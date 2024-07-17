@@ -19,7 +19,7 @@ def loadVoice(guild_id : int) -> tuple[list, int]:
         voice = json.load(r)
     loop = voice.pop(-1)
 
-    voice = [Music(kwargs=i) for i in voice]
+    voice = [Music(**i) for i in voice]
 
     return (voice, loop)
 
