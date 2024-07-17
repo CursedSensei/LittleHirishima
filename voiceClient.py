@@ -11,7 +11,7 @@ class __baseClient:
     song: Music = None                      # Music currently playing
     queue: list[Music]                      # Queued List
     loop: int                               # Play normally, repeat the queued list or repeat the current song
-    loop_ind: int = 0
+    loop_ind: int = 0                       # current index for REPEAT_QUEUE
     is_paused: bool = False                 # Song is paused
 
     ytdlp_Proc: subprocess.Popen = None     # Youtube Downloader Handle
