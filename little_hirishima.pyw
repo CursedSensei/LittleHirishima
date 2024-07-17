@@ -196,16 +196,13 @@ try:
 
     @client.slash_command(name='loop', description="Change mode for loop")
     async def loop(ctx: discord.ApplicationContext):
-        vClient = voiceClient.query(ctx.guild_id)
-        if vClient:
-            await ctx.respond(vClient.loopState(ctx.guild_id))
-        else:
-            await ctx.respond("Bot is not in a voice channel", delete_after=3)
+        await ctx.respond(voiceClient.loopState(ctx.guild_id))
 
     @client.slash_command(name='next', description="Plays next in queue")
     async def next(ctx: discord.ApplicationContext):
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
+            await ctx.defer()
             song = vClient.next()
             if song:
                 await ctx.respond(embed = song.embed(client))

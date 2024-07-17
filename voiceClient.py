@@ -107,7 +107,7 @@ class voiceClient(__baseClient):
             return False
 
     @staticmethod
-    def loopState(self, guild_id : int) -> str:
+    def loopState(guild_id : int) -> str:
         vGuild = voiceClient.query(guild_id)
         if vGuild:
             queue = vGuild.queue
