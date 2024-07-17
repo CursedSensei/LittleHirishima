@@ -119,10 +119,59 @@ try:
             await ctx.respond(embed = song.embed(client))
 
     @client.slash_command(name='queue', description="Add, remove, or list songs in queue")
-    async def queue(ctx, query: discord.Option(str, "Add song from youtube to queue", required=False),
+    async def queue(ctx: discord.ApplicationContext, query: discord.Option(str, "Add song from youtube to queue", required=False),
             remove: discord.Option(str, 'Remove a song from queue. type "all" to remove all songs in queue', required=False,)):
-        if not query and not remove:
-            pass
+        if query:
+            result = musicData.youtubeQuery(query)
+
+            if result.length == 0:
+                await ctx.respond(f"No results for \"{query}\"", delete_after=3)
+                return
+            
+            song = await result.display(ctx, client)
+            if song == None:
+                return
+            
+            if voiceClient.queueGuild(ctx.guild_id, add=song):
+                await ctx.respond(embed = song.embed(client, "Song added to queue"))
+        elif remove:
+            try:
+                if remove == "all":
+                    voiceClient.queueGuild(ctx.guild_id, remove=remove)
+                    await ctx.respond("Removed all queued songs")
+                else:
+                    song = voiceClient.queueGuild(ctx.guild_id, remove=int(remove) - 1)
+                    if song:
+                        await ctx.respond(embed = song.embed(client, "Song removed from queue"))
+                    else:
+                        await ctx.respond('Song not found. To remove queued song, input the index of the song ("2" for the second song) or "all" to remove all queued songs', delete_after=10)
+            except ValueError:
+                await ctx.respond('Invalid. To remove queued song, input the index of the song ("2" for the second song) or "all" to remove all queued songs', delete_after=10)
+        else:
+            songs = voiceClient.queueGuild(ctx.guild_id)
+            if len(songs) == 0:
+                await ctx.respond("No songs in queue")
+            else:
+                embed = discord.Embed(title="", color=discord.Colour.blue())
+                embed.set_author(name="Songs in queue")
+                embed.add_field(name="#", value="")
+                embed.add_field(name="Name", value="")
+                embed.add_field(name="Channel", value="")
+                embed.add_field(name="", value="", inline=False)
+
+                for i in range(0, len(songs)):
+                    if i != 0 and i % 10 == 0:
+                        await ctx.respond(embed=embed)
+                        embed.clear_fields()
+                        embed.set_author(name="")
+                    embed.add_field(name="", value=str(i + 1))
+                    embed.add_field(name="", value=songs[i].name)
+                    embed.add_field(name="", value=songs[i].channel)
+                    embed.add_field(name="", value="", inline=False)
+
+                embed.set_footer(text="Little Hirishima", icon_url=client.user.avatar.url)
+                await ctx.respond(embed=embed)
+
 
     @client.slash_command(name='pause', description="Pauses the bot")
     async def pause(ctx: discord.ApplicationContext):

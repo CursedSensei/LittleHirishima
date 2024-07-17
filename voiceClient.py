@@ -123,6 +123,42 @@ class voiceClient(__baseClient):
         guildData.updateVoice(self.guild_id, self.loop, self.queue)
 
         return out
+    
+    @staticmethod
+    def queueGuild(guild_id : int, add : Music = None, remove : int | str = None) -> bool | Music | list[Music]:
+        vGuild = voiceClient.query(guild_id)
+        if vGuild:
+            queue = vGuild.queue
+            loop = vGuild.loop
+            loop_ind = vGuild.loop_ind
+        else:
+            queue, loop = guildData.loadVoice(guild_id)
+            loop_ind = 0
+        
+        if add:
+            queue.append(add)
+        elif remove:
+            if remove == "all":
+                queue = []
+                loop_ind = 0
+                removed = True
+            else:
+                if remove < 0 and remove >= len(queue):
+                    return False
+                if loop == REPEAT_QUEUE and remove < loop_ind:
+                    loop_ind -= 1
+
+                removed = queue.pop(remove)
+        else:
+            return queue
+        
+        if vGuild:
+            vGuild.queue = queue
+            vGuild.loop_ind = loop_ind
+
+        guildData.updateVoice(guild_id, loop, queue)
+
+        return True if add else removed
 
     def cleanup(self) -> None:
         self.client.stop()
