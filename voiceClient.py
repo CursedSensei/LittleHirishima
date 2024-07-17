@@ -77,7 +77,7 @@ class voiceClient(__baseClient):
 
         self.is_loading = False
 
-    def next(self) -> Music | None:
+    def next(self) -> Music:
         try:
             song = self.queue.pop(0)
             self.play(song)
@@ -145,7 +145,7 @@ class voiceClient(__baseClient):
         
         if add:
             queue.append(add)
-        elif remove:
+        elif remove != None:
             if remove == "all":
                 queue = []
                 loop_ind = 0
