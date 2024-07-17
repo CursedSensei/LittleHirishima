@@ -125,7 +125,7 @@ class voiceClient(__baseClient):
         return out
     
     @staticmethod
-    def queueGuild(guild_id : int, add : Music = None, remove : int | str = None) -> bool | Music | list[Music]:
+    def queueGuild(guild_id : int, add : Music = None, remove = None):
         vGuild = voiceClient.query(guild_id)
         if vGuild:
             queue = vGuild.queue

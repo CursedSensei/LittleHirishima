@@ -121,6 +121,7 @@ try:
     @client.slash_command(name='queue', description="Add, remove, or list songs in queue")
     async def queue(ctx: discord.ApplicationContext, query: discord.Option(str, "Add song from youtube to queue", required=False),
             remove: discord.Option(str, 'Remove a song from queue. type "all" to remove all songs in queue', required=False,)):
+        await ctx.defer()
         if query:
             result = musicData.youtubeQuery(query)
 
@@ -150,7 +151,7 @@ try:
         else:
             songs = voiceClient.queueGuild(ctx.guild_id)
             if len(songs) == 0:
-                await ctx.respond("No songs in queue")
+                await ctx.respond("No songs in queue", delete_after=10)
             else:
                 embed = discord.Embed(title="", color=discord.Colour.blue())
                 embed.set_author(name="Songs in queue")
