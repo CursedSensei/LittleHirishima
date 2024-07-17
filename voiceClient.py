@@ -35,10 +35,7 @@ class voiceClient(__baseClient):
             if not self.client.is_playing() and not self.is_paused:
                 if self.loop == DEFAULT:
                     self.song = None
-                    try:
-                        self.play(self.queue.pop(0))
-                    except IndexError:
-                        pass
+                    self.next()
                 elif self.loop == REPEAT_QUEUE:
                     self.song = None
                     if len(self.queue) == 0:
@@ -53,8 +50,8 @@ class voiceClient(__baseClient):
                 elif self.loop == REPEAT_SONG:
                     if self.song != None:
                         self.play(self.song)
-                    elif len(self.queue) != 0:
-                        self.play(self.queue.pop(0))
+                    else:
+                        self.next()
 
             await asyncio.sleep(0.5)
         
@@ -79,6 +76,15 @@ class voiceClient(__baseClient):
         self.song = song
 
         self.is_loading = False
+
+    def next(self) -> Music | None:
+        try:
+            song = self.queue.pop(0)
+            self.play(song)
+            guildData.updateVoice(self.guild_id, self.loop, self.queue)
+            return song
+        except IndexError:
+            return None
 
     def pause(self) -> bool:
         if not self.is_paused:
