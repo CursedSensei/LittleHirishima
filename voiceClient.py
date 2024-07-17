@@ -106,29 +106,38 @@ class voiceClient(__baseClient):
         else:
             return False
 
-    def loopState(self) -> str:
-        if self.loop == REPEAT_SONG:
-            self.loop = DEFAULT
+    @staticmethod
+    def loopState(self, guild_id : int) -> str:
+        vGuild = voiceClient.query(guild_id)
+        if vGuild:
+            queue = vGuild.queue
+            loop = vGuild.loop
         else:
-            self.loop += 1
+            queue, loop = guildData.loadVoice(guild_id)
 
-        if self.loop == DEFAULT:
+        if loop == REPEAT_SONG:
+            loop = DEFAULT
+        else:
+            loop += 1
+
+        if loop == DEFAULT:
             out = "Bot will play normally through the queued songs."
-        elif self.loop == REPEAT_QUEUE:
-            if self.song != None:
-                self.queue.insert(0, self.song)
-            self.loop_ind = 0
+        elif loop == REPEAT_QUEUE:
+            if vGuild:
+                if vGuild.song != None:
+                    queue.insert(0, vGuild.song)
+                vGuild.loop_ind = 0
             out = "Bot will repeat songs in queue."
-        elif self.loop == REPEAT_SONG:
-            try:
-                self.queue = self.queue[self.loop_ind + 1:len(self.queue)]
-            except IndexError:
-                pass
+        elif loop == REPEAT_SONG:
+            if vGuild:
+                queue = queue[vGuild.loop_ind + 1:len(queue)]
             out = "Bot will repeat current song."
-        else:
-            out = ""
 
-        guildData.updateVoice(self.guild_id, self.loop, self.queue)
+        if vGuild:
+            vGuild.queue = queue
+            vGuild.loop = loop
+
+        guildData.updateVoice(guild_id, loop, queue)
 
         return out
     

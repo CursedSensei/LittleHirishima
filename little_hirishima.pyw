@@ -198,7 +198,7 @@ try:
     async def loop(ctx: discord.ApplicationContext):
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
-            await ctx.respond(vClient.loopState())
+            await ctx.respond(vClient.loopState(ctx.guild_id))
         else:
             await ctx.respond("Bot is not in a voice channel", delete_after=3)
 
