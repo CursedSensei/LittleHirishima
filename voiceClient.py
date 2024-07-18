@@ -32,7 +32,7 @@ class voiceClient(__baseClient):
 
     async def worker(self) -> None:
         while self.client.is_connected():
-            if not self.client.is_playing() and not self.is_loading and not self.is_paused:
+            if not self.client.is_playing() and not self.is_paused:
                 if self.loop == DEFAULT:
                     self.song = None
                     self.next()
