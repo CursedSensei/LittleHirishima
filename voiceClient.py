@@ -33,7 +33,7 @@ class voiceClient(__baseClient):
 
     async def worker(self) -> None:
         while self.client.is_connected():
-            if not self.client.is_playing() and not self.is_paused:
+            if not self.client.is_playing() and not self.is_loading and not self.is_paused:
                 if self.loop == DEFAULT:
                     self.song = None
                     await self.next()
@@ -69,6 +69,8 @@ class voiceClient(__baseClient):
         for i in download.stderr:
             if i.decode().startswith("[download]"):
                 break
+            else:
+                await asyncio.sleep(0.1)
 
         self.client.stop()
         if self.ytdlp_Proc != None and not self.ytdlp_Proc.poll():
