@@ -115,8 +115,10 @@ try:
             else:
                 await ctx.respond("Bot is already unpaused", delete_after=6)
         else:
-            vClient.play(song)
-            await ctx.respond(embed = song.embed(client))
+            if await vClient.play(song):
+                await ctx.respond(embed = song.embed(client))
+            else:
+                await ctx.respond("A song is already being loaded. Please wait", delete_after=6)
 
     @client.slash_command(name='queue', description="Add, remove, or list songs in queue")
     async def queue(ctx: discord.ApplicationContext, query: discord.Option(str, "Add song from youtube to queue", required=False),
@@ -203,7 +205,7 @@ try:
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
             await ctx.defer()
-            song = vClient.next()
+            song = await vClient.next()
             if song:
                 await ctx.respond(embed = song.embed(client))
             else:
