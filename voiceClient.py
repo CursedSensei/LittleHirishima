@@ -90,7 +90,15 @@ class voiceClient(__baseClient):
         try:
             if self.is_loading:
                 return False
-            song = self.queue.pop(0)
+            if self.loop == REPEAT_QUEUE:
+                try:
+                    self.loop_ind += 1
+                    song = self.queue[self.loop_ind]
+                except IndexError:
+                    self.loop_ind = 0
+                    song = self.queue[self.loop_ind]
+            else:
+                song = self.queue.pop(0)
             await self.play(song)
             guildData.updateVoice(self.guild_id, self.loop, self.queue)
             return song
