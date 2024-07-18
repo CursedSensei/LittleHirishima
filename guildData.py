@@ -30,3 +30,30 @@ def updateVoice(guild_id : int, loop : int, queue : list[Music] = []) -> None:
 
     with open(guildSpace, "w") as w:
         json.dump(queue + [loop], w)
+
+
+def updateRecent(guild_id : int, song : Music) -> None:
+    recentFile = os.path.join(GUILDPATH, str(guild_id), 'recent.json')
+
+    if os.path.exists(recentFile):
+        with open(recentFile, "r") as r:
+            recents = json.load(r)
+    else:
+        recents = []
+
+    found = False
+
+    for i in range(0, len(recents)):
+        if recents[i]['id'] == song.id:
+            found = True
+            recent = recents.pop(i)
+            recent["plays"] += 1
+
+            recents.insert(0, recent)
+            break
+
+    if not found:
+        recents.insert(0, {"name": song.name, "channel": song.channel, "thumb": song.thumb, "id": song.id, "length": song.length, "plays": 1})
+
+    with open(recentFile, "w") as w:
+        json.dump(recents, w)

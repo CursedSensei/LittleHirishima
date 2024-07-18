@@ -83,6 +83,8 @@ class voiceClient(__baseClient):
         self.is_paused = False
         self.song = song
 
+        guildData.updateRecent(self.guild_id, song)
+
         self.is_loading = False
         return True
 
