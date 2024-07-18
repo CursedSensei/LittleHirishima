@@ -25,6 +25,7 @@ def initializeAdmin(client : discord.Bot):
         if message.content == "_commit":
             await removeCommand(message)
             if message.author.id == 413231303534837762:
+                os.system("git pull")
                 subprocess.Popen(f"python3 {os.path.join(os.path.dirname(os.path.abspath(__file__)), 'little_hirishima.pyw')}", start_new_session = True, shell = True)
                 await client.close()
             else:
