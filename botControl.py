@@ -22,7 +22,7 @@ def initializeAdmin(client : discord.Bot):
                 await message.channel.send(f"fuck you {message.author.mention} your not my daddy.", delete_after=3)
             return
 
-        if message.content == "_comit":
+        if message.content == "_commit":
             await removeCommand(message)
             if message.author.id == 413231303534837762:
                 subprocess.run("git pull", cwd=ROOT_DIR, shell = True)
