@@ -208,6 +208,8 @@ try:
             song = await vClient.next()
             if song:
                 await ctx.respond(embed = song.embed(client))
+            elif song == False:
+                await ctx.respond("A song is already being loaded. Please wait", delete_after=6)
             else:
                 await ctx.respond("No song is queued", delete_after=6)
         else:

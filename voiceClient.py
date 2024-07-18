@@ -86,8 +86,10 @@ class voiceClient(__baseClient):
         self.is_loading = False
         return True
 
-    async def next(self) -> Music:
+    async def next(self) -> Music | bool:
         try:
+            if self.is_loading:
+                return False
             song = self.queue.pop(0)
             await self.play(song)
             guildData.updateVoice(self.guild_id, self.loop, self.queue)
