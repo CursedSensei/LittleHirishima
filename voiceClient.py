@@ -13,6 +13,7 @@ class __baseClient:
     loop: int                               # Play normally, repeat the queued list or repeat the current song
     loop_ind: int = 0                       # current index for REPEAT_QUEUE
     is_paused: bool = False                 # Song is paused
+    is_loading: bool = False                # Song is being loaded. (Async play lock)
 
     ytdlp_Proc: subprocess.Popen = None     # Youtube Downloader Handle
 
@@ -35,7 +36,7 @@ class voiceClient(__baseClient):
             if not self.client.is_playing() and not self.is_paused:
                 if self.loop == DEFAULT:
                     self.song = None
-                    self.next()
+                    await self.next()
                 elif self.loop == REPEAT_QUEUE:
                     self.song = None
                     if len(self.queue) == 0:
@@ -43,21 +44,26 @@ class voiceClient(__baseClient):
                     else:
                         self.loop_ind += 1
                         try:
-                            self.play(self.queue[self.loop_ind])
+                            await self.play(self.queue[self.loop_ind])
                         except IndexError:
                             self.loop_ind = 0
-                            self.play(self.queue[self.loop_ind])
+                            await self.play(self.queue[self.loop_ind])
                 elif self.loop == REPEAT_SONG:
                     if self.song != None:
-                        self.play(self.song)
+                        await self.play(self.song)
                     else:
-                        self.next()
+                        await self.next()
 
             await asyncio.sleep(0.5)
         
         self.cleanup()
 
-    def play(self, song : Music):
+    async def play(self, song : Music):
+        if self.is_loading:
+            return False
+        else:
+            self.is_loading = True
+
         download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - {song.id}', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         for i in download.stderr:
@@ -75,10 +81,13 @@ class voiceClient(__baseClient):
         self.is_paused = False
         self.song = song
 
-    def next(self) -> Music:
+        self.is_loading = False
+        return True
+
+    async def next(self) -> Music:
         try:
             song = self.queue.pop(0)
-            self.play(song)
+            await self.play(song)
             guildData.updateVoice(self.guild_id, self.loop, self.queue)
             return song
         except IndexError:
