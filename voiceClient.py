@@ -86,7 +86,7 @@ class voiceClient(__baseClient):
         self.is_loading = False
         return True
 
-    async def next(self) -> Music | bool:
+    async def next(self) -> Music:
         try:
             if self.is_loading:
                 return False
