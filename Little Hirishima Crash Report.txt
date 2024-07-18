@@ -1,4 +1,0 @@
-Traceback (most recent call last):
-  File "D:\Personal\Coding\Projects\Python_bot\LittleHirishima\little_hirishima.pyw", line 218, in <module>
-    with open(botPath.TOKENPATH, "r") as f:
-FileNotFoundError: [Errno 2] No such file or directory: 'D:\\Personal\\Coding\\Projects\\Python_bot\\LittleHirishima\\Little_Hirishima Secrets.json'
