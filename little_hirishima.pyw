@@ -201,17 +201,20 @@ try:
         await ctx.respond(voiceClient.loopState(ctx.guild_id))
 
     @client.slash_command(name='next', description="Plays next in queue")
-    async def next(ctx: discord.ApplicationContext):
+    async def next(ctx: discord.ApplicationContext, number: discord.Option(str, "Number of songs to skip in queue", required=False)):
+        if number and number <= 0:
+            await ctx.respond("Incorrect number format", delete_after=3)
+
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
             await ctx.defer()
-            song = await vClient.next()
+            song = await vClient.next(1 if not number else number)
             if song:
                 await ctx.respond(embed = song.embed(client))
             elif song == False:
                 await ctx.respond("A song is already being loaded. Please wait", delete_after=6)
             else:
-                await ctx.respond("No song is queued", delete_after=6)
+                await ctx.respond("No song found in queue", delete_after=6)
         else:
             await ctx.respond("Bot is not in a voice channel", delete_after=3)
 

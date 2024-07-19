@@ -64,7 +64,7 @@ class voiceClient(__baseClient):
         else:
             self.is_loading = True
 
-        download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - "{song.id}"', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - -- {song.id}', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         for i in download.stderr:
             if i.decode().startswith("[download]"):
@@ -88,19 +88,24 @@ class voiceClient(__baseClient):
         self.is_loading = False
         return True
 
-    async def next(self) -> Music:
+    async def next(self, index = 1) -> Music:
         try:
             if self.is_loading:
                 return False
             if self.loop == REPEAT_QUEUE:
                 try:
-                    self.loop_ind += 1
+                    self.loop_ind += index
                     song = self.queue[self.loop_ind]
                 except IndexError:
-                    self.loop_ind = 0
+                    if len(self.queue) == 0:
+                        self.loop_ind = -1
+                        raise IndexError
+                    while self.loop_ind >= len(self.queue):
+                        self.loop_ind -= len(self.queue)
                     song = self.queue[self.loop_ind]
             else:
-                song = self.queue.pop(0)
+                song = self.queue[index - 1]
+                self.queue = self.queue[index:]
             await self.play(song)
             guildData.updateVoice(self.guild_id, self.loop, self.queue)
             return song
