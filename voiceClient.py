@@ -70,7 +70,7 @@ class voiceClient(__baseClient):
             if i.decode().startswith("[download]"):
                 break
             else:
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(0.3)
 
         self.client.stop()
         if self.ytdlp_Proc != None and not self.ytdlp_Proc.poll():
