@@ -168,7 +168,7 @@ try:
                         embed.clear_fields()
                         embed.set_author(name="")
                     embed.add_field(name="", value=str(i + 1))
-                    embed.add_field(name="", value=songs[i].name)
+                    embed.add_field(name="", value=f"[{songs[i].name}](https://www.youtube.com/watch?v={songs[i].id})")
                     embed.add_field(name="", value=songs[i].channel)
                     embed.add_field(name="", value="", inline=False)
 
