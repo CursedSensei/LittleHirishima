@@ -11,7 +11,7 @@ class __baseClient:
     song: Music = None                      # Music currently playing
     queue: list[Music]                      # Queued List
     loop: int                               # Play normally, repeat the queued list or repeat the current song
-    loop_ind: int = 0                       # current index for REPEAT_QUEUE
+    loop_ind: int = -1                       # current index for REPEAT_QUEUE
     is_paused: bool = False                 # Song is paused
     is_loading: bool = False                # Song is being loaded. (Async play lock)
 
@@ -64,7 +64,7 @@ class voiceClient(__baseClient):
         else:
             self.is_loading = True
 
-        download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - {song.id}', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - "{song.id}"', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         for i in download.stderr:
             if i.decode().startswith("[download]"):
