@@ -163,7 +163,7 @@ try:
                 embed.add_field(name="", value="", inline=False)
 
                 for i in range(0, len(songs)):
-                    if i != 0 and i % 10 == 0:
+                    if i != 0 and i % 5 == 0:
                         await ctx.respond(embed=embed)
                         embed.clear_fields()
                         embed.set_author(name="")
