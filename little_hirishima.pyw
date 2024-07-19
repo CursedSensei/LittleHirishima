@@ -201,9 +201,10 @@ try:
         await ctx.respond(voiceClient.loopState(ctx.guild_id))
 
     @client.slash_command(name='next', description="Plays next in queue")
-    async def next(ctx: discord.ApplicationContext, number: discord.Option(str, "Number of songs to skip in queue", required=False)):
+    async def next(ctx: discord.ApplicationContext, number: discord.Option(int, "Number of songs to skip in queue", required=False)):
         if number and number <= 0:
             await ctx.respond("Incorrect number format", delete_after=3)
+            return
 
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
