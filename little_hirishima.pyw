@@ -2,6 +2,7 @@ import botPath
 from voiceClient import *
 import musicData
 import botControl
+from guildData import updateVoice
 
 import json
 import discord
@@ -120,6 +121,7 @@ try:
                 if vClient.loop == REPEAT_QUEUE:
                     vClient.loop_ind += 1
                     vClient.queue.insert(vClient.loop_ind, song)
+                    updateVoice(vClient.guild_id, vClient.loop, vClient.queue)
             else:
                 await ctx.respond("A song is already being loaded. Please wait", delete_after=6)
 
