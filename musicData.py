@@ -61,11 +61,27 @@ class youtubeQuery:
         return youtubeQuery([Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in await youtube_search(query)])
 
     async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music:
-        response = "**Choose a song:**\n\n"
-        for i in range(0, self.length):
-            response += '**' +str(i + 1) + ":** " + self.result[i].name + " *- " + self.result[i].channel + "*" + "\n"
+        response = []
 
-        response = await ctx.respond(response)
+        embed = discord.Embed(title="", color=discord.Colour.blue())
+        embed.set_author(name="Choose a song")
+        embed.add_field(name="#", value="")
+        embed.add_field(name="Name", value="")
+        embed.add_field(name="Channel", value="")
+        embed.add_field(name="", value="", inline=False)
+
+        for i in range(0, self.length):
+            if i != 0 and i % 5 == 0:
+                response.append(await ctx.respond(embed=embed))
+                embed.clear_fields()
+                embed.set_author(name="")
+            embed.add_field(name="", value=str(i + 1))
+            embed.add_field(name="", value=f"[{self.result[i].name}](https://www.youtube.com/watch?v={self.result[i].id})")
+            embed.add_field(name="", value=self.result[i].channel)
+            embed.add_field(name="", value="", inline=False)
+
+        embed.set_footer(text=f"Requested by: {ctx.author.mention}", icon_url=ctx.author.avatar.url)
+        response.append(await ctx.respond(embed=embed))
 
         def checker(message: discord.Message):
             try:
@@ -81,11 +97,13 @@ class youtubeQuery:
         try:
             message = await bot.wait_for('message', check=checker, timeout=20)
         except asyncio.TimeoutError:
-            await response.delete()
+            for i in response:
+                asyncio.create_task(i.delete())
             return None
         
-        await response.delete()
-        await message.delete()
+        for i in response:
+            asyncio.create_task(i.delete())
+        asyncio.create_task(message.delete())
 
         return self.result[int(message.content) - 1]
 
