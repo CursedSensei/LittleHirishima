@@ -117,6 +117,9 @@ try:
         else:
             if await vClient.play(song):
                 await ctx.respond(embed = song.embed(client))
+                if vClient.loop == REPEAT_QUEUE:
+                    vClient.loop_ind += 1
+                    vClient.queue.insert(vClient.loop_ind, song)
             else:
                 await ctx.respond("A song is already being loaded. Please wait", delete_after=6)
 
