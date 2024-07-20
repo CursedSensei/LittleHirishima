@@ -32,6 +32,8 @@ class voiceClient(__baseClient):
         await self.client.disconnect()
 
     async def worker(self) -> None:
+        await asyncio.sleep(3)
+
         while self.client.is_connected():
             if not self.client.is_playing() and not self.is_loading and not self.is_paused:
                 if self.loop == DEFAULT:
