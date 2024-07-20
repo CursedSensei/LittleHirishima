@@ -32,31 +32,38 @@ class voiceClient(__baseClient):
         await self.client.disconnect()
 
     async def worker(self) -> None:
-        while self.client.is_connected():
-            if not self.client.is_playing() and not self.is_loading and not self.is_paused:
-                if self.loop == DEFAULT:
-                    self.song = None
-                    await self.next()
-                elif self.loop == REPEAT_QUEUE:
-                    self.song = None
-                    if len(self.queue) == 0:
-                        self.loop_ind = 0
-                    else:
-                        self.loop_ind += 1
-                        try:
-                            await self.play(self.queue[self.loop_ind])
-                        except IndexError:
-                            self.loop_ind = 0
-                            await self.play(self.queue[self.loop_ind])
-                elif self.loop == REPEAT_SONG:
-                    if self.song != None:
-                        await self.play(self.song)
-                    else:
+        try:
+            while self.client.is_connected():
+                if not self.client.is_playing() and not self.is_loading and not self.is_paused:
+                    if self.loop == DEFAULT:
+                        self.song = None
                         await self.next()
+                    elif self.loop == REPEAT_QUEUE:
+                        self.song = None
+                        if len(self.queue) == 0:
+                            self.loop_ind = 0
+                        else:
+                            self.loop_ind += 1
+                            try:
+                                await self.play(self.queue[self.loop_ind])
+                            except IndexError:
+                                self.loop_ind = 0
+                                await self.play(self.queue[self.loop_ind])
+                    elif self.loop == REPEAT_SONG:
+                        if self.song != None:
+                            await self.play(self.song)
+                        else:
+                            await self.next()
 
-            await asyncio.sleep(0.5)
-        
-        self.cleanup()
+                await asyncio.sleep(0.5)
+            
+            self.cleanup()
+        except:
+            from traceback import format_exc
+            from botPath import WORKERERRORPATH
+            
+            with open(WORKERERRORPATH, "w") as w:
+                w.write(format_exc())
 
     async def play(self, song : Music):
         if self.is_loading:
