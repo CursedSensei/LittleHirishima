@@ -1,5 +1,4 @@
-import json
-from requests import post
+import aiohttp
 
 def strToLength(length : str):
 	out = 0
@@ -16,7 +15,7 @@ def strToLength(length : str):
 
 	return out
 
-def youtube_search(keys, limit = 10):
+async def youtube_search(keys, limit = 10):
 	headers = {
 		"context": {
 			"client": {
@@ -29,14 +28,14 @@ def youtube_search(keys, limit = 10):
 		"query": keys
 	}
 
-	res = post("https://www.youtube.com/youtubei/v1/search?prettyPrint=false", json = headers)
-
 	out = []
 	outLen = 0
 	limit = limit if limit != 0 else -1
 
 	try:
-		contents = json.loads(res.content.decode())['contents']['twoColumnSearchResultsRenderer']['primaryContents']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents']
+		async with aiohttp.ClientSession() as client:
+			async with client.post("https://www.youtube.com/youtubei/v1/search?prettyPrint=false", json = headers) as res:
+				contents = (await res.json())['contents']['twoColumnSearchResultsRenderer']['primaryContents']['sectionListRenderer']['contents'][0]['itemSectionRenderer']['contents']
 
 		for i in contents:
 			if outLen == limit:
@@ -80,14 +79,21 @@ def youtube_search(keys, limit = 10):
 		pass
 	except KeyError:
 		pass
-
+	except aiohttp.ClientResponseError:
+		pass
+	
 	return out
 
 if __name__ == '__main__':
-	keys=input("search: ")
-	outs = youtube_search(keys)
-	for i in outs:
-		for j in i:
-			print(j)
-		print("\n")
-	input("END")
+	import asyncio
+
+	async def main():
+		keys=input("search: ")
+		outs = await youtube_search(keys)
+		for i in outs:
+			for j in i:
+				print(j)
+			print("\n")
+		input("END")
+	
+	asyncio.run(main())

@@ -82,7 +82,7 @@ try:
 
         if query:
             await ctx.defer()
-            result = musicData.youtubeQuery(query)
+            result = musicData.youtubeQuery.search(query)
 
             if result.length == 0:
                 await ctx.respond(f"No results for \"{query}\"", delete_after=3)
@@ -128,7 +128,7 @@ try:
             remove: discord.Option(str, 'Remove a song from queue. type "all" to remove all songs in queue', required=False,)):
         await ctx.defer()
         if query:
-            result = musicData.youtubeQuery(query)
+            result = musicData.youtubeQuery.search(query)
 
             if result.length == 0:
                 await ctx.respond(f"No results for \"{query}\"", delete_after=3)

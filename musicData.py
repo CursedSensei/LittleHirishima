@@ -52,9 +52,13 @@ class youtubeQuery:
     result: list[Music]
     length: int
     
-    def __init__(self, query : str) -> None:
-        self.result = [Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in youtube_search(query)]
+    def __init__(self, result : list) -> None:
+        self.result = result
         self.length = len(self.result)
+
+    @staticmethod
+    async def search(query : str):
+        return youtubeQuery([Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in await youtube_search(query)])
 
     async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music:
         response = "**Choose a song:**\n\n"
