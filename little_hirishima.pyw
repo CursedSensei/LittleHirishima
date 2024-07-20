@@ -50,7 +50,7 @@ try:
         vChannel = ctx.author.voice.channel
 
         if vClient == None:
-            voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect())
+            voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect(), client)
             await ctx.respond(f"Bot is connected to {vChannel.mention}", delete_after=6)
         elif vClient.channel_id == vChannel.id:
             await ctx.respond("Bot is already connected to your voice channel", delete_after=3)
@@ -104,7 +104,7 @@ try:
             if not query:
                 await ctx.respond("Bot is not connected to a voice channel", delete_after=6)
                 return
-            vClient = voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect())
+            vClient = voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect(), client)
         elif vClient.channel_id != vChannel.id:
             await ctx.respond("You must be connected with the bot's channel to play music", delete_after=3)
             return
@@ -229,7 +229,7 @@ except ClientConnectorError:
     import subprocess, time, os
 
     time.sleep(10)
-    subprocess.Popen(["python3", os.path.abspath(__file__)], start_new_session = True)
+    subprocess.Popen(f"python3 {os.path.abspath(__file__)}", start_new_session = True, shell = True)
 except:
     import traceback
     with open(botPath.ERRORPATH,"w") as f:

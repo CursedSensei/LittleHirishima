@@ -1,6 +1,6 @@
 import guildData
 import asyncio, subprocess
-import discord, fcntl
+import discord
 from musicData import *
 from botConst import *
 
@@ -11,21 +11,21 @@ class __baseClient:
     song: Music = None                      # Music currently playing
     queue: list[Music]                      # Queued List
     loop: int                               # Play normally, repeat the queued list or repeat the current song
-    loop_ind: int = -1                      # current index for REPEAT_QUEUE
+    loop_ind: int = -1                       # current index for REPEAT_QUEUE
     is_paused: bool = False                 # Song is paused
     is_loading: bool = False                # Song is being loaded. (Async play lock)
 
     ytdlp_Proc: subprocess.Popen = None     # Youtube Downloader Handle
 
 class voiceClient(__baseClient):
-    def __init__(self, guild_id : int, channel_id : int, client : discord.VoiceClient) -> None:
+    def __init__(self, guild_id : int, channel_id : int, client : discord.VoiceClient, bot : discord.Bot) -> None:
         self.guild_id = guild_id
         self.channel_id = channel_id
         self.client = client
         
         self.queue, self.loop = guildData.loadVoice(guild_id)
 
-        asyncio.create_task(self.worker())
+        asyncio.run_coroutine_threadsafe(self.worker(), bot.loop)
 
     async def disconnect(self) -> None:
         self.client.stop()
@@ -66,16 +66,16 @@ class voiceClient(__baseClient):
         else:
             self.is_loading = True
 
-        download = subprocess.Popen(['/usr/local/bin/yt-dlp', '-f', 'mp3/bestaudio/best', '-x', '--audio-format', 'mp3', '-o', '-', '--', str(song.id)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        download = subprocess.Popen(f'/usr/local/bin/yt-dlp -f mp3/bestaudio/best -x --audio-format mp3 -o - -- {song.id}', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        fcntl.fcntl(download.stderr, fcntl.F_SETFL, fcntl.fcntl(download.stderr, fcntl.F_GETFL) | os.O_NONBLOCK)
-        while download.poll() == None:
-            if download.stderr.readline().startswith(b"[download]"):
+        for i in download.stderr:
+            if i.decode().startswith("[download]"):
                 break
-            await asyncio.sleep(0.3)
+            else:
+                await asyncio.sleep(0.3)
 
         self.client.stop()
-        if self.ytdlp_Proc != None and self.ytdlp_Proc.poll() == None:
+        if self.ytdlp_Proc != None and not self.ytdlp_Proc.poll():
             self.ytdlp_Proc.terminate()
 
         self.ytdlp_Proc = download
@@ -223,7 +223,7 @@ class voiceClient(__baseClient):
         return None
 
     @staticmethod
-    def create(guild_id : int, channel_id : int, client : discord.VoiceClient):
-        vc = voiceClient(guild_id, channel_id, client)
+    def create(guild_id : int, channel_id : int, client : discord.VoiceClient, bot : discord.Bot):
+        vc = voiceClient(guild_id, channel_id, client, bot)
         voiceClient.__voiceClients[guild_id] = vc
         return vc
