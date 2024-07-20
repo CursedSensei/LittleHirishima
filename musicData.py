@@ -80,7 +80,7 @@ class youtubeQuery:
             embed.add_field(name="", value=self.result[i].channel)
             embed.add_field(name="", value="", inline=False)
 
-        embed.set_footer(text=f"Requested by: {ctx.author.mention}", icon_url=ctx.author.avatar.url)
+        embed.set_footer(text=f"Requested by: {ctx.author.nick}", icon_url=ctx.author.avatar.url)
         response.append(await ctx.respond(embed=embed))
 
         def checker(message: discord.Message):
