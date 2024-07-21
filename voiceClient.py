@@ -26,7 +26,7 @@ class voiceClient(__baseClient):
 
         self.queue, self.loop = guildData.loadVoice(guild_id)
 
-	self.is_loading.set()
+        self.is_loading.set()
         asyncio.create_task(self.worker())
 
     async def disconnect(self) -> None:
@@ -71,13 +71,13 @@ class voiceClient(__baseClient):
     async def play(self, song : Music, force = False):
         if not self.is_loading.is_set():
             if not force:
-            	return False
+                return False
             while not self.is_loading.is_set():
-            	self.cancel = True
-            	await self.is_loading.wait()
+                self.cancel = True
+                await self.is_loading.wait()
             self.cancel = False
 
-	self.is_loading.clear()
+        self.is_loading.clear()
 
         download = subprocess.Popen(['/usr/local/bin/yt-dlp', '-f', 'mp3/bestaudio/best', '-x', '--audio-format', 'mp3', '-o', '-', '--', str(song.id)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -87,9 +87,9 @@ class voiceClient(__baseClient):
                 break
             await asyncio.sleep(0.3)
             if self.cancel == True:
-            	download.terminate()
-            	self.is_loading.set()
-            	return False
+                download.terminate()
+                self.is_loading.set()
+                return False
 
         self.client.stop()
         if self.ytdlp_Proc != None and self.ytdlp_Proc.poll() == None:
@@ -107,7 +107,7 @@ class voiceClient(__baseClient):
         self.is_loading.set()
         return True
 
-    async def next(self, index = 1, force = False, ctx: discord.ApplicationContext = None) -> Music:
+    async def next(self, index = 1, force = False) -> Music:
         try:
             if self.loop == REPEAT_QUEUE:
                 try:
@@ -123,9 +123,9 @@ class voiceClient(__baseClient):
             else:
                 song = self.queue[index - 1]
                 self.queue = self.queue[index:]
-	    guildData.updateVoice(self.guild_id, self.loop, self.queue)
+            guildData.updateVoice(self.guild_id, self.loop, self.queue)
             if force:
-            	return (asyncio.create_task(self.play(song, force)), song)
+                return (asyncio.create_task(self.play(song, force)), song)
             await self.play(song)
         except IndexError:
             return (None, None)

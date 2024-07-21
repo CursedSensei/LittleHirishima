@@ -216,13 +216,13 @@ try:
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
             await ctx.defer()
-            taskPlay, song = await vClient.next(1 if not number else number, force = True, client)
+            taskPlay, song = await vClient.next(1 if not number else number, force = True)
             if song:
-                 song_mes = asyncio.create_task(ctx.respond(embed = song.embed(client, title = "Next song in queue", color=discord.Colour.orange())))
-                 if await taskPlay:
-	                await (await song_mes).edit(embed = song.embed(client))
-	            else:
-	                await (await song_mes).edit(embed = song.embed(client, title = "Song Cancelled", color=discord.Colour.red()))
+                song_mes = asyncio.create_task(ctx.respond(embed = song.embed(client, title = "Next song in queue", color=discord.Colour.orange())))
+                if await taskPlay:
+                    await (await song_mes).edit(embed = song.embed(client))
+                else:
+                    await (await song_mes).edit(embed = song.embed(client, title = "Song Cancelled", color=discord.Colour.red()))
             else:
                 await ctx.respond("No song found in queue", delete_after=6)
         else:
