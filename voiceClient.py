@@ -107,7 +107,7 @@ class voiceClient(__baseClient):
         self.is_loading.set()
         return True
 
-    async def next(self, index = 1, force = False) -> Music:
+    async def next(self, index = 1, force = False, ctx: discord.ApplicationContext = None) -> Music:
         try:
             if self.loop == REPEAT_QUEUE:
                 try:
@@ -124,11 +124,11 @@ class voiceClient(__baseClient):
                 song = self.queue[index - 1]
                 self.queue = self.queue[index:]
 	    guildData.updateVoice(self.guild_id, self.loop, self.queue)
-            if not await self.play(song, force):
-            	return False
-            return song
+            if force:
+            	return (asyncio.create_task(self.play(song, force)), song)
+            await self.play(song)
         except IndexError:
-            return None
+            return (None, None)
 
     def pause(self) -> bool:
         if not self.is_paused:
