@@ -4,7 +4,7 @@ import musicData
 import botControl
 from guildData import updateVoice
 
-import json
+import json, asyncio
 import discord
 from discord.ext import commands
 from aiohttp.client_exceptions import ClientConnectorError
@@ -116,14 +116,16 @@ try:
             else:
                 await ctx.respond("Bot is already unpaused", delete_after=6)
         else:
-            if await vClient.play(song):
-                await ctx.respond(embed = song.embed(client))
+            song_mes = asyncio.create_task(ctx.respond(embed = song.embed(client, title = "Song to play", color=discord.Colour.orange())))
+            
+            if await vClient.play(song, force = True):
+                await (await song_mes).edit(embed = song.embed(client))
                 if vClient.loop == REPEAT_QUEUE:
                     vClient.loop_ind += 1
                     vClient.queue.insert(vClient.loop_ind, song)
                     updateVoice(vClient.guild_id, vClient.loop, vClient.queue)
             else:
-                await ctx.respond("A song is already being loaded. Please wait", delete_after=6)
+                await (await song_mes).edit(embed = song.embed(client, title = "Song Cancelled", color=discord.Colour.red()))
 
     @client.slash_command(name='queue', description="Add, remove, or list songs in queue")
     async def queue(ctx: discord.ApplicationContext, query: discord.Option(str, "Add song from youtube to queue", required=False),
@@ -214,7 +216,7 @@ try:
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
             await ctx.defer()
-            song = await vClient.next(1 if not number else number)
+            song = await vClient.next(1 if not number else number, force = True)
             if song:
                 await ctx.respond(embed = song.embed(client))
             elif song == False:

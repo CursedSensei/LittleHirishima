@@ -13,7 +13,8 @@ class __baseClient:
     loop: int                               # Play normally, repeat the queued list or repeat the current song
     loop_ind: int = -1                      # current index for REPEAT_QUEUE
     is_paused: bool = False                 # Song is paused
-    is_loading: bool = False                # Song is being loaded. (Async play lock)
+    is_loading = asyncio.Event()                # Song is being loaded. (Async play lock)
+    cancel: bool = False
 
     ytdlp_Proc: subprocess.Popen = None     # Youtube Downloader Handle
 
@@ -22,9 +23,10 @@ class voiceClient(__baseClient):
         self.guild_id = guild_id
         self.channel_id = channel_id
         self.client = client
-        
+
         self.queue, self.loop = guildData.loadVoice(guild_id)
 
+	self.is_loading.set()
         asyncio.create_task(self.worker())
 
     async def disconnect(self) -> None:
@@ -34,7 +36,8 @@ class voiceClient(__baseClient):
     async def worker(self) -> None:
         try:
             while self.client.is_connected():
-                if not self.client.is_playing() and not self.is_loading and not self.is_paused:
+                await self.is_loading.wait()
+                if not self.client.is_playing() and self.is_loading.is_set() and not self.cancel and not self.is_paused:
                     if self.loop == DEFAULT:
                         self.song = None
                         await self.next()
@@ -56,20 +59,25 @@ class voiceClient(__baseClient):
                             await self.next()
 
                 await asyncio.sleep(0.5)
-            
+
             self.cleanup()
         except:
             from traceback import format_exc
             from botPath import WORKERERRORPATH
-            
+
             with open(WORKERERRORPATH, "w") as w:
                 w.write(format_exc())
 
-    async def play(self, song : Music):
-        if self.is_loading:
-            return False
-        else:
-            self.is_loading = True
+    async def play(self, song : Music, force = False):
+        if not self.is_loading.is_set():
+            if not force:
+            	return False
+            while not self.is_loading.is_set():
+            	self.cancel = True
+            	await self.is_loading.wait()
+            self.cancel = False
+
+	self.is_loading.clear()
 
         download = subprocess.Popen(['/usr/local/bin/yt-dlp', '-f', 'mp3/bestaudio/best', '-x', '--audio-format', 'mp3', '-o', '-', '--', str(song.id)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -78,6 +86,10 @@ class voiceClient(__baseClient):
             if download.stderr.readline().startswith(b"[download]"):
                 break
             await asyncio.sleep(0.3)
+            if self.cancel == True:
+            	download.terminate()
+            	self.is_loading.set()
+            	return False
 
         self.client.stop()
         if self.ytdlp_Proc != None and self.ytdlp_Proc.poll() == None:
@@ -92,13 +104,11 @@ class voiceClient(__baseClient):
 
         guildData.updateRecent(self.guild_id, song)
 
-        self.is_loading = False
+        self.is_loading.set()
         return True
 
-    async def next(self, index = 1) -> Music:
+    async def next(self, index = 1, force = False) -> Music:
         try:
-            if self.is_loading:
-                return False
             if self.loop == REPEAT_QUEUE:
                 try:
                     self.loop_ind += index
@@ -113,8 +123,9 @@ class voiceClient(__baseClient):
             else:
                 song = self.queue[index - 1]
                 self.queue = self.queue[index:]
-            await self.play(song)
-            guildData.updateVoice(self.guild_id, self.loop, self.queue)
+	    guildData.updateVoice(self.guild_id, self.loop, self.queue)
+            if not await self.play(song, force):
+            	return False
             return song
         except IndexError:
             return None
