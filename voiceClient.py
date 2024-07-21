@@ -13,7 +13,7 @@ class __baseClient:
     loop: int                               # Play normally, repeat the queued list or repeat the current song
     loop_ind: int = -1                      # current index for REPEAT_QUEUE
     is_paused: bool = False                 # Song is paused
-    is_loading = asyncio.Event()                # Song is being loaded. (Async play lock)
+    is_loading = asyncio.Event()            # Song is being loaded. (Async play lock)
     cancel: bool = False
 
     ytdlp_Proc: subprocess.Popen = None     # Youtube Downloader Handle
