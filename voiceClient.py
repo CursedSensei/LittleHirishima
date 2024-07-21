@@ -14,7 +14,7 @@ class __baseClient:
     loop_ind: int = -1                      # current index for REPEAT_QUEUE
     is_paused: bool = False                 # Song is paused
     is_loading = asyncio.Event()            # Song is being loaded. (Async play lock)
-    cancel: bool = False
+    cancel: bool = False                    # Cancel request to a song that is about to play
 
     ytdlp_Proc: subprocess.Popen = None     # Youtube Downloader Handle
 
@@ -76,6 +76,10 @@ class voiceClient(__baseClient):
                 self.cancel = True
                 await self.is_loading.wait()
             self.cancel = False
+
+        if not self.client.is_connected():
+            self.cancel = True
+            return False
 
         self.is_loading.clear()
 
@@ -224,6 +228,7 @@ class voiceClient(__baseClient):
     def cleanup(self) -> None:
         self.client.stop()
         self.client.cleanup()
+        self.cancel = True
         if self.ytdlp_Proc != None and not self.ytdlp_Proc.poll():
             self.ytdlp_Proc.terminate()
         if self.guild_id in voiceClient.__voiceClients:
