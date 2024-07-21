@@ -32,6 +32,7 @@ class voiceClient(__baseClient):
     async def disconnect(self) -> None:
         self.client.stop()
         await self.client.disconnect()
+        self.cleanup()
 
     async def worker(self) -> None:
         try:
