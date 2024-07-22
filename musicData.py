@@ -61,51 +61,29 @@ class youtubeQuery:
         return youtubeQuery([Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in await youtube_search(query)])
 
     async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music:
-        response = []
-
-        embed = discord.Embed(title="", color=discord.Colour.blue())
-        embed.set_author(name="Choose a song")
-        embed.add_field(name="#", value="")
-        embed.add_field(name="Name", value="")
-        embed.add_field(name="Channel", value="")
-        embed.add_field(name="", value="", inline=False)
+        select = discord.ui.Select(select_type=discord.ComponentType.string_select, placeholder="Choose a song")
 
         for i in range(0, self.length):
-            if i != 0 and i % 5 == 0:
-                response.append(await ctx.respond(embed=embed))
-                embed.clear_fields()
-                embed.set_author(name="")
-            embed.add_field(name="", value=str(i + 1))
-            embed.add_field(name="", value=f"[{self.result[i].name}](https://www.youtube.com/watch?v={self.result[i].id})")
-            embed.add_field(name="", value=self.result[i].channel)
-            embed.add_field(name="", value="", inline=False)
+            select.add_option(label=self.result[i].name, value=str(i), description=self.result[i].channel)
 
-        embed.set_footer(text=f"Requested by: {ctx.author.display_name}", icon_url=ctx.author.avatar.url)
-        response.append(await ctx.respond(embed=embed))
+        message = await ctx.respond(view=discord.ui.View(select, timeout=20), delete_after=20)
 
-        def checker(message: discord.Message):
-            try:
-                if ctx.author != message.author or ctx.channel != message.channel:
-                    raise ValueError
-                self.result[int(message.content) - 1]
-            except ValueError:
-                return False
-            except IndexError:
-                return False
-            return True
+        display_lock = asyncio.Event()
+        async def sel_respond(interaction : discord.Interaction):
+            display_lock.set()
+
+        select.callback = sel_respond
 
         try:
-            message = await bot.wait_for('message', check=checker, timeout=20)
-        except asyncio.TimeoutError:
-            for i in response:
-                asyncio.create_task(i.delete())
+            await asyncio.wait_for(display_lock.wait(), timeout=20)
+            await message.delete()
+            output = int(select.values[0])
+        except TimeoutError:
             return None
-        
-        for i in response:
-            asyncio.create_task(i.delete())
-        asyncio.create_task(message.delete())
+        except ValueError:
+            return None
 
-        return self.result[int(message.content) - 1]
+        return self.result[output]
 
     def get(self, index: int):
         return self.result[index - 1]
