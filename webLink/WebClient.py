@@ -1,5 +1,6 @@
 from botPath import *
 import discord, threading, io, os, time
+import voiceClient
 
 client: discord.Bot = None
 
@@ -15,8 +16,9 @@ class webClient:
         threading.Thread(target=self.worker, daemon=True).start()
 
     def worker(self):
-        seen = time.time()
+        self.loadGuild()
 
+        seen = time.time()
         while time.time() - seen <= 20:
             for i in os.listdir(REQUESTSDIRECTORY):
                 if i == self.id:
@@ -24,14 +26,14 @@ class webClient:
                         request = r.read().split("\n")
 
                     if request[0] == "info":
-                        self.loadGuild()
+                        pass
                         # send data in json
                     elif request[0] == "play":
                         pass
                     elif request[0] == "queue":
                         pass
-                    elif request[0] == "status":
-                        pass
+                    elif request[0] == "refresh":
+                        self.loadGuild()
 
                     os.remove(i)
             time.sleep(0.3)
