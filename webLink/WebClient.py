@@ -32,6 +32,8 @@ class webClient:
                         pass
                     elif request[0] == "queue":
                         pass
+                    elif request[0] == "move":
+                        pass
                     elif request[0] == "refresh":
                         self.loadGuild()
 
