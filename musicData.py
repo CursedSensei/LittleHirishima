@@ -58,7 +58,7 @@ class youtubeQuery:
 
     @staticmethod
     async def search(query : str):
-        return youtubeQuery([Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in await youtube_search(query, 0)])
+        return youtubeQuery([Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in await youtube_search(query, 25)])
 
     async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music:
         select = discord.ui.Select(select_type=discord.ComponentType.string_select, placeholder="Choose a song")
@@ -70,6 +70,8 @@ class youtubeQuery:
 
         display_lock = asyncio.Event()
         async def sel_respond(interaction : discord.Interaction):
+            if interaction.user != ctx.user:
+                return
             display_lock.set()
 
         select.callback = sel_respond
