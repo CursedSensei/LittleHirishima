@@ -15,7 +15,7 @@ def strToLength(length : str):
 
 	return out
 
-async def youtube_search(keys, limit = 10):
+async def youtube_search(keys : str, limit = 10):
 	headers = {
 		"context": {
 			"client": {
@@ -50,6 +50,11 @@ async def youtube_search(keys, limit = 10):
 				thumb = i[contentType]["thumbnail"]["thumbnails"][-1]["url"]
 				length = strToLength(i[contentType]["lengthText"]['simpleText'])
 
+				if len(keys) == 43 and keys.startswith("https://www.youtube.com/watch?v="):
+					if keys[32:] != key:
+						continue
+					else:
+						return [(name, channel, key, thumb, length)]
 				outLen += 1
 				out.append((name, channel, key, thumb, length))
 
@@ -73,6 +78,11 @@ async def youtube_search(keys, limit = 10):
 						except KeyError:
 							continue
 
+						if len(keys) == 43 and keys.startswith("https://www.youtube.com/watch?v="):
+							if keys[32:] != key:
+								continue
+							else:
+								return [(name, channel, key, thumb, length)]
 						outLen += 1
 						out.append((name, channel, key, thumb, length))
 	except IndexError:
