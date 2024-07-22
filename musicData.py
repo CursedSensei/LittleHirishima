@@ -71,9 +71,9 @@ class youtubeQuery:
         display_lock = asyncio.Event()
         async def sel_respond(interaction : discord.Interaction):
             if interaction.user != ctx.user:
-                await ctx.channel.send(f"{interaction.user.mention} Please make your own request using `/play` or `/queue`.", delete_after=3, reference=message)
-                return
-            display_lock.set()
+                await ctx.channel.send(f"{interaction.user.mention} Please make your own request using `/play` or `/queue`.", delete_after=3, tts=True)
+            else:
+                display_lock.set()
 
         select.callback = sel_respond
 
