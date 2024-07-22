@@ -1,9 +1,8 @@
-import guildData, asyncio, os
+import asyncio
 import discord
 from botPath import *
 from time import time
 
-import shutil
 from youtube_search import youtube_search
 
 class Music:

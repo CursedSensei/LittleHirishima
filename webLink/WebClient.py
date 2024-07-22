@@ -1,6 +1,7 @@
 from botPath import *
-import discord, threading, json, os, time
+import discord, threading, json, os, time, asyncio
 from voiceClient import voiceClient
+from musicData import Music
 import guildData
 
 client: discord.Bot = None
@@ -30,7 +31,15 @@ class webClient:
                         with open(os.path.join(REQUESTSDIRECTORY, i + ".out"), "w") as w:
                             json.dump({"some data"}, w)
                     elif request[0] == "play":
-                        pass
+                        song = Music(name = request[1], channel = request[2], id = request[3], thumb = request[4], length = request[5])
+                        vc = voiceClient.query(self.guild_id)
+                        if vc:
+                            asyncio.run_coroutine_threadsafe(vc.play(song, force = True), client.loop)
+                        else:
+                            self.song = None
+                            self.loop_ind = -1
+                            self.is_paused = False
+                            self.is_connected = False
                     elif request[0] == "queue":
                         pass
                     elif request[0] == "move":
@@ -53,11 +62,13 @@ class webClient:
             self.loop = vc.loop
             self.loop_ind = vc.loop_ind
             self.is_paused = vc.is_paused
+            self.is_connected = True
         else:
             self.song = None
             self.queue, self.loop = guildData.loadVoice(self.guild_id)
             self.loop_ind = -1
             self.is_paused = False
+            self.is_connected = False
 
     @staticmethod
     def subscribe(req_id : int, guild_id : int):
