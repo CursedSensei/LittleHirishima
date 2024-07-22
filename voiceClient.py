@@ -204,17 +204,20 @@ class voiceClient(__baseClient):
         if add:
             queue.append(add)
         elif remove != None:
-            if remove == "all":
-                queue = []
-                loop_ind = 0
-                removed = True
-            else:
-                if remove < 0 and remove >= len(queue):
-                    return False
-                if loop == REPEAT_QUEUE and remove < loop_ind:
-                    loop_ind -= 1
+            try:
+                if remove == "all":
+                    queue = []
+                    loop_ind = 0
+                    removed = True
+                else:
+                    if remove < 0 and remove >= len(queue):
+                        return False
+                    if loop == REPEAT_QUEUE and remove < loop_ind:
+                        loop_ind -= 1
 
-                removed = queue.pop(remove)
+                    removed = queue.pop(remove)
+            except IndexError:
+                return None
         else:
             return queue
         
