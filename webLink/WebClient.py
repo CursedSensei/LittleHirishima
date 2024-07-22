@@ -1,6 +1,7 @@
 from botPath import *
-import discord, threading, io, os, time
-import voiceClient
+import discord, threading, json, os, time
+from voiceClient import voiceClient
+import guildData
 
 client: discord.Bot = None
 
@@ -26,8 +27,8 @@ class webClient:
                         request = r.read().split("\n")
 
                     if request[0] == "info":
-                        pass
-                        # send data in json
+                        with open(os.path.join(REQUESTSDIRECTORY, i + ".out"), "w") as w:
+                            json.dump({"some data"}, w)
                     elif request[0] == "play":
                         pass
                     elif request[0] == "queue":
@@ -45,7 +46,18 @@ class webClient:
         webClient.__webClients.pop(int(self.id))
 
     def loadGuild(self):
-        pass
+        vc = voiceClient.query(self.guild_id)
+        if vc:
+            self.song = vc.song
+            self.queue = vc.queue
+            self.loop = vc.loop
+            self.loop_ind = vc.loop_ind
+            self.is_paused = vc.is_paused
+        else:
+            self.song = None
+            self.queue, self.loop = guildData.loadVoice(self.guild_id)
+            self.loop_ind = -1
+            self.is_paused = False
 
     @staticmethod
     def subscribe(req_id : int, guild_id : int):
