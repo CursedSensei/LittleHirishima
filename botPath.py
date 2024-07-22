@@ -13,6 +13,9 @@ ANIMEDIRECTORY = "/var/www/html/Anime"
 ANIMEDOWNLOADER = os.path.join(ROOT_DIR, 'lib/urldown.py')
 CHATLOG = os.path.join(ROOT_DIR, 'Chat log.txt')
 
+REQUESTSDIRECTORY = os.path.join(ROOT_DIR, 'webLink', 'requests')
+PIPESDIRECTORY = os.path.join(ROOT_DIR, 'webLink', 'pipes')
+
 
 if not os.path.join(ROOT_DIR, "lib", "lib") in sys.path:
     sys.path.append(os.path.join(ROOT_DIR, "lib", "lib"))
