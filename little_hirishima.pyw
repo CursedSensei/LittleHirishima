@@ -89,7 +89,10 @@ try:
                 await ctx.respond(f"No results for \"{query}\"", delete_after=3)
                 return
             
-            song = await result.display(ctx, client)
+            if len(query) == 43 and query.startswith("https://www.youtube.com/watch?v="):
+                song = result.get(1)
+            else:
+                song = await result.display(ctx, client)
 
             if song == None:
                 return
@@ -138,7 +141,11 @@ try:
                 await ctx.respond(f"No results for \"{query}\"", delete_after=3)
                 return
             
-            song = await result.display(ctx, client)
+            if len(query) == 43 and query.startswith("https://www.youtube.com/watch?v="):
+                song = result.get(1)
+            else:
+                song = await result.display(ctx, client)
+
             if song == None:
                 return
             
