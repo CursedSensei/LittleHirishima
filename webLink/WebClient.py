@@ -40,11 +40,27 @@ class webClient:
                             self.loop_ind = -1
                             self.is_paused = False
                             self.is_connected = False
-                    elif request[0] == "queue":
-                        pass
+                    elif request[0] == "queueadd":
+                        # invoke to loop?
+                        voiceClient.queueGuild(self.guild_id, add=Music(name = request[1], channel = request[2], id = request[3], thumb = request[4], length = request[5]))
+                    elif request[0] == "queueremove":
+                        voiceClient.queueGuild(self.guild_id, remove=int(request[1]))
                     elif request[0] == "move":
                         pass
                     elif request[0] == "next":
+                        vc = voiceClient.query(self.guild_id)
+                        if vc:
+                            asyncio.run_coroutine_threadsafe(vc.next(index = int(request[1]), force = True), client.loop)
+                        else:
+                            self.song = None
+                            self.loop_ind = -1
+                            self.is_paused = False
+                            self.is_connected = False
+                    elif request[0] == "pause":
+                        pass
+                    elif request[0] == "resume":
+                        pass
+                    elif request[0] == "loop":
                         pass
                     elif request[0] == "refresh":
                         self.loadGuild()
