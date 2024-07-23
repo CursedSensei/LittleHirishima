@@ -52,7 +52,7 @@ try:
 
         if vClient == None:
             voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect())
-            await ctx.respond(f"Bot is connected to {vChannel.mention}", delete_after=6)
+            await ctx.respond(f"Bot is connected to {vChannel.mention}")
         elif vClient.channel_id == vChannel.id:
             await ctx.respond("Bot is already connected to your voice channel", delete_after=3)
         else:
@@ -72,7 +72,7 @@ try:
         elif vClient.channel_id == vChannel.id:
             await vClient.disconnect()
 
-            await ctx.respond("Bot successfully disconnected", delete_after=6)
+            await ctx.respond(f"Bot successfully disconnected from {vChannel.mention}")
         else:
             await ctx.respond("You are not connected to the Bot's voice channel", delete_after=3)
 
