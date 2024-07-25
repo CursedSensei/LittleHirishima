@@ -29,7 +29,7 @@ def updateVoice(guild_id : int, loop : int, queue : list[Music] = []) -> None:
     queue = [{"name": i.name, "channel": i.channel, "thumb": i.thumb, "id": i.id, "length": i.length} for i in queue]
 
     with open(guildSpace, "w") as w:
-        json.dump(queue + [loop], w)
+        json.dump(queue + [loop], w, indent=2)
 
 
 def updateRecent(guild_id : int, song : Music) -> None:
