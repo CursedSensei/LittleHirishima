@@ -108,7 +108,6 @@ class voiceClient(__baseClient):
         self.song = song
 
         guildData.updateRecent(self.guild_id, song)
-        self.ytdlp_Proc.stderr.close()
 
         self.is_loading.set()
         return True
