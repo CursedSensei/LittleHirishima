@@ -54,9 +54,10 @@ try:
             voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect())
             await ctx.respond(f"Bot is connected to {vChannel.mention}")
         elif vClient.channel_id == vChannel.id:
-            await vClient.client.move_to(vChannel)
+            await ctx.respond("Bot is already connected to your voice channel", delete_after=3)
         else:
-            await ctx.respond("Bot is already connected to a voice channel", delete_after=3)
+            await vClient.client.move_to(vChannel)
+            await ctx.respond(f"Bot is moved to {vChannel.mention}")
 
     @client.slash_command(name='disconnect', description="Disconnect bot from a voice channel")
     async def disconnect(ctx: discord.ApplicationContext):
