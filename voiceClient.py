@@ -102,7 +102,7 @@ class voiceClient(__baseClient):
 
         self.ytdlp_Proc = download
 
-        self.client.play(discord.FFmpegAudio(source=self.ytdlp_Proc.stdout, pipe=True))
+        self.client.play(discord.FFmpegPCMAudio(source=self.ytdlp_Proc.stdout, pipe=True))
         song.play()
         self.is_paused = False
         self.song = song
