@@ -64,9 +64,14 @@ class webClient:
                         pass
                     elif request[0] == "refresh":
                         self.loadGuild()
+                    elif request[0] == "close":
+                        os.remove(i)
+                        seen = 0
+                        break
 
                     os.remove(i)
                     seen = time.time()
+                    break
             time.sleep(0.3)
 
         webClient.__webClients.pop(int(self.id))

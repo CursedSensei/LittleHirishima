@@ -39,6 +39,7 @@ class voiceClient(__baseClient):
             while self.client.is_connected():
                 await self.is_loading.wait()
                 if not self.client.is_playing() and self.is_loading.is_set() and not self.cancel and not self.is_paused:
+                    self.ytdlp_Proc = None
                     if self.loop == DEFAULT:
                         self.song = None
                         await self.next()
@@ -235,6 +236,7 @@ class voiceClient(__baseClient):
         self.cancel = True
         if self.ytdlp_Proc != None and not self.ytdlp_Proc.poll():
             self.ytdlp_Proc.terminate()
+            self.ytdlp_Proc = None
         if self.guild_id in voiceClient.__voiceClients:
             voiceClient.__voiceClients.pop(self.guild_id)
 
