@@ -66,6 +66,7 @@ class webClient:
                         self.loadGuild()
 
                     os.remove(i)
+                    seen = time.time()
             time.sleep(0.3)
 
         webClient.__webClients.pop(int(self.id))
