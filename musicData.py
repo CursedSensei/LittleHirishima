@@ -15,12 +15,15 @@ class Music:
         
         self.time = time() if start else None
         self.offset = 0
+        self.is_paused = False
 
     def play(self):
         self.time = time()
+        self.is_paused = False
 
     def pause(self):
         self.offset += time() - self.time
+        self.is_paused = True
 
     def embed(self, bot : discord.Bot, title = "Now Playing", color = discord.Colour.blue(), timed = False) -> discord.Embed:
         embed = discord.Embed(title=self.name, color=color, url="https://www.youtube.com/watch?v=" + self.id)
@@ -28,7 +31,7 @@ class Music:
         embed.set_author(name=title)
         embed.add_field(name="Channel", value=self.channel)
         if timed:
-            cur_length = (time() - self.time) + self.offset
+            cur_length = (time() - self.time if self.is_paused == False else 0) + self.offset
             embed.add_field(name="Duration", value=self.__humanLength(cur_length) + " / " + self.__humanLength())
         else:
             embed.add_field(name="Duration", value=self.__humanLength())
