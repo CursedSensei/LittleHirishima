@@ -29,7 +29,7 @@ class Music:
         embed.add_field(name="Channel", value=self.channel)
         if timed:
             cur_length = (time() - self.time) + self.offset
-            embed.add_field(name="Duration", value=self.__humanLength(cur_length) + "/" + self.__humanLength())
+            embed.add_field(name="Duration", value=self.__humanLength(cur_length) + " / " + self.__humanLength())
         else:
             embed.add_field(name="Duration", value=self.__humanLength())
         embed.set_footer(text="Little Hirishima", icon_url=bot.user.avatar.url)
