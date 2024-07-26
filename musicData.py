@@ -39,6 +39,8 @@ class Music:
     def __humanLength(self, timed = None):
         if timed == None:
             timed = self.length
+        else:
+            timed = int(timed)
 
         seconds = timed % 60
         minutes = (timed // 60) % 60
