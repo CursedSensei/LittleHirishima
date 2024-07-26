@@ -1,5 +1,6 @@
-import asyncio
+import asyncio, io, threading
 import discord
+from discord.opus import Encoder as OpusEncoder
 from botPath import *
 from time import time
 
@@ -21,6 +22,9 @@ class Music:
 
     def pause(self):
         self.offset += time() - self.time
+
+    def reset(self):
+        self.offset = 0
 
     def embed(self, bot : discord.Bot, title = "Now Playing", color = discord.Colour.blue()) -> discord.Embed:
         embed = discord.Embed(title=self.name, color=color, url="https://www.youtube.com/watch?v=" + self.id)
@@ -46,6 +50,34 @@ class Music:
 
         return f"{hours}{minutes}{seconds}"
 
+class musicBuffer(io.BytesIO):
+    def __init__(self, stdout : io.BufferedIOBase):
+        super().__init__()
+        self.stdout = stdout
+        self.size = 0
+        self.is_complete = False
+
+        threading.Thread(target=self._worker, daemon=True).start()
+
+    def _worker(self):
+        while True:
+            data = self.stdout.read(OpusEncoder.FRAME_SIZE)
+
+            if not data:
+                break
+
+            self.write(data)
+            self.size += len(data)
+
+        self.is_complete = True
+
+    def close(self):
+        self.stdout.close()
+        super().close()
+
+    def __del__(self) -> None:
+        self.stdout.close()
+        return super().__del__()
 
 class youtubeQuery:
     result: list[Music]
