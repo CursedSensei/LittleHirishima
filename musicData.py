@@ -22,20 +22,27 @@ class Music:
     def pause(self):
         self.offset += time() - self.time
 
-    def embed(self, bot : discord.Bot, title = "Now Playing", color = discord.Colour.blue()) -> discord.Embed:
+    def embed(self, bot : discord.Bot, title = "Now Playing", color = discord.Colour.blue(), timed = False) -> discord.Embed:
         embed = discord.Embed(title=self.name, color=color, url="https://www.youtube.com/watch?v=" + self.id)
         embed.set_thumbnail(url=self.thumb)
         embed.set_author(name=title)
         embed.add_field(name="Channel", value=self.channel)
-        embed.add_field(name="Duration", value=self.__humanLength())
+        if timed:
+            cur_length = (time() - self.time) + self.offset
+            embed.add_field(name="Duration", value=self.__humanLength(cur_length) + "/" + self.__humanLength())
+        else:
+            embed.add_field(name="Duration", value=self.__humanLength())
         embed.set_footer(text="Little Hirishima", icon_url=bot.user.avatar.url)
 
         return embed
     
-    def __humanLength(self):
-        seconds = self.length % 60
-        minutes = (self.length // 60) % 60
-        hours = self.length // 3600
+    def __humanLength(self, timed = None):
+        if timed == None:
+            timed = self.length
+
+        seconds = timed % 60
+        minutes = (timed // 60) % 60
+        hours = timed // 3600
 
         seconds = "0" + str(seconds) if seconds < 10 else str(seconds)
 

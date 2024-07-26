@@ -235,6 +235,17 @@ try:
         else:
             await ctx.respond("Bot is not in a voice channel", delete_after=3)
 
+    @client.slash_command(name='playing', description="Show what song is being played")
+    async def playing(ctx: discord.ApplicationContext):
+        vClient = voiceClient.query(ctx.guild_id)
+        if vClient:
+            if vClient.song == None:
+                await ctx.respond("No song is currently played", delete_after=6)
+            else:
+                await ctx.respond(embed = vClient.song.embed(client, title = "Now Playing", timed = True))
+        else:
+            await ctx.respond("Bot is not in a voice channel", delete_after=3)
+
     with open(botPath.TOKENPATH, "r") as f:
         TOKEN = json.load(f)['TOKEN']
 
