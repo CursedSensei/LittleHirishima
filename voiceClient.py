@@ -17,7 +17,6 @@ class __baseClient:
     cancel: bool = False                    # Cancel request to a song that is about to play
 
     ytdlp_Proc: subprocess.Popen = None     # Youtube Downloader Handle
-    ytdlp_stdout: musicBuffer = None         # Youtube Downloader Buffer
 
 class voiceClient(__baseClient):
     def __init__(self, guild_id : int, channel_id : int, client : discord.VoiceClient) -> None:
@@ -40,30 +39,25 @@ class voiceClient(__baseClient):
             while self.client.is_connected():
                 await self.is_loading.wait()
                 if not self.client.is_playing() and self.is_loading.is_set() and not self.cancel and not self.is_paused:
-                    if self.loop == REPEAT_SONG:
-                        if self.song != None:
-                            await self.play(True)
-                        else:
-                            await self.next()
-                    else:
+                    self.ytdlp_Proc = None
+                    if self.loop == DEFAULT:
                         self.song = None
-                        self.ytdlp_Proc = None
-
-                        if self.ytdlp_stdout:
-                            self.ytdlp_stdout.close()
-                            self.ytdlp_stdout = None
-
-                        if self.loop == REPEAT_QUEUE:
-                            if len(self.queue) == 0:
+                        await self.next()
+                    elif self.loop == REPEAT_QUEUE:
+                        self.song = None
+                        if len(self.queue) == 0:
+                            self.loop_ind = 0
+                        else:
+                            self.loop_ind += 1
+                            try:
+                                await self.play(self.queue[self.loop_ind])
+                            except IndexError:
                                 self.loop_ind = 0
-                            else:
-                                self.loop_ind += 1
-                                try:
-                                    await self.play(self.queue[self.loop_ind])
-                                except IndexError:
-                                    self.loop_ind = 0
-                                    await self.play(self.queue[self.loop_ind])
-                        elif self.loop == DEFAULT:
+                                await self.play(self.queue[self.loop_ind])
+                    elif self.loop == REPEAT_SONG:
+                        if self.song != None:
+                            await self.play(self.song)
+                        else:
                             await self.next()
 
                 await asyncio.sleep(0.5)
@@ -91,42 +85,30 @@ class voiceClient(__baseClient):
 
         self.is_loading.clear()
 
-        if song != True:
-            download = subprocess.Popen(['/usr/local/bin/yt-dlp', '-f', 'mp3/bestaudio/best', '-o', '-', '--', str(song.id)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            download_out = musicBuffer(download.stdout)
+        download = subprocess.Popen(['/usr/local/bin/yt-dlp', '-f', 'mp3/bestaudio/best', '-o', '-', '--', str(song.id)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-            fcntl.fcntl(download.stderr, fcntl.F_SETFL, fcntl.fcntl(download.stderr, fcntl.F_GETFL) | os.O_NONBLOCK)
-            while download.poll() == None:
-                if download.stderr.readline().startswith(b"[download]"):
-                    break
-                await asyncio.sleep(0.3)
-                if self.cancel == True:
-                    download.terminate()
-                    download_out.close()
-                    self.is_loading.set()
-                    return False
+        fcntl.fcntl(download.stderr, fcntl.F_SETFL, fcntl.fcntl(download.stderr, fcntl.F_GETFL) | os.O_NONBLOCK)
+        while download.poll() == None:
+            if download.stderr.readline().startswith(b"[download]"):
+                break
+            await asyncio.sleep(0.3)
+            if self.cancel == True:
+                download.terminate()
+                self.is_loading.set()
+                return False
 
-            self.client.stop()
-            if self.ytdlp_Proc != None and self.ytdlp_Proc.poll() == None:
-                self.ytdlp_Proc.terminate()
-                self.ytdlp_stdout.close()
+        self.client.stop()
+        if self.ytdlp_Proc != None and self.ytdlp_Proc.poll() == None:
+            self.ytdlp_Proc.terminate()
 
-            self.ytdlp_Proc = download
-            self.ytdlp_stdout = download_out
-        else:
-            self.ytdlp_stdout.seek(0)
+        self.ytdlp_Proc = download
 
-        self.client.play(discord.FFmpegPCMAudio(source=self.ytdlp_stdout, pipe=True))
-
-        if song == True:
-            self.song.reset()
-            self.song.play()
-        else:
-            song.play()
-            self.song = song
+        self.client.play(discord.FFmpegPCMAudio(source=self.ytdlp_Proc.stdout, pipe=True))
+        song.play()
         self.is_paused = False
+        self.song = song
 
-        guildData.updateRecent(self.guild_id, song if song != True else self.song)
+        guildData.updateRecent(self.guild_id, song)
 
         self.is_loading.set()
         return True
