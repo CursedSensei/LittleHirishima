@@ -80,7 +80,7 @@ class YoutubeStreamer:
         self.is_complete = False
         self.buffer = b""
 
-        Thread(target=self._worker).start()
+        Thread(target=self._worker, daemon=True).start()
 
     def _worker(self) -> None:
         while not self.is_complete:
