@@ -246,6 +246,31 @@ try:
         else:
             await ctx.respond("Bot is not in a voice channel", delete_after=3)
 
+    @client.slash_command(name='seek', description="Seek to specified timestamp of song")
+    async def seek(ctx: discord.ApplicationContext, timestamp: discord.Option(str, "Timestamp to seek", required=True)):
+        timed = timestamp.split(":")
+        try:
+            float(timed[-1])
+            int(timed[-2])
+            int(timed[-3])
+        except IndexError:
+            pass
+        except ValueError:
+            await ctx.respond("The inputted timestamp is invalid", delete_after=6)
+            return
+
+        vClient = voiceClient.query(ctx.guild_id)
+        if vClient:
+            if vClient.song == None:
+                await ctx.respond("No song is currently played", delete_after=6)
+            else:
+                if vClient.seek(timestamp):
+                    await ctx.respond(embed = vClient.song.embed(client, title = "Now Playing", timed = True))
+                else:
+                    await ctx.respond("The inputted timestamp is not in range or currently not yet available.", delete_after=6)
+        else:
+            await ctx.respond("Bot is not in a voice channel", delete_after=3)
+
     with open(botPath.TOKENPATH, "r") as f:
         TOKEN = json.load(f)['TOKEN']
 

@@ -1,7 +1,8 @@
-import asyncio
+import asyncio, subprocess
 import discord
+from threading import Thread
 from botPath import *
-from time import time
+from time import perf_counter
 
 from youtube_search import youtube_search
 
@@ -13,17 +14,29 @@ class Music:
         self.id = kwargs['id']
         self.length = kwargs['length']
         
-        self.time = time() if start else None
+        self.time = perf_counter() if start else None
         self.offset = 0
         self.is_paused = False
 
     def play(self):
-        self.time = time()
+        self.time = perf_counter()
         self.is_paused = False
 
     def pause(self):
-        self.offset += time() - self.time
+        self.offset += perf_counter() - self.time
         self.is_paused = True
+
+    def seek(self, time):
+        if isinstance(time, str):
+            timed = time.split(":")
+            try:
+                time = float(timed[-1])
+                time += int(timed[-2]) * 60
+                time += int(timed[-3]) * 3600
+            except IndexError:
+                pass
+
+        self.offset = time
 
     def embed(self, bot : discord.Bot, title = "Now Playing", color = discord.Colour.blue(), timed = False) -> discord.Embed:
         embed = discord.Embed(title=self.name, color=color, url="https://www.youtube.com/watch?v=" + self.id)
@@ -31,7 +44,7 @@ class Music:
         embed.set_author(name=title)
         embed.add_field(name="Channel", value=self.channel)
         if timed:
-            cur_length = (time() - self.time if self.is_paused == False else 0) + self.offset
+            cur_length = (perf_counter() - self.time if self.is_paused == False else 0) + self.offset
             embed.add_field(name="Duration", value=self.__humanLength(cur_length) + " / " + self.__humanLength())
         else:
             embed.add_field(name="Duration", value=self.__humanLength())
@@ -57,6 +70,62 @@ class Music:
         hours = str(hours) + ":" if hours > 0 else ""
 
         return f"{hours}{minutes}{seconds}"
+
+
+class YoutubeStreamer:
+    def __init__(self, ytdlp_proc : subprocess.Popen) -> None:
+        self.ytdlp_proc = ytdlp_proc
+        self.cursor = 0
+        self.size = 0
+        self.is_complete = False
+        self.buffer = b""
+
+        Thread(target=self._worker).start()
+
+    def _worker(self) -> None:
+        while not self.is_complete:
+            data = self.ytdlp_proc.stdout.read(8192)
+
+            if not data:
+                break
+
+            self.buffer += data
+            self.size += len(data)
+
+        self.is_complete = True
+
+    def seekable(self, seek) -> bool:
+        ffm_proc = subprocess.Popen(
+            ["ffmpeg", "-ss", str(seek), "-i", "-", "-f", "s16le", "-ar", "48000", "-ac", "2", "-t", "0.001", "-loglevel", "warning", "pipe:1"],
+            stdout=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            stderr=subprocess.DEVNULL
+        )
+        return True if ffm_proc.communicate(self.buffer)[0] else False
+
+    def read(self, length) -> bytes:
+        while not self.is_complete and self.cursor + length > self.size:
+            pass
+
+        data = self.buffer[self.cursor:self.cursor + length]
+        self.cursor += length
+
+        return data
+
+    def reset(self) -> None:
+        self.cursor = 0
+
+    def poll(self):
+        return self.ytdlp_proc.poll()
+
+    def terminate(self) -> None:
+        self.is_complete = True
+        self.size = 0
+        self.buffer = b""
+        return self.ytdlp_proc.terminate()
+        
+    def __del__(self) -> None:
+        self.terminate()
 
 
 class youtubeQuery:
