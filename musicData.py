@@ -78,7 +78,7 @@ class YoutubeStreamer:
         self.cursor = 0
         self.size = 0
         self.is_complete = False
-        self.buffer = b""
+        self.buffer = bytearray()
 
         Thread(target=self._worker, daemon=True).start()
 
@@ -89,7 +89,7 @@ class YoutubeStreamer:
             if not data:
                 break
 
-            self.buffer += data
+            self.buffer.extend(data)
             self.size += len(data)
 
         self.is_complete = True
@@ -101,13 +101,13 @@ class YoutubeStreamer:
             stdin=subprocess.PIPE,
             stderr=subprocess.DEVNULL
         )
-        return True if ffm_proc.communicate(self.buffer)[0] else False
+        return True if ffm_proc.communicate(bytes(self.buffer[:self.size]))[0] else False
 
     def read(self, length) -> bytes:
         while not self.is_complete and self.cursor + length > self.size:
             pass
 
-        data = self.buffer[self.cursor:self.cursor + length]
+        data = bytes(self.buffer[self.cursor:self.cursor + length])
         self.cursor += length
 
         return data
@@ -121,7 +121,7 @@ class YoutubeStreamer:
     def terminate(self) -> None:
         self.is_complete = True
         self.size = 0
-        self.buffer = b""
+        self.buffer = bytearray()
         return self.ytdlp_proc.terminate()
         
     def __del__(self) -> None:
