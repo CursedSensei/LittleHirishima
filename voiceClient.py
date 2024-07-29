@@ -88,7 +88,7 @@ class voiceClient(__baseClient):
 
         self.is_loading.clear()
 
-        if song == True:
+        if song != True:
             download = subprocess.Popen(['/usr/local/bin/yt-dlp', '-f', 'bestaudio/best', '-o', '-', '--', str(song.id)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
             fcntl.fcntl(download.stderr, fcntl.F_SETFL, fcntl.fcntl(download.stderr, fcntl.F_GETFL) | os.O_NONBLOCK)
