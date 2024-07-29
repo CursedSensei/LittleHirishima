@@ -16,7 +16,7 @@ class __baseClient:
     is_loading = asyncio.Event()            # Song is being loaded. (Async play lock)
     cancel: bool = False                    # Cancel request to a song that is about to play
 
-    ytdlp_Proc: YoutubeStreamer = None     # Youtube Downloader Handle
+    ytdlp_Proc: YoutubeStreamer = None      # Youtube Downloader Handle
 
 class voiceClient(__baseClient):
     def __init__(self, guild_id : int, channel_id : int, client : discord.VoiceClient) -> None:
