@@ -6,6 +6,7 @@ from guildData import updateVoice
 
 import json, asyncio
 import discord
+from re import match
 from discord.ext import commands
 from aiohttp.client_exceptions import ClientConnectorError
 
@@ -89,7 +90,7 @@ try:
                 await ctx.respond(f"No results for \"{query}\"", delete_after=3)
                 return
             
-            if len(query) == 43 and query.startswith("https://www.youtube.com/watch?v="):
+            if match(r'(https?://)?(www\.)?(youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]{11})', query):
                 song = result.get(1)
             else:
                 song = await result.display(ctx, client)
@@ -141,7 +142,7 @@ try:
                 await ctx.respond(f"No results for \"{query}\"", delete_after=3)
                 return
             
-            if len(query) == 43 and query.startswith("https://www.youtube.com/watch?v="):
+            if match(r'(https?://)?(www\.)?(youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]{11})', query):
                 song = result.get(1)
             else:
                 song = await result.display(ctx, client)
