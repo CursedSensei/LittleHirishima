@@ -278,7 +278,7 @@ try:
             if vClient.song == None:
                 await ctx.respond("No song is currently played", delete_after=6)
             else:
-                vClient.play(True)
+                await vClient.play(True)
                 await ctx.respond(embed = vClient.song.embed(client, title = "Now Playing", timed = True))
         else:
             await ctx.respond("Bot is not in a voice channel", delete_after=3)
