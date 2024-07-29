@@ -262,6 +262,7 @@ try:
 
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
+            await ctx.defer()
             if vClient.song == None:
                 await ctx.respond("No song is currently played", delete_after=6)
             else:
