@@ -162,6 +162,8 @@ class voiceClient(__baseClient):
                 self.ytdlp_Proc.reset()
                 self.song.seek(seek)
                 self.client.play(discord.FFmpegPCMAudio(source=self.ytdlp_Proc, pipe=True, options=f"-ss {seek}"))
+                self.song.play()
+                self.is_paused = False
 
                 return True
         return False
