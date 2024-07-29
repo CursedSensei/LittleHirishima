@@ -1,4 +1,5 @@
 import aiohttp
+from re import match
 
 def strToLength(length : str):
 	out = 0
@@ -24,13 +25,25 @@ async def youtube_search(keys : str, limit = 10):
 				"clientName": "WEB",
 				"clientVersion": "2.20240702.09.00",
 			}
-		},
-		"query": keys
+		}
 	}
 
 	out = []
 	outLen = 0
-	limit = limit if limit != 0 else -1
+
+	if match(r'(https?://)?(www\.)?(youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]{11})', keys):
+		keys = keys.split("?si=")
+		if len(keys) > 1:
+			keys = keys[0][-11:]
+		else:
+			keys = keys[0][-11:]
+
+		headers['query'] = "https://www.youtube.com/watch?v=" + keys
+		limit = -1
+	else:
+		limit = limit if limit != 0 else -1
+		headers['query'] = keys
+		keys = None
 
 	try:
 		async with aiohttp.ClientSession() as client:
@@ -50,8 +63,8 @@ async def youtube_search(keys : str, limit = 10):
 				thumb = i[contentType]["thumbnail"]["thumbnails"][-1]["url"]
 				length = strToLength(i[contentType]["lengthText"]['simpleText'])
 
-				if len(keys) == 43 and keys.startswith("https://www.youtube.com/watch?v="):
-					if keys[32:] != key:
+				if keys:
+					if keys != key:
 						continue
 					else:
 						return [(name, channel, key, thumb, length)]
@@ -78,8 +91,8 @@ async def youtube_search(keys : str, limit = 10):
 						except KeyError:
 							continue
 
-						if len(keys) == 43 and keys.startswith("https://www.youtube.com/watch?v="):
-							if keys[32:] != key:
+						if keys:
+							if keys != key:
 								continue
 							else:
 								return [(name, channel, key, thumb, length)]
