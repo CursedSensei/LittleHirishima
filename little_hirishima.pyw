@@ -254,6 +254,9 @@ try:
             timestamp = float(timed[-1])
             timestamp += int(timed[-2])
             timestamp += int(timed[-3])
+
+            if timestamp < 0:
+                raise ValueError
         except IndexError:
             pass
         except ValueError:
