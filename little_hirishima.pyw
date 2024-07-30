@@ -252,8 +252,8 @@ try:
         timed = timestamp.split(":")
         try:
             timestamp = float(timed[-1])
-            timestamp += int(timed[-2])
-            timestamp += int(timed[-3])
+            timestamp += int(timed[-2]) * 60
+            timestamp += int(timed[-3]) * 3600
 
             if timestamp < 0:
                 raise ValueError
