@@ -124,21 +124,12 @@ class voiceClient(__baseClient):
 
     async def next(self, index = 1, force = False) -> Music:
         try:
+            song = self.queue[index - 1]
             if self.loop == REPEAT_QUEUE:
-                try:
-                    self.loop_ind += index
-                    song = self.queue[self.loop_ind]
-                except IndexError:
-                    if len(self.queue) == 0:
-                        self.loop_ind = -1
-                        raise IndexError
-                    while self.loop_ind >= len(self.queue):
-                        self.loop_ind -= len(self.queue)
-                    song = self.queue[self.loop_ind]
+                self.loop_ind = index - 1
             else:
-                song = self.queue[index - 1]
                 self.queue = self.queue[index:]
-            guildData.updateVoice(self.guild_id, self.loop, self.queue)
+                guildData.updateVoice(self.guild_id, self.loop, self.queue)
             if force:
                 return (asyncio.create_task(self.play(song, force)), song)
             await self.play(song)

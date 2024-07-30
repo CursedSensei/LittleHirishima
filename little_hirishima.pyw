@@ -216,15 +216,15 @@ try:
         await ctx.respond(voiceClient.loopState(ctx.guild_id))
 
     @client.slash_command(name='next', description="Plays next in queue")
-    async def next(ctx: discord.ApplicationContext, number: discord.Option(int, "Number of songs to skip in queue", required=False)):
-        if number and number <= 0:
-            await ctx.respond("Incorrect number format", delete_after=3)
+    async def next(ctx: discord.ApplicationContext, index: discord.Option(int, "Index of song in queue to play next", required=False)):
+        if index and index <= 0:
+            await ctx.respond("Incorrect index format", delete_after=3)
             return
 
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
             await ctx.defer()
-            taskPlay, song = await vClient.next(1 if not number else number, force = True)
+            taskPlay, song = await vClient.next(1 if not index else index, force = True)
             if song:
                 song_mes = asyncio.create_task(ctx.respond(embed = song.embed(client, title = "Next song in queue", color=discord.Colour.orange())))
                 if await taskPlay:
