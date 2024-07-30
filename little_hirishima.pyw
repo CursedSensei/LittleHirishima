@@ -251,9 +251,9 @@ try:
     async def seek(ctx: discord.ApplicationContext, timestamp: discord.Option(str, "Timestamp to seek", required=True)):
         timed = timestamp.split(":")
         try:
-            float(timed[-1])
-            int(timed[-2])
-            int(timed[-3])
+            timestamp = float(timed[-1])
+            timestamp += int(timed[-2])
+            timestamp += int(timed[-3])
         except IndexError:
             pass
         except ValueError:
