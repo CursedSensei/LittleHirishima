@@ -1,12 +1,12 @@
 from botPath import *
 import discord, threading, json, os, time, asyncio
-from voiceClient import voiceClient
+from voiceClient import voiceClient, __baseClient
 from musicData import Music
 import guildData
 
 client: discord.Bot = None
 
-class webClient:
+class webClient(__baseClient):
     __webClients = {}
     __webID = 0
 
@@ -41,7 +41,14 @@ class webClient:
 
                     if request[0] == "info":
                         with open(os.path.join(REQUESTSDIRECTORY, i + ".out"), "w") as w:
-                            json.dump({"some data"}, w)
+                            json.dump({
+                                "song": self.song.toDict() if self.song else None,
+                                "is_connected": self.is_connected,
+                                "queue": self.queue,
+                                "loop": self.loop,
+                                "loop_ind": self.loop_ind,
+                                "is_paused": self.is_paused,
+                            }, w)
                     elif request[0] == "play":
                         song = Music(name = request[1], channel = request[2], id = request[3], thumb = request[4], length = request[5])
                         vc = self.getClient()
@@ -87,7 +94,7 @@ class webClient:
         vc = voiceClient.query(self.guild_id)
         if vc:
             self.song = vc.song
-            self.queue = vc.queue
+            self.queue = [i.toDict() for i in vc.queue]
             self.loop = vc.loop
             self.loop_ind = vc.loop_ind
             self.is_paused = vc.is_paused
@@ -95,6 +102,7 @@ class webClient:
         else:
             self.song = None
             self.queue, self.loop = guildData.loadVoice(self.guild_id)
+            self.queue = [i.toDict() for i in self.queue]
             self.loop_ind = -1
             self.is_paused = False
             self.is_connected = False

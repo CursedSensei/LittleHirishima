@@ -38,6 +38,11 @@ class Music:
 
         self.offset = time
 
+    def toDict(self, plays = None) -> dict:
+        if plays:
+            return {"name": self.name, "channel": self.channel, "thumb": self.thumb, "id": self.id, "length": self.length, "plays": plays}
+        return {"name": self.name, "channel": self.channel, "thumb": self.thumb, "id": self.id, "length": self.length}
+
     def embed(self, bot : discord.Bot, title = "Now Playing", color = discord.Colour.blue(), timed = False) -> discord.Embed:
         embed = discord.Embed(title=self.name, color=color, url="https://www.youtube.com/watch?v=" + self.id)
         embed.set_thumbnail(url=self.thumb)

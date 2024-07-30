@@ -26,7 +26,7 @@ def loadVoice(guild_id : int) -> tuple[list, int]:
 def updateVoice(guild_id : int, loop : int, queue : list[Music] = []) -> None:
     guildSpace = os.path.join(GUILDPATH, str(guild_id), 'voice.json')
 
-    queue = [{"name": i.name, "channel": i.channel, "thumb": i.thumb, "id": i.id, "length": i.length} for i in queue]
+    queue = [i.toDict() for i in queue]
 
     with open(guildSpace, "w") as w:
         json.dump(queue + [loop], w)
@@ -53,7 +53,7 @@ def updateRecent(guild_id : int, song : Music) -> None:
             break
 
     if not found:
-        recents.insert(0, {"name": song.name, "channel": song.channel, "thumb": song.thumb, "id": song.id, "length": song.length, "plays": 1})
+        recents.insert(0, song.toDict(plays = 1))
 
     with open(recentFile, "w") as w:
         json.dump(recents, w)
