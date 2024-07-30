@@ -155,7 +155,7 @@ class voiceClient(__baseClient):
         else:
             return False
 
-    def seek(self, seek) -> bool:
+    def seek(self, seek : float) -> bool:
         if self.ytdlp_Proc:
             if self.ytdlp_Proc.seekable(seek):
                 self.client.stop()

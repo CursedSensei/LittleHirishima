@@ -10,14 +10,26 @@ class webClient:
     __webClients = {}
     __webID = 0
 
-    def __init__(self, req_id : int, guild_id : int):
+    def __init__(self, req_id : int, guild_id : int) -> None:
         self.guild_id = guild_id
         self.id = str(webClient.__webID)
         with open(os.path.join(REQUESTSDIRECTORY, req_id + ".con"), "w") as w:
             w.write(self.id)
         threading.Thread(target=self.worker, daemon=True).start()
 
-    def worker(self):
+    def getClient(self) -> voiceClient:
+        vc = voiceClient.query(self.guild_id)
+        if vc:
+            return vc
+        else:
+            self.song = None
+            self.loop_ind = -1
+            self.is_paused = False
+            self.is_connected = False
+
+        return None
+
+    def worker(self) -> None:
         self.loadGuild()
 
         seen = time.time()
@@ -32,36 +44,31 @@ class webClient:
                             json.dump({"some data"}, w)
                     elif request[0] == "play":
                         song = Music(name = request[1], channel = request[2], id = request[3], thumb = request[4], length = request[5])
-                        vc = voiceClient.query(self.guild_id)
+                        vc = self.getClient()
                         if vc:
                             asyncio.run_coroutine_threadsafe(vc.play(song, force = True), client.loop)
-                        else:
-                            self.song = None
-                            self.loop_ind = -1
-                            self.is_paused = False
-                            self.is_connected = False
                     elif request[0] == "queueadd":
-                        # invoke to loop?
                         voiceClient.queueGuild(self.guild_id, add=Music(name = request[1], channel = request[2], id = request[3], thumb = request[4], length = request[5]))
                     elif request[0] == "queueremove":
                         voiceClient.queueGuild(self.guild_id, remove=int(request[1]))
-                    elif request[0] == "move":
-                        pass
+                    elif request[0] == "seek":
+                        vc = self.getClient()
+                        if vc:
+                            asyncio.run_coroutine_threadsafe(vc.seek(float(request[1])), client.loop)
                     elif request[0] == "next":
-                        vc = voiceClient.query(self.guild_id)
+                        vc = self.getClient()
                         if vc:
                             asyncio.run_coroutine_threadsafe(vc.next(index = int(request[1]), force = True), client.loop)
-                        else:
-                            self.song = None
-                            self.loop_ind = -1
-                            self.is_paused = False
-                            self.is_connected = False
                     elif request[0] == "pause":
-                        pass
+                        vc = self.getClient()
+                        if vc:
+                            asyncio.run_coroutine_threadsafe(vc.pause(), client.loop)
                     elif request[0] == "resume":
-                        pass
+                        vc = self.getClient()
+                        if vc:
+                            asyncio.run_coroutine_threadsafe(vc.unpause(), client.loop)
                     elif request[0] == "loop":
-                        pass
+                        voiceClient.loopState(self.guild_id)
                     elif request[0] == "refresh":
                         self.loadGuild()
                     elif request[0] == "close":
@@ -76,7 +83,7 @@ class webClient:
 
         webClient.__webClients.pop(int(self.id))
 
-    def loadGuild(self):
+    def loadGuild(self) -> None:
         vc = voiceClient.query(self.guild_id)
         if vc:
             self.song = vc.song
@@ -110,7 +117,7 @@ def initializeWebLink(bot : discord.Bot):
                     id = i.split(".")[0]
                     with open(i, "r") as r:
                         guild_id = int(r.read())
-                    webClient(guild_id, id)
+                    webClient.subscribe(id, guild_id)
                     os.remove(i)
 
             time.sleep(0.5)
