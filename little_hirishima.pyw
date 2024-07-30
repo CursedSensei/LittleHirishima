@@ -3,6 +3,7 @@ from voiceClient import *
 import musicData
 import botControl
 from guildData import updateVoice
+from botConst import *
 
 import json, asyncio
 import discord
@@ -224,7 +225,12 @@ try:
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
             await ctx.defer()
-            taskPlay, song = await vClient.next(1 if not index else index, force = True)
+
+            if index:
+                taskPlay, song = await vClient.next(index, force = True)
+            else:
+                taskPlay, song = await vClient.next(vClient.loop_ind + 2 if vClient.loop == REPEAT_QUEUE else 1, force = True)
+
             if song:
                 song_mes = asyncio.create_task(ctx.respond(embed = song.embed(client, title = "Next song in queue", color=discord.Colour.orange())))
                 if await taskPlay:
