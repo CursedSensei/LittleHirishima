@@ -89,10 +89,11 @@ class voiceClient(__baseClient):
         self.is_loading.clear()
 
         if song != True:
-            download = subprocess.Popen(['/usr/local/bin/yt-dlp', '-f', 'bestaudio/best', '-o', '-', '--', str(song.id)], stdout=subprocess.PIPE, stdin=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            download = subprocess.Popen(['/usr/local/bin/yt-dlp', '-f', 'bestaudio/best', '-o', '-', '--', str(song.id)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.DEVNULL)
 
+            fcntl.fcntl(download.stderr, fcntl.F_SETFL, fcntl.fcntl(download.stderr, fcntl.F_GETFL) | os.O_NONBLOCK)
             while download.poll() == None:
-                if download.stdout.peek():
+                if download.stderr.readline().startswith(b"[download]"):
                     break
                 await asyncio.sleep(0.3)
                 if self.cancel == True:
