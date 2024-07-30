@@ -47,7 +47,7 @@ class webClient(__baseClient):
                                 "queue": self.queue,
                                 "loop": self.loop,
                                 "loop_ind": self.loop_ind,
-                                "is_paused": self.is_paused,
+                                "is_paused": self.is_paused
                             }, w)
                     elif request[0] == "play":
                         song = Music(name = request[1], channel = request[2], id = request[3], thumb = request[4], length = request[5])
