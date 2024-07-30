@@ -243,7 +243,7 @@ try:
             if vClient.song == None:
                 await ctx.respond("No song is currently played", delete_after=6)
             else:
-                await ctx.respond(embed = vClient.song.embed(client, title = "Now Playing", timed = True))
+                await ctx.respond(embed = vClient.song.embed(client, timed = True))
         else:
             await ctx.respond("Bot is not in a voice channel", delete_after=3)
 
@@ -270,7 +270,7 @@ try:
                 await ctx.respond("No song is currently played", delete_after=6)
             else:
                 if vClient.seek(timestamp):
-                    await ctx.respond(embed = vClient.song.embed(client, title = "Now Playing", timed = True))
+                    await ctx.respond(embed = vClient.song.embed(client, timed = True))
                 else:
                     await ctx.respond("The inputted timestamp is not in range or currently not yet available.", delete_after=6)
         else:
@@ -284,7 +284,7 @@ try:
                 await ctx.respond("No song is currently played", delete_after=6)
             else:
                 await vClient.play(True)
-                await ctx.respond(embed = vClient.song.embed(client, title = "Now Playing", timed = True))
+                await ctx.respond(embed = vClient.song.embed(client, timed = True))
         else:
             await ctx.respond("Bot is not in a voice channel", delete_after=3)
 
