@@ -3,6 +3,7 @@ import asyncio, subprocess
 import discord, fcntl
 from musicData import *
 from botConst import *
+from random import randint
 
 class __baseClient:
     guild_id: int                           # Guild/Server ID
@@ -208,7 +209,7 @@ class voiceClient(__baseClient):
         return out
     
     @staticmethod
-    def queueGuild(guild_id : int, add : Music = None, remove = None):
+    def queueGuild(guild_id : int, add : Music = None, remove = None, shuffle = False):
         vGuild = voiceClient.query(guild_id)
         if vGuild:
             queue = vGuild.queue
@@ -218,7 +219,17 @@ class voiceClient(__baseClient):
             queue, loop = guildData.loadVoice(guild_id)
             loop_ind = 0
         
-        if add:
+        if shuffle:
+            length = len(queue)
+
+            if length == 0:
+                return False
+
+            shuffled = []
+            for i in range(0, length):
+                shuffled.append(queue.pop(randint(0, length - 1 - i)))
+            queue = shuffled
+        elif add:
             queue.append(add)
         elif remove != None:
             try:
