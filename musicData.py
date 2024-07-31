@@ -84,6 +84,7 @@ class YoutubeStreamer:
         self.size = 0
         self.is_complete = False
         self.buffer = bytearray()
+        self.seeked = 0
 
         Thread(target=self._worker, daemon=True).start()
 
@@ -100,13 +101,18 @@ class YoutubeStreamer:
         self.is_complete = True
 
     def seekable(self, seek) -> bool:
+        if seek <= self.seeked:
+            return True
         ffm_proc = subprocess.Popen(
             ["ffmpeg", "-ss", str(seek), "-i", "-", "-f", "s16le", "-ar", "48000", "-ac", "2", "-t", "0.001", "-loglevel", "warning", "pipe:1"],
             stdout=subprocess.PIPE,
             stdin=subprocess.PIPE,
             stderr=subprocess.DEVNULL
         )
-        return True if ffm_proc.communicate(bytes(self.buffer[:self.size]))[0] else False
+        if ffm_proc.communicate(bytes(self.buffer[:self.size]))[0]:
+            self.seeked = seek
+            return True
+        return False 
 
     def read(self, length) -> bytes:
         while not self.is_complete and self.cursor + length > self.size:
