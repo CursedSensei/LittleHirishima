@@ -284,6 +284,7 @@ try:
 
     @client.slash_command(name='shuffle', description="Shuffle the current queue")
     async def shuffle(ctx: discord.ApplicationContext):
+        await ctx.defer()
         if voiceClient.queueGuild(ctx.guild_id, shuffle=True):
             await ctx.respond("Current queue successfully shuffled")
         else:
