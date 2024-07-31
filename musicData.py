@@ -103,15 +103,17 @@ class YoutubeStreamer:
     def seekable(self, seek) -> bool:
         if seek <= self.seeked:
             return True
-        ffm_proc = subprocess.Popen(
+        
+        if subprocess.Popen(
             ["ffmpeg", "-ss", str(seek), "-i", "-", "-f", "s16le", "-ar", "48000", "-ac", "2", "-t", "0.001", "-loglevel", "warning", "pipe:1"],
             stdout=subprocess.PIPE,
             stdin=subprocess.PIPE,
             stderr=subprocess.DEVNULL
-        )
-        if ffm_proc.communicate(bytes(self.buffer[:self.size]))[0]:
+        ).communicate(bytes(self.buffer[:self.size]))[0]:
+            
             self.seeked = seek
             return True
+
         return False 
 
     def read(self, length) -> bytes:
