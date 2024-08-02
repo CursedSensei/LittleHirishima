@@ -1,7 +1,27 @@
 from botPath import *
 from botConst import *
 from musicData import Music
-import json
+import json, discord
+
+async def loadGuilds(client : discord.Bot):
+    guilds = []
+    async for guild in client.fetch_guilds(limit=100):
+        guilds.append(guild.id)
+
+    with open(GUILDSFILE, "w") as w:
+        json.dump(guilds, w)
+
+def updateGuilds(add : discord.Guild = None, remove : discord.Guild = None):
+    with open(GUILDSFILE, "r") as r:
+        guilds = json.load(r)
+
+    if add:
+        guilds.append(add.id)
+    elif remove:
+        guilds.remove(remove.id)
+
+    with open(GUILDSFILE, "w") as w:
+        json.dump(guilds, w)
 
 def loadVoice(guild_id : int) -> tuple[list, int]:
     guildSpace = os.path.join(GUILDPATH, str(guild_id))

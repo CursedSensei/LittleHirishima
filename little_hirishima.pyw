@@ -2,7 +2,7 @@ import botPath
 from voiceClient import *
 import musicData
 import botControl
-from guildData import updateVoice
+from guildData import updateVoice, loadGuilds, updateGuilds
 from botConst import *
 
 import json, asyncio
@@ -19,6 +19,22 @@ try:
     client = commands.Bot(intents=intents)
 
     botControl.initializeAdmin(client)
+
+    @client.event
+    async def on_ready():
+        print("Little Hirishima is now connected!")
+
+        await loadGuilds(client)
+
+    @client.event
+    async def on_guild_join(guild : discord.Guild):
+        updateGuilds(add=guild)
+
+    @client.event
+    async def on_guild_remove(guild : discord.Guild):
+        updateGuilds(remove=guild)
+
+
 
     @client.event
     async def on_voice_state_update(author : discord.Member, before_vcstate : discord.VoiceState, after_vcstate : discord.VoiceState):

@@ -6,8 +6,7 @@ WORKERERRORPATH = os.path.join(ROOT_DIR,'Little Hirishima Worker Crash Report.tx
 TOKENPATH = os.path.join(ROOT_DIR,'Little_Hirishima Secrets.json')
 
 GUILDPATH = os.path.join(ROOT_DIR, 'lib', 'Guild')
-LIBRARYPATH = os.path.join(ROOT_DIR, 'lib', 'Song_Library')
-LIBRARYLOG = os.path.join(LIBRARYPATH, 'library.json')
+GUILDSFILE = os.path.join(GUILDPATH, 'guilds.json')
 
 ANIMEDIRECTORY = "/var/www/html/Anime"
 ANIMEDOWNLOADER = os.path.join(ROOT_DIR, 'lib/urldown.py')
