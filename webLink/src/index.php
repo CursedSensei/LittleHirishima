@@ -1,11 +1,23 @@
 <?php
 session_start();
 if (isset($_GET['code'])) {
-    
+    require_once '../vendor/discordAPI.php';
+
+    $data = authorizeUser($_GET['code']);
+
+    if ($data) {
+        $user = getUser($data->access_token);
+
+        if ($user) {
+            $_SESSION['access_token'] = $data->access_token;
+            $_SESSION['refresh_token'] = $data->refresh_token;
+            $_SESSION['user'] = $user;
+        }
+    }
 }
 
-if (isset($_SESSION['user_id'])) {
-    header("Location: guild.php");
+if (isset($_SESSION['user'])) {
+    header("Location: player.php");
     exit;
 }
 ?>
