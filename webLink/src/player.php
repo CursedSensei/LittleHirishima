@@ -24,7 +24,7 @@
                 <i class="fa fa-bookmark text-white" aria-hidden="true"></i> &nbsp;&nbsp;Playlists
             </a>
             <a href="logout.php" class="mt-auto overflow-hidden text-nowrap px-3.5 pt-4 pb-4 hover:bg-slate-600">
-                <i class="fa fa-arrow-circle-left text-white" aria-hidden="true"></i> &nbsp;&nbsp;Sign Out
+                <i class="fa fa-sign-out text-white" aria-hidden="true"></i> &nbsp;&nbsp;Sign Out
             </a>
         </div>
         <div></div>
