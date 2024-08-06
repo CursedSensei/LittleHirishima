@@ -114,7 +114,13 @@
                 <button class="ml-auto text-xl bg-white bg-opacity-20 px-6 py-3 rounded-full" id="changeGuild"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> &nbsp;Switch Server</button>
             </div>
             <div class="flex h-5/6 w-full gap-2 flex-row-reverse pb-8">
-                <div class="float-end bg-white w-1/2 h-full bg-opacity-30 backdrop-blur-xl rounded-lg"></div>
+                <div class="float-end bg-white w-1/2 h-full bg-opacity-30 backdrop-blur-xl rounded-lg text-xl overflow-hidden">
+                    <div class="w-full h-12 flex">
+                        <button class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black bg-opacity-30 hover:bg-opacity-20 active"><i class="fa fa-clone" aria-hidden="true"></i> Queue</button>
+                        <button class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
+                        <button class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-inbox" aria-hidden="true"></i> Recent</button>
+                    </div>
+                </div>
                 <div class="w-1/2 h-full flex flex-col gap-2">
                     <div class="bg-white w-full h-4/6 bg-opacity-30 backdrop-blur-xl rounded-lg"></div>
                     <div class="bg-white w-full h-2/6 bg-opacity-30 backdrop-blur-xl rounded-lg"></div>

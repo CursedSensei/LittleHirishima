@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.active {
+    @apply font-semibold border-gray-500 bg-opacity-20;
+}
