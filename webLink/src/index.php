@@ -29,6 +29,7 @@ if (isset($_SESSION['user'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="./css/output.css" rel="stylesheet">
         <title>Little Hirishima Login</title>
+        <link rel="preconnect" href="https://cdn.discordapp.com" />
         <link rel="icon" href="https://cdn.discordapp.com/app-icons/1000885935107473458/30764c598519d21c84710865ff638dad.png?size=128" type="image/x-icon">
     </head>
     <body class="min-h-screen bg-gradient-to-b from-slate-900 to-zinc-950">
