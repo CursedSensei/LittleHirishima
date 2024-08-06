@@ -14,7 +14,7 @@
     <body class="min-h-screen bg-gradient-to-b from-slate-900 to-zinc-950 overflow-hidden">
         <?php // Loading ?>
         <div class="h-screen w-89 ml-11 p-8 flex flex-wrap overflow-hidden" id="loading">
-            <div class="flex gap-2 h-1/3 w-full">
+            <div class="flex gap-2 h-1/3 mt-16 w-full">
                 <div class="w-1/2 h-full bg-white bg-opacity-20 rounded-md pt-12 pb-16 px-16">
                     <div class="flex-1 space-y-6 py-1 animate-pulse mb-12">
                         <div class="h-2 bg-gray-900 rounded"></div>
@@ -111,7 +111,7 @@
             <div class="w-full h-1/6 flex items-center overflow-hidden">
                 <img class="size-28 rounded-2xl mr-7" id="serverIcon" src="<?php echo isset($_SESSION['guild']) ? ($_SESSION['guild']->icon != "" ? "https://cdn.discordapp.com/icons/" . $_SESSION['guild']->id . "/" . $_SESSION['guild']->icon . ".png?size=128" : "assets/no-image.png") : ""; ?>">
                 <h1 class="w-4/6 overflow-hidden text-3xl font-bold font-serif text-ellipsis" id="serverName"><?php echo isset($_SESSION['guild']) ? $_SESSION['guild']->name : ""; ?></h1>
-                <button class="ml-auto text-xl bg-white bg-opacity-20 px-6 py-3 rounded-full" id="changeGuild"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> &nbsp;Change Server</button>
+                <button class="ml-auto text-xl bg-white bg-opacity-20 px-6 py-3 rounded-full" id="changeGuild"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> &nbsp;Switch Server</button>
             </div>
             <div class="flex h-5/6 w-full gap-2 flex-row-reverse pb-8">
                 <div class="float-end bg-white w-1/2 h-full bg-opacity-30 backdrop-blur-xl rounded-lg"></div>

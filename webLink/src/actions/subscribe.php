@@ -2,7 +2,7 @@
 require_once 'session.php';
 
 if (isset($_SESSION['guild'])) {
-    echo json_encode($_SESSION['guild']);
+    echo json_encode([$_SESSION['guild']->name, $_SESSION['guild']->icon != "" ? "https://cdn.discordapp.com/icons/" . $_SESSION['guild']->id . "/" . $_SESSION['guild']->icon . ".png?size=128" : "assets/no-image.png"]);
     exit;
 }
 
