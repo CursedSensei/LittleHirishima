@@ -114,8 +114,12 @@ window.addEventListener('hashchange', () => {
 });
 
 document.getElementById("changeGuild").addEventListener("click", async function () {
-    await fetch("actions/unsubscribe.php");
-    switchPage();
+    res = await fetch("actions/unsubscribe.php");
+    if (res.status == 401) {
+        window.location.href = "logout.php";
+    } else {
+        switchPage();
+    }
 });
 
 document.getElementById("selection_refresh").addEventListener("click", function () {
