@@ -111,15 +111,16 @@
             <div class="w-full h-1/6 flex items-center overflow-hidden">
                 <img class="size-28 rounded-2xl mr-7" id="serverIcon" src="<?php echo isset($_SESSION['guild']) ? ($_SESSION['guild']->icon != "" ? "https://cdn.discordapp.com/icons/" . $_SESSION['guild']->id . "/" . $_SESSION['guild']->icon . ".png?size=128" : "assets/no-image.png") : ""; ?>">
                 <h1 class="w-4/6 overflow-hidden text-3xl font-bold font-serif text-ellipsis" id="serverName"><?php echo isset($_SESSION['guild']) ? $_SESSION['guild']->name : ""; ?></h1>
-                <button class="ml-auto text-xl bg-white bg-opacity-20 px-6 py-3 rounded-full" id="changeGuild"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> &nbsp;Switch Server</button>
+                <button class="ml-auto text-xl bg-white bg-opacity-20 px-6 py-3 rounded-full hover:bg-opacity-30" id="changeGuild"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> &nbsp;Switch Server</button>
             </div>
             <div class="flex h-5/6 w-full gap-2 flex-row-reverse pb-8">
-                <div class="float-end bg-white w-1/2 h-full bg-opacity-30 backdrop-blur-xl rounded-lg text-xl overflow-hidden">
+                <div class="float-end bg-white w-1/2 h-full bg-opacity-30 backdrop-blur-xl rounded-lg text-lg overflow-hidden">
                     <div class="w-full h-12 flex">
                         <button class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black bg-opacity-30 hover:bg-opacity-20 active"><i class="fa fa-clone" aria-hidden="true"></i> Queue</button>
                         <button class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
                         <button class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-inbox" aria-hidden="true"></i> Recent</button>
                     </div>
+                    <div class="w-full"></div>
                 </div>
                 <div class="w-1/2 h-full flex flex-col gap-2">
                     <div class="bg-white w-full h-4/6 bg-opacity-30 backdrop-blur-xl rounded-lg"></div>
@@ -140,7 +141,7 @@
             <a href="#" class="mt-12 overflow-hidden text-nowrap px-3.5 pt-4 pb-4 hover:bg-slate-600 hover:bg-opacity-30 active:bg-opacity-60">
                 <i class="fa fa-headphones text-white" aria-hidden="true"></i> &nbsp;&nbsp;Player
             </a>
-            <a href="#playlist" class="overflow-hidden text-nowrap px-3.5 pl-4 pt-4 pb-4 hover:bg-slate-600 border-t border-slate-600 hover:bg-opacity-30 border-opacity-30 active:bg-opacity-60">
+            <a href="#playlist" class="overflow-hidden text-nowrap px-3.5 pl-4 pt-4 pb-4 hover:bg-slate-600 hover:bg-opacity-30 active:bg-opacity-60">
                 <i class="fa fa-bookmark text-white" aria-hidden="true"></i> &nbsp;&nbsp;Playlists
             </a>
             <a href="logout.php" class="mt-auto overflow-hidden text-nowrap px-3.5 pt-4 pb-4 hover:bg-slate-600 hover:bg-opacity-30 active:bg-opacity-60">

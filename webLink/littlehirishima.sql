@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 05, 2024 at 02:20 PM
+-- Generation Time: Aug 07, 2024 at 02:01 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -47,6 +47,8 @@ CREATE TABLE `playlist` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `epoch_creation` bigint(20) NOT NULL,
+  `epoch_modified` bigint(20) NOT NULL,
   `icon` int(11) NOT NULL DEFAULT 0,
   `count` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
