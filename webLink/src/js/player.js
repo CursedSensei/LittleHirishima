@@ -6,8 +6,16 @@ const playerName = $('#serverName');
 const playerIcon = $('#serverIcon');
 const playerBg = $('#playerBackground');
 
+var guildId = $("meta[name='guild_id']").attr("content");
+if (guildId) {
+    guildId = parseInt(guildId);
+} else {
+    guildId = 0;
+}
+
 selectionDiv.hide();
 selectionDivError.hide();
+
 playerDiv.hide();
 playerBg.fadeOut(0);
 
@@ -22,6 +30,36 @@ async function animatePlayerBg() {
     }, 24000, animatePlayerBg);
     playerBgToRight = !playerBgToRight;
 }
+
+const queuePageDom = $("#queuePage");
+const searchPageDom = $("#searchPage");
+const recentPageDom = $("#recentPage");
+const slidePageDom = queuePageDom.parent();
+
+function slidePage(left) {
+    slidePageDom.stop(true, false);
+    slidePageDom.animate({
+        left: left
+    }, 300);
+}
+
+$("#pageButtons > button").on("click", function () {
+    const butDom = $(this);
+    butDom.parent().children().removeClass("active");
+    butDom.addClass("active");
+
+    switch (butDom.attr("name")) {
+        case "queue":
+            slidePage("0%")
+            break;
+        case "search":
+            slidePage("-100%")
+            break;
+        case "recent":
+            slidePage("-200%")
+            break;
+    }
+});
 
 function playerInit() {
     fetch('actions/guilds.php').then((res) => {
@@ -52,6 +90,7 @@ function playerInit() {
                                 res.json().then((guild) => {
                                     playerName.text(guild[0]);
                                     playerIcon.attr('src', guild[1]);
+                                    guildId = guild[2];
 
                                     if (window.location.hash === "#playlist") {
                                         return;
@@ -114,7 +153,7 @@ window.addEventListener('hashchange', () => {
 });
 
 document.getElementById("changeGuild").addEventListener("click", async function () {
-    res = await fetch("actions/unsubscribe.php");
+    res = await fetch("actions/unsubscribe.php?guild_id=" + guildId);
     if (res.status == 401) {
         window.location.href = "logout.php";
     } else {

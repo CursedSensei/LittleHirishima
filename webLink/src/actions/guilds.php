@@ -1,7 +1,7 @@
 <?php
 require_once 'session.php';
 
-if (isset($_SESSION['guild'])) {
+if (isset($_SESSION['guild']) && time() - $_SESSION['client_time'] <= 20) {
     http_response_code(304);
     exit;
 }

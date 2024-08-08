@@ -126,7 +126,6 @@ def initializeWebLink(bot : discord.Bot):
                     with open(i, "r") as r:
                         guild_id = int(r.read())
                     webClient.subscribe(id, guild_id)
-                    os.remove(i)
 
             time.sleep(0.5)
 

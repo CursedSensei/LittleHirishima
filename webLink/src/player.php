@@ -10,6 +10,7 @@
         <title>Little Hirishima Dashboard</title>
         <link rel="preconnect" href="https://cdn.discordapp.com" />
         <link rel="icon" href="https://cdn.discordapp.com/app-icons/1000885935107473458/30764c598519d21c84710865ff638dad.png?size=128" type="image/x-icon">
+        <meta name="guild_id" content="<?php echo isset($_SESSION['guild']) ? $_SESSION['guild']->id : "" ?>">
     </head>
     <body class="min-h-screen bg-gradient-to-b from-slate-900 to-zinc-950 overflow-hidden">
         <?php // Loading ?>
@@ -114,13 +115,17 @@
                 <button class="ml-auto text-xl bg-white bg-opacity-20 px-6 py-3 rounded-full hover:bg-opacity-30" id="changeGuild"><i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> &nbsp;Switch Server</button>
             </div>
             <div class="flex h-5/6 w-full gap-2 flex-row-reverse pb-8">
-                <div class="float-end bg-white w-1/2 h-full bg-opacity-30 backdrop-blur-xl rounded-lg text-lg overflow-hidden">
-                    <div class="w-full h-12 flex">
-                        <button class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black bg-opacity-30 hover:bg-opacity-20 active"><i class="fa fa-clone" aria-hidden="true"></i> Queue</button>
-                        <button class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
-                        <button class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-inbox" aria-hidden="true"></i> Recent</button>
+                <div class="float-end bg-white w-1/2 h-full bg-opacity-30 backdrop-blur-xl rounded-lg text-lg overflow-hidden flex flex-col">
+                    <div class="w-full h-12 flex" id="pageButtons">
+                        <button name="queue" class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black bg-opacity-30 hover:bg-opacity-20 active"><i class="fa fa-clone" aria-hidden="true"></i> Queue</button>
+                        <button name="search" class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
+                        <button name="recent" class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-inbox" aria-hidden="true"></i> Recent</button>
                     </div>
-                    <div class="w-full"></div>
+                    <div class="grow relative flex" style="width: 300%;">
+                        <div class="h-full w-1/3" id="queuePage"></div>
+                        <div class="h-full w-1/3" id="searchPage"></div>
+                        <div class="h-full w-1/3" id="recentPage"></div>
+                    </div>
                 </div>
                 <div class="w-1/2 h-full flex flex-col gap-2">
                     <div class="bg-white w-full h-4/6 bg-opacity-30 backdrop-blur-xl rounded-lg"></div>
