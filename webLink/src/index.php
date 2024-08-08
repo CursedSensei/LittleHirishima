@@ -17,6 +17,7 @@ if (isset($_GET['code'])) {
 }
 
 if (isset($_SESSION['user'])) {
+    $_SESSION['client_lock'] = false;
     header("Location: player.php");
     exit;
 }
