@@ -116,29 +116,29 @@
             </div>
             <div class="flex h-5/6 w-full gap-2 flex-row-reverse pb-8">
                 <div class="float-end bg-white w-1/2 h-full bg-opacity-30 backdrop-blur-xl rounded-lg text-lg overflow-hidden flex flex-col">
-                    <div class="w-full h-12 flex" id="pageButtons">
+                    <div class="shrink-0 w-full h-12 flex" id="pageButtons">
                         <button name="queue" class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black bg-opacity-30 hover:bg-opacity-20 active"><i class="fa fa-clone" aria-hidden="true"></i> Queue</button>
                         <button name="search" class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30" id="searchBut"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
                         <button name="recent" class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-history" aria-hidden="true"></i> Recent</button>
                     </div>
-                    <div class="grow relative flex" style="width: 300%;">
+                    <div class="grow relative flex min-h-0" style="width: 300%;">
                         <div class="h-full w-1/3" id="queuePage">
                             <!-- <div class="h-24 w-full bg-black bg-opacity-20"></div> -->
                             <div class="w-full h-full flex items-center justify-center text-2xl font-bold"><button class="border-2 border-white border-opacity-15 rounded-xl px-2" id="queueHint"><i class="fa fa-plus" aria-hidden="true"></i></button> &nbsp;Add To Queue</div>
                         </div>
-                        <div class="h-full w-1/3" id="searchPage">
-                            <div class="w-full px-10 pt-3 pb-2 text-xl">
+                        <div class="h-full w-1/3 overflow-y-auto flex flex-col" id="searchPage">
+                            <div class="w-1/3 px-10 pt-3 pb-2 text-xl absolute">
                                 <div class="w-full flex bg-white focus-within:shadow-xl rounded overflow-hidden">
                                     <input class="grow px-2 py-1 focus:outline-none text-black" type="text" placeholder="Search" id="searchQuery">
                                     <button class="px-3 text-gray-400" id="searchButton"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 </div>
                             </div>
-                            <div class="w-1/3 px-10 absolute z-30">
-                                <div class="rounded-sm bg-white bg-opacity-55 backdrop-blur-xl text-black text-opacity-80 font-bold" id="searchHint">
+                            <div class="w-1/3 px-10 absolute top-14 z-30">
+                                <div class="rounded-sm bg-white bg-opacity-55 backdrop-blur-xl text-black text-opacity-80 font-bold shadow-xl" id="searchHint">
                                     <div class="w-full py-1 px-2 align-middle hover:bg-black hover:bg-opacity-15"></div>
                                 </div>
                             </div>
-                            <div class="w-full" id="searchTray"></div>
+                            <div class="grow w-full pt-14" id="searchTray"></div>
                         </div>
                         <div class="h-full w-1/3" id="recentPage"></div>
                     </div>

@@ -57,11 +57,15 @@ async def youtube_search(keys : str, limit = 10):
 			contentType = list(i.keys())[0]
 
 			if contentType == "videoRenderer":
+				try:
+					length = strToLength(i[contentType]["lengthText"]['simpleText'])
+				except KeyError:
+					continue
+
 				key = i[contentType]["videoId"]
 				name = i[contentType]["title"]["runs"][0]["text"]
 				channel = i[contentType]["ownerText"]["runs"][0]["text"]
 				thumb = i[contentType]["thumbnail"]["thumbnails"][-1]["url"]
-				length = strToLength(i[contentType]["lengthText"]['simpleText'])
 
 				if keys:
 					if keys != key:
@@ -72,7 +76,10 @@ async def youtube_search(keys : str, limit = 10):
 				out.append((name, channel, key, thumb, length))
 
 			elif contentType == "shelfRenderer":
-				j = i[contentType]['content']['verticalListRenderer']['items']
+				try:
+					j = i[contentType]['content']['verticalListRenderer']['items']
+				except KeyError:
+					continue
 
 				for k in j:
 					if outLen == limit:
@@ -81,15 +88,15 @@ async def youtube_search(keys : str, limit = 10):
 					contentType = list(k.keys())[0]
 
 					if contentType == "videoRenderer":
-						key = k[contentType]["videoId"]
-						name = k[contentType]["title"]["runs"][0]["text"]
-						channel = k[contentType]["ownerText"]["runs"][0]["text"]
-						thumb = k[contentType]["thumbnail"]["thumbnails"][-1]["url"]
-
 						try:
 							length = strToLength(k[contentType]["lengthText"]['simpleText'])
 						except KeyError:
 							continue
+
+						key = k[contentType]["videoId"]
+						name = k[contentType]["title"]["runs"][0]["text"]
+						channel = k[contentType]["ownerText"]["runs"][0]["text"]
+						thumb = k[contentType]["thumbnail"]["thumbnails"][-1]["url"]
 
 						if keys:
 							if keys != key:

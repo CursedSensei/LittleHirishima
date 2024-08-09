@@ -65,6 +65,8 @@ const searchHint = $("#searchHint");
 const searchButton = $("#searchButton");
 const searchTray = $("#searchTray");
 var hintController = new AbortController();
+var resultController = new AbortController();
+var hintLookup = -1;
 
 searchHint.hide();
 
@@ -81,17 +83,15 @@ function getHint(query) {
     ).then(function (res) {
         if (res.status == 200) {
             res.text().then((data) => {
-                query = query.split("\"").join("\\\"")
-
-                data = data.split("\",[").slice(1).join("\",[");
-                data = JSON.parse("[" + data.split(",{\"")[0]);
+                data = JSON.parse(data);
 
                 searchHint.empty();
+                hintLookup = -1;
                 for(let i = 0; i < data.length; i++) {
                     let hintDom = $('<div class="w-full py-1 px-2 align-middle hover:bg-black hover:bg-opacity-15"></div>');
-                    hintDom.text(data[i][0]);
+                    hintDom.text(data[i]);
                     hintDom.on("mousedown", function () {
-                        searchQuery.val(data[i][0]);
+                        searchQuery.val(data[i]);
                         searchButton.click();
                     });
                     hintDom.appendTo(searchHint);
@@ -116,13 +116,52 @@ searchQuery.on("focusout", function () {
 
 function searchResult() {
     searchHint.hide();
+    resultController.abort();
     searchTray.empty();
+    searchQuery.blur()
+
+    if (searchQuery.val() != "") {
+        resultController = new AbortController();
+        fetch("actions/search.php?&q=" + encodeURIComponent(searchQuery.val()), {
+            method: "get",
+            signal: resultController.signal,
+        }).then(function (res) {
+            if (res.status == 200) {
+                res.json().then(function (data) {
+                    for (let i = 0; i < data.length; i++) {
+                        searchTray.append($("<p>" + data[i]['name'] + "</p>"));
+                    }
+                });
+            } else {
+                // no result
+            }
+        });
+    } else {
+        // no result
+    }
 }
 
 searchQuery.keyup(function (e) {
     if (e.key === "Enter") {
-        searchResult();
-    } else {
+        if (hintLookup != -1) {
+            searchHint.children().eq(hintLookup).trigger("mousedown");
+        } else {
+            searchResult();
+        }
+    } else if (e.key === "ArrowDown") {
+        let hintDom = searchHint.children().eq(hintLookup + 1);
+        if (hintDom != -1) {
+            hintLookup++;
+            searchHint.children().removeClass("hint-active")
+            hintDom.addClass("hint-active");
+        }
+    } else if (e.key === "ArrowUp") {
+        if (hintLookup >= 0) {
+            searchHint.children().removeClass("hint-active")
+            searchHint.children().eq(--hintLookup).addClass("hint-active");;
+        }
+    } else if (e.key !== "Backspace" && e.key.length > 1);
+    else {
         if (searchQuery.val() != "") {
             getHint(searchQuery.val());
         } else {

@@ -5,3 +5,7 @@
 .active {
     @apply font-semibold border-gray-500 bg-opacity-20;
 }
+
+.hint-active {
+    @apply bg-black bg-opacity-15
+}
