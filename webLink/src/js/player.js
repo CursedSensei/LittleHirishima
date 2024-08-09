@@ -5,17 +5,14 @@ const playerDiv = $('#player');
 const playerName = $('#serverName');
 const playerIcon = $('#serverIcon');
 const playerBg = $('#playerBackground');
+const queueEmpty = $('#queueHint');
 
 var guildId = $("meta[name='guild_id']").attr("content");
-if (guildId) {
-    guildId = parseInt(guildId);
-} else {
-    guildId = 0;
-}
 
 selectionDiv.hide();
 selectionDivError.hide();
 
+// queueEmpty.hide();
 playerDiv.hide();
 playerBg.fadeOut(0);
 
@@ -60,6 +57,84 @@ $("#pageButtons > button").on("click", function () {
             break;
     }
 });
+
+queueEmpty.on("click", function () {$("#searchBut").trigger("click");});
+
+const searchQuery = $("#searchQuery");
+const searchHint = $("#searchHint");
+const searchButton = $("#searchButton");
+const searchTray = $("#searchTray");
+var hintController = new AbortController();
+
+searchHint.hide();
+
+function getHint(query) {
+    hintController.abort();
+
+    hintController = new AbortController();
+    fetch(
+        "actions/hint.php?&q=" + encodeURIComponent(query),
+        {
+            method: "get",
+            signal: hintController.signal,
+        }
+    ).then(function (res) {
+        if (res.status == 200) {
+            res.text().then((data) => {
+                query = query.split("\"").join("\\\"")
+
+                data = data.split("\",[").slice(1).join("\",[");
+                data = JSON.parse("[" + data.split(",{\"")[0]);
+
+                searchHint.empty();
+                for(let i = 0; i < data.length; i++) {
+                    let hintDom = $('<div class="w-full py-1 px-2 align-middle hover:bg-black hover:bg-opacity-15"></div>');
+                    hintDom.text(data[i][0]);
+                    hintDom.on("mousedown", function () {
+                        searchQuery.val(data[i][0]);
+                        searchButton.click();
+                    });
+                    hintDom.appendTo(searchHint);
+                }
+            });
+        }
+    });
+}
+
+searchQuery.on("focusin", function () {
+    searchHint.empty();
+    searchHint.show();
+
+    if (searchQuery.val() != "") {
+        getHint(searchQuery.val());
+    }
+});
+
+searchQuery.on("focusout", function () {
+    searchHint.hide();
+});
+
+function searchResult() {
+    searchHint.hide();
+    searchTray.empty();
+}
+
+searchQuery.keyup(function (e) {
+    if (e.key === "Enter") {
+        searchResult();
+    } else {
+        if (searchQuery.val() != "") {
+            getHint(searchQuery.val());
+        } else {
+            searchHint.empty();
+        }
+    }
+});
+
+$("#searchButton").on("click", function () {
+    searchResult();
+});
+
 
 function playerInit() {
     fetch('actions/guilds.php').then((res) => {

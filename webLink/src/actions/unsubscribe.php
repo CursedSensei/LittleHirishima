@@ -9,4 +9,5 @@ if ($_GET['guild_id'] == $_SESSION['guild']->id) {
         fclose($fp);
     }
     unset($_SESSION['guild']);
+    $_SESSION['client_lock'] = false;
 }

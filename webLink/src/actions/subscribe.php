@@ -27,7 +27,7 @@ if (isset($_SESSION['guilds']) && isset($_POST['guild_id']) && !$_SESSION['clien
                     $_SESSION['client_id'] = 0; // file_get_contents("../../requests/$id.con");
                     $_SESSION['client_time'] = time();
                     $_SESSION['client_lock'] = false;
-                    echo json_encode([$_SESSION['guilds'][$i]->name, $_SESSION['guilds'][$i]->icon != "" ? "https://cdn.discordapp.com/icons/" . $_SESSION['guilds'][$i]->id . "/" . $_SESSION['guilds'][$i]->icon . ".png?size=128" : "assets/no-image.png", $_SESSION['guilds'][$i]->id]);
+                    echo json_encode([$_SESSION['guilds'][$i]->name, $_SESSION['guilds'][$i]->icon != "" ? "https://cdn.discordapp.com/icons/" . $_SESSION['guilds'][$i]->id . "/" . $_SESSION['guilds'][$i]->icon . ".png?size=128" : "assets/no-image.png", (string)$_SESSION['guilds'][$i]->id]);
                     // unlink("../../requests/$id.req");
 
                     $_SESSION['client_lock'] = false;

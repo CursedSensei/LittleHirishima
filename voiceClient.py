@@ -65,14 +65,18 @@ class voiceClient(__baseClient):
                                     await self.play(self.queue[self.loop_ind])
 
                 await asyncio.sleep(0.5)
-
-            self.cleanup()
+        except discord.errors.ClientException:
+            pass
         except:
             from traceback import format_exc
             from botPath import WORKERERRORPATH
 
             with open(WORKERERRORPATH, "w") as w:
                 w.write(format_exc())
+            
+            await self.client.disconnect()
+
+        self.cleanup()
 
     async def play(self, song : Music, force = False):
         if not self.is_loading.is_set():
