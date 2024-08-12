@@ -129,7 +129,7 @@ function searchResult() {
             if (res.status == 200) {
                 res.json().then(function (data) {
                     for (let i = 0; i < data.length; i++) {
-                        searchTray.append($("<p>" + data[i]['name'] + "</p>"));
+                        searchTray.append($("<a href=\"https://www.youtube.com/watch?v=" + data[i]['key'] + "\">" + data[i]['name'] + "</a>"));
                     }
                 });
             } else {
