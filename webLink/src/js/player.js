@@ -141,6 +141,16 @@ function searchResult() {
     }
 }
 
+searchQuery.keydown(function (e) {
+    if (e.key === "Tab") {
+        if (hintLookup != -1) {
+            searchQuery.val(searchHint.children().eq(hintLookup).text());
+            getHint(searchQuery.val());
+            e.preventDefault();
+        }
+    }
+});
+
 searchQuery.keyup(function (e) {
     if (e.key === "Enter") {
         if (hintLookup != -1) {
