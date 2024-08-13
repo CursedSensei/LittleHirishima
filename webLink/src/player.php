@@ -9,7 +9,7 @@
         <link href="./css/font-awesome.min.css" rel="stylesheet">
         <title>Little Hirishima Dashboard</title>
         <link rel="preconnect" href="https://cdn.discordapp.com" />
-        <link rel="icon" href="https://cdn.discordapp.com/app-icons/1000885935107473458/30764c598519d21c84710865ff638dad.png?size=128" type="image/x-icon">
+        <link rel="icon" href="assets/bot.png" type="image/x-icon">
         <meta name="guild_id" content="<?php echo isset($_SESSION['guild']) ? $_SESSION['guild']->id : "" ?>">
     </head>
     <body class="min-h-screen bg-gradient-to-b from-slate-900 to-zinc-950 overflow-hidden">
@@ -160,7 +160,7 @@
         <?php // Sidebar ?>
         <div class="h-screen w-11 bg-black bg-opacity-60 backdrop-blur-xl transition-all duration-100 hover:w-40 flex flex-col text-transparent hover:text-white text-xl pt-2 absolute top-0 select-none">
             <div class="overflow-hidden text-nowrap px-2 flex items-center">
-                <img class="size-7 border-sky-700 rounded-md" src="https://cdn.discordapp.com/app-icons/1000885935107473458/30764c598519d21c84710865ff638dad.png?size=128">
+                <img class="size-7 border-sky-700 rounded-md" src="assets/bot.png">
                 <div class="ml-3 font-bold text-base text-justify">
                     <p>Little</p>
                     <p>Hirishima</p>
