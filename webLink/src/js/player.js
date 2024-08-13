@@ -158,13 +158,13 @@ function appendResult(data) {
         let mainDiv = $('<div class="w-full flex gap-6 px-6 py-2 bg-black bg-opacity-0 hover:bg-opacity-15"></div>');
         mainDiv.append($('<img class="h-20 shrink-0 aspect-video" src="' + data[i]['thumb'] + '">'));
 
-        let detailSection = $('<div class="grow flex flex-col w-1/5 overflow-hidden"></div>');
-        let detailChild = $('<a href="https://www.youtube.com/watch?v=' + data[i]['key'] + '" class="font-bold text-xl grow text-nowrap hover:underline w-min" target="_blank"></a>');
+        let detailSection = $('<div class="grow w-1/5 overflow-hidden"></div>');
+        let detailChild = $('<a href="https://www.youtube.com/watch?v=' + data[i]['key'] + '" class="font-bold text-xl text-nowrap hover:underline w-min" target="_blank"></a>');
         detailChild.text(data[i]['name']);
         mainDiv.hover(function (e) {radioText($(this).find("a").first())}, function (e) {radioTextStop($(this).find("a").first())});
         detailSection.append(detailChild);
 
-        let childSection = $('<div class="grow-0 w-full flex pb-3"></div>');
+        let childSection = $('<div class="w-full flex py-3"></div>');
         detailChild = $('<p class="grow text-base"></p>');
         detailChild.text(data[i]['channel']);
         childSection.append(detailChild);
