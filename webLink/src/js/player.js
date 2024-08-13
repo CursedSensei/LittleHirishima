@@ -178,10 +178,14 @@ function appendResult(data) {
 
         detailSection = $('<div class="shrink-0 flex flex-col gap-4"></div>');
         let playButton = $('<button class="grow rounded-lg bg-black bg-opacity-20 px-2"><i class="fa fa-play" aria-hidden="true"></i></button>');
-        let queueButton = $('<button class="grow rounded-lg bg-black bg-opacity-20 px-2"><i class="fa fa-bars" aria-hidden="true"></i></button>');
+        let queueButton = $('<button class="grow rounded-lg bg-black bg-opacity-20 px-2"><i class="fa fa-clone" aria-hidden="true"></i></button>');
 
         detailSection.append(playButton);
         detailSection.append(queueButton);
+
+        mainDiv.on("dblclick", function (e) {
+            // play
+        });
 
         mainDiv.append(detailSection);
         searchTray.append(mainDiv);
