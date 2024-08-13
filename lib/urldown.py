@@ -84,7 +84,7 @@ if (os.path.exists(lock_path)):
 	os.remove(lock_path)
 
 with open(lock_path, "w") as fp:
-	fp.write(os.getpid())
+	fp.write(str(os.getpid()))
 
 limiter = 0
 
