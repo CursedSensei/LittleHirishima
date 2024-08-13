@@ -128,17 +128,22 @@
                         </div>
                         <div class="h-full w-1/3 overflow-y-auto flex flex-col" id="searchPage">
                             <div class="w-1/3 px-10 pt-3 pb-2 text-xl absolute">
-                                <div class="w-full flex bg-white focus-within:shadow-xl rounded overflow-hidden">
+                                <div class="w-full flex bg-white rounded overflow-hidden focus-within:border-black border-2">
                                     <input class="grow px-2 py-1 focus:outline-none text-black" type="text" placeholder="Search" id="searchQuery">
                                     <button class="px-3 text-gray-400" id="searchButton"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 </div>
                             </div>
                             <div class="w-1/3 px-10 absolute top-14 z-30">
-                                <div class="rounded-sm bg-white bg-opacity-55 backdrop-blur-xl text-black text-opacity-80 font-bold shadow-xl" id="searchHint">
+                                <div class="rounded-sm bg-white bg-opacity-85 backdrop-blur-xl text-black text-opacity-80 font-bold shadow-xl" id="searchHint">
                                     <div class="w-full py-1 px-2 align-middle hover:bg-black hover:bg-opacity-15"></div>
                                 </div>
                             </div>
-                            <div class="grow w-full pt-14" id="searchTray"></div>
+                            <div class="grow w-full pt-14" id="searchTray">
+                                <div class="w-full h-full flex justify-center items-center">
+                                    <img class="size-14" src="assets/error.png">
+                                    <p class="font-bold text-xl">  No Results</p>
+                                </div>
+                            </div>
                         </div>
                         <div class="h-full w-1/3" id="recentPage"></div>
                     </div>
