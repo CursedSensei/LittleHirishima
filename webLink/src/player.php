@@ -149,11 +149,11 @@
                     </div>
                 </div>
                 <div class="w-1/2 h-full flex flex-col gap-2">
-                    <div class="bg-black/50 w-full backdrop-blur-xl rounded-lg flex flex-col items-center justify-end gap-1 overflow-hidden" style="aspect-ratio: 16/9;" id="playerPage">
+                    <div class="bg-black/35 w-full backdrop-blur-xl rounded-lg flex flex-col items-center justify-end gap-1 overflow-hidden" style="aspect-ratio: 16/9;" id="playerPage">
                         <img class="w-full aspect-video absolute top-0 -z-10 border-transparent">
                         <div class="w-full bg-gradient-to-t from-gray-950 pb-2 pt-16 px-2">
                             <div class="w-full flex flex-wrap">
-                                <input type="range" class="w-full appearance-none cursor-pointer rounded-lg h-2.5 opacity-70 hover:opacity-100 transition-opacity" min="0" max="0" id="musicLength">
+                                <input type="range" class="w-full appearance-none cursor-pointer rounded-lg h-2.5 opacity-70 hover:opacity-100 transition-opacity bg-white" min="0" max="0" id="musicLength">
                                 <p class="grow">0:00</p>
                                 <p class="grow text-right">0:00</p>
                             </div>
