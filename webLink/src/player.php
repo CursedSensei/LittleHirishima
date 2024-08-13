@@ -154,16 +154,16 @@
                         <div class="w-full bg-gradient-to-t from-gray-950 pb-2 pt-16 px-2">
                             <div class="w-full flex flex-wrap">
                                 <input type="range" class="w-full appearance-none cursor-pointer rounded-lg h-2.5 opacity-70 hover:opacity-100 transition-opacity bg-white" min="0" max="0" id="musicLength">
-                                <p class="grow">0:00</p>
-                                <p class="grow text-right">0:00</p>
+                                <p class="grow" id="startLength">0:00</p>
+                                <p class="grow text-right" id="endLength">0:00</p>
                             </div>
                             <div class="flex justify-center">
-                                <button class="px-3 text-2xl scale-75"><i class="fa fa-random" aria-hidden="true"></i></button>
-                                <button class="px-3 text-2xl scale-x-125"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
-                                <button class="px-3 text-5xl"><i class="fa fa-play-circle" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-75" id="shuffleBut"><i class="fa fa-random" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-x-125" id="prevBut"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
+                                <button class="px-3 text-5xl" id="playBut"><i class="fa fa-play-circle" aria-hidden="true"></i></button>
                                 <button class="px-3 text-5xl hidden"><i class="fa fa-pause-circle" aria-hidden="true"></i></button>
-                                <button class="px-3 text-2xl scale-x-125"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
-                                <button class="px-3 text-2xl scale-75"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-x-125" id="nextBut"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-75" id="loopBut"><i class="fa fa-refresh" aria-hidden="true"></i></button>
                             </div>
                         </div>
                     </div>
