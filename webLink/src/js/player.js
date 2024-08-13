@@ -227,7 +227,8 @@ function searchContinue() {
     }
 
     searchTopPosition = searchPageDom.scrollTop() <= 0 ? 0 : searchPageDom.scrollTop();
-    if (searchPageDom.scrollTop() + searchPageDom.height() < searchPageDom.prop('scrollHeight')){
+    if (searchPageDom.scrollTop() + searchPageDom.height() + 200 < searchPageDom.prop('scrollHeight')){
+        console.log(searchPageDom.scrollTop(), searchPageDom.height(), searchPageDom.prop('scrollHeight'));
         return;
     }
 
