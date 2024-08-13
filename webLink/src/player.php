@@ -149,8 +149,25 @@
                     </div>
                 </div>
                 <div class="w-1/2 h-full flex flex-col gap-2">
-                    <div class="bg-white w-full h-4/6 bg-opacity-30 backdrop-blur-xl rounded-lg" id="playerPage"></div>
-                    <div class="bg-white w-full h-2/6 bg-opacity-30 backdrop-blur-xl rounded-lg overflow-hidden flex" id="nextPage">
+                    <div class="bg-black/50 w-full backdrop-blur-xl rounded-lg flex flex-col items-center justify-end gap-1 overflow-hidden" style="aspect-ratio: 16/9;" id="playerPage">
+                        <img class="w-full aspect-video absolute top-0 -z-10 border-transparent">
+                        <div class="w-full bg-gradient-to-t from-gray-950 pb-2 pt-16 px-2">
+                            <div class="w-full flex flex-wrap">
+                                <input type="range" class="w-full appearance-none cursor-pointer rounded-lg h-2.5 opacity-70 hover:opacity-100 transition-opacity" min="0" max="0" id="musicLength">
+                                <p class="grow">0:00</p>
+                                <p class="grow text-right">0:00</p>
+                            </div>
+                            <div class="flex justify-center">
+                                <button class="px-3 text-2xl scale-75"><i class="fa fa-random" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-x-125"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
+                                <button class="px-3 text-5xl"><i class="fa fa-play-circle" aria-hidden="true"></i></button>
+                                <button class="px-3 text-5xl hidden"><i class="fa fa-pause-circle" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-x-125"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-75"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white w-full grow bg-opacity-30 backdrop-blur-xl rounded-lg overflow-hidden flex" id="nextPage">
                         <div class="h-full w-56 bg-black bg-opacity-20"></div>
                     </div>
                 </div>
