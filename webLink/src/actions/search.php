@@ -1,5 +1,5 @@
 <?php
-if (!isset($_GET['q'])) {
+if (!isset($_GET['q']) && !isset($_GET['c'])) {
     exit;
 }
 
@@ -28,14 +28,20 @@ try {
                     "clientVersion" => "2.20240702.09.00",
                 ]
             ],
-            "query" => $_GET['q']
+            (isset($_GET['q']) ? "query" : "continuation") => (isset($_GET['q']) ? $_GET['q'] : $_GET['c'])
         ]
     ]);
 
-    $data = json_decode($res->getBody()->getContents())->contents->twoColumnSearchResultsRenderer->primaryContents->sectionListRenderer->contents[0]->itemSectionRenderer->contents;
+    if (isset($_GET['q'])) {
+        $contents = json_decode($res->getBody()->getContents())->contents->twoColumnSearchResultsRenderer->primaryContents->sectionListRenderer->contents;
+    } else {
+        $contents = json_decode($res->getBody()->getContents())->onResponseReceivedCommands[0]->appendContinuationItemsAction->continuationItems;
+    }
+    $data = $contents[0]->itemSectionRenderer->contents;
     $data_len = count($data);
 
     $output = array();
+    $empty = true;
 
     for ($i = 0; $i < $data_len; $i++) {
         $type = key($data[$i]);
@@ -48,8 +54,10 @@ try {
                     "name" => $data[$i]->videoRenderer->title->runs[0]->text,
                     "channel" => $data[$i]->videoRenderer->ownerText->runs[0]->text,
                     "thumb" => $data[$i]->videoRenderer->thumbnail->thumbnails[$len_url]->url,
-                    "length" => lengthString($data[$i]->videoRenderer->lengthText->simpleText)
+                    "length" => lengthString($data[$i]->videoRenderer->lengthText->simpleText),
+                    "rawlength" => $data[$i]->videoRenderer->lengthText->simpleText
                 ];
+                $empty = false;
             }
         } else if ($type == "shelfRenderer") {
             $data_child = $data[$i]->shelfRenderer->content;
@@ -71,19 +79,20 @@ try {
                             "name" => $data_child[$j]->videoRenderer->title->runs[0]->text,
                             "channel" => $data_child[$j]->videoRenderer->ownerText->runs[0]->text,
                             "thumb" => $data_child[$j]->videoRenderer->thumbnail->thumbnails[$len_url]->url,
-                            "length" => lengthString($data_child[$j]->videoRenderer->lengthText->simpleText)
+                            "length" => lengthString($data_child[$j]->videoRenderer->lengthText->simpleText),
+                            "rawlength" => $data_child[$j]->videoRenderer->lengthText->simpleText
                         ];
+                        $empty = false;
                     }
                 }
             }
         }
     }
 
-    $data = json_encode($output);
-
-    if ($data == "[]") {
+    if ($empty) {
         http_response_code(204);
     } else {
+        $output[] = $contents[1]->continuationItemRenderer->continuationEndpoint->continuationCommand->token;
         echo json_encode($output);
     }
 } catch (GuzzleHttp\Exception\ClientException $e) {

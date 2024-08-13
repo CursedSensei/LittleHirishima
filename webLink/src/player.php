@@ -9,7 +9,7 @@
         <link href="./css/font-awesome.min.css" rel="stylesheet">
         <title>Little Hirishima Dashboard</title>
         <link rel="preconnect" href="https://cdn.discordapp.com" />
-        <link rel="icon" href="https://cdn.discordapp.com/app-icons/1000885935107473458/30764c598519d21c84710865ff638dad.png?size=128" type="image/x-icon">
+        <link rel="icon" href="assets/bot.png" type="image/x-icon">
         <meta name="guild_id" content="<?php echo isset($_SESSION['guild']) ? $_SESSION['guild']->id : "" ?>">
     </head>
     <body class="min-h-screen bg-gradient-to-b from-slate-900 to-zinc-950 overflow-hidden">
@@ -128,24 +128,46 @@
                         </div>
                         <div class="h-full w-1/3 overflow-y-auto flex flex-col" id="searchPage">
                             <div class="w-1/3 px-10 pt-3 pb-2 text-xl absolute">
-                                <div class="w-full flex bg-white focus-within:shadow-xl rounded overflow-hidden">
+                                <div class="w-full flex bg-white rounded overflow-hidden focus-within:border-black border-2">
                                     <input class="grow px-2 py-1 focus:outline-none text-black" type="text" placeholder="Search" id="searchQuery">
                                     <button class="px-3 text-gray-400" id="searchButton"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 </div>
                             </div>
                             <div class="w-1/3 px-10 absolute top-14 z-30">
-                                <div class="rounded-sm bg-white bg-opacity-55 backdrop-blur-xl text-black text-opacity-80 font-bold shadow-xl" id="searchHint">
+                                <div class="rounded-sm bg-white bg-opacity-85 backdrop-blur-xl text-black text-opacity-80 font-bold shadow-xl" id="searchHint">
                                     <div class="w-full py-1 px-2 align-middle hover:bg-black hover:bg-opacity-15"></div>
                                 </div>
                             </div>
-                            <div class="grow w-full pt-14" id="searchTray"></div>
+                            <div class="grow w-full pt-14" id="searchTray">
+                                <div class="w-full h-full flex justify-center items-center">
+                                    <img class="size-14" src="assets/error.png">
+                                    <p class="font-bold text-xl">  No Results</p>
+                                </div>
+                            </div>
                         </div>
                         <div class="h-full w-1/3" id="recentPage"></div>
                     </div>
                 </div>
                 <div class="w-1/2 h-full flex flex-col gap-2">
-                    <div class="bg-white w-full h-4/6 bg-opacity-30 backdrop-blur-xl rounded-lg" id="playerPage"></div>
-                    <div class="bg-white w-full h-2/6 bg-opacity-30 backdrop-blur-xl rounded-lg overflow-hidden flex" id="nextPage">
+                    <div class="bg-black/50 w-full backdrop-blur-xl rounded-lg flex flex-col items-center justify-end gap-1 overflow-hidden" style="aspect-ratio: 16/9;" id="playerPage">
+                        <img class="w-full aspect-video absolute top-0 -z-10 border-transparent">
+                        <div class="w-full bg-gradient-to-t from-gray-950 pb-2 pt-16 px-2">
+                            <div class="w-full flex flex-wrap">
+                                <input type="range" class="w-full appearance-none cursor-pointer rounded-lg h-2.5 opacity-70 hover:opacity-100 transition-opacity" min="0" max="0" id="musicLength">
+                                <p class="grow">0:00</p>
+                                <p class="grow text-right">0:00</p>
+                            </div>
+                            <div class="flex justify-center">
+                                <button class="px-3 text-2xl scale-75"><i class="fa fa-random" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-x-125"><i class="fa fa-step-backward" aria-hidden="true"></i></button>
+                                <button class="px-3 text-5xl"><i class="fa fa-play-circle" aria-hidden="true"></i></button>
+                                <button class="px-3 text-5xl hidden"><i class="fa fa-pause-circle" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-x-125"><i class="fa fa-step-forward" aria-hidden="true"></i></button>
+                                <button class="px-3 text-2xl scale-75"><i class="fa fa-refresh" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white w-full grow bg-opacity-30 backdrop-blur-xl rounded-lg overflow-hidden flex" id="nextPage">
                         <div class="h-full w-56 bg-black bg-opacity-20"></div>
                     </div>
                 </div>
@@ -155,7 +177,7 @@
         <?php // Sidebar ?>
         <div class="h-screen w-11 bg-black bg-opacity-60 backdrop-blur-xl transition-all duration-100 hover:w-40 flex flex-col text-transparent hover:text-white text-xl pt-2 absolute top-0 select-none">
             <div class="overflow-hidden text-nowrap px-2 flex items-center">
-                <img class="size-7 border-sky-700 rounded-md" src="https://cdn.discordapp.com/app-icons/1000885935107473458/30764c598519d21c84710865ff638dad.png?size=128">
+                <img class="size-7 border-sky-700 rounded-md" src="assets/bot.png">
                 <div class="ml-3 font-bold text-base text-justify">
                     <p>Little</p>
                     <p>Hirishima</p>

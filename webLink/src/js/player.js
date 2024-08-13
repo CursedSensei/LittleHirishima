@@ -58,14 +58,46 @@ $("#pageButtons > button").on("click", function () {
     }
 });
 
+function radioText(jDom, reversed = false) {
+    if (!reversed) {
+        var offset = jDom.width() - jDom.parent().width();
+        if (offset <= 0) return;
+    } else {
+        var offset = 0;
+    }
+
+    jDom.animate({
+        "margin-left": (offset * -1) + "px"
+    },
+    {
+        duration: 6000,
+        complete: function () {
+            radioText(jDom, !reversed);
+        },
+        fail: function () {
+            jDom.css("margin-left", "0px");
+        }
+    });
+}
+
+function radioTextStop(jDom) {
+    jDom.stop(true, false);
+}
+
 queueEmpty.on("click", function () {$("#searchBut").trigger("click");});
 
 const searchQuery = $("#searchQuery");
 const searchHint = $("#searchHint");
 const searchButton = $("#searchButton");
 const searchTray = $("#searchTray");
+
 var hintController = new AbortController();
 var resultController = new AbortController();
+var continueController = new AbortController();
+
+var searchTopPosition = 0;
+var continueToken = "";
+var continueLock = false;
 var hintLookup = -1;
 
 searchHint.hide();
@@ -114,11 +146,60 @@ searchQuery.on("focusout", function () {
     searchHint.hide();
 });
 
+function searchEmpty() {
+    searchTray.append($(`<div class="w-full h-full flex justify-center items-center">
+        <img class="size-14" src="assets/error.png">
+        <p class="font-bold text-xl">  No Results</p>
+    </div>`));
+}
+
+function appendResult(data) {
+    for (let i = 0; i < data.length - 1; i++) {
+        let mainDiv = $('<div class="w-full flex gap-6 px-6 py-2 bg-black bg-opacity-0 hover:bg-opacity-15"></div>');
+        mainDiv.append($('<img class="h-20 shrink-0 aspect-video" src="' + data[i]['thumb'] + '">'));
+
+        let detailSection = $('<div class="grow w-1/5 overflow-hidden"></div>');
+        let detailChild = $('<a href="https://www.youtube.com/watch?v=' + data[i]['key'] + '" class="font-bold text-xl text-nowrap hover:underline w-min" target="_blank"></a>');
+        detailChild.text(data[i]['name']);
+        mainDiv.hover(function (e) {radioText($(this).find("a").first())}, function (e) {radioTextStop($(this).find("a").first())});
+        detailSection.append(detailChild);
+
+        let childSection = $('<div class="w-full flex py-3"></div>');
+        detailChild = $('<p class="grow text-base"></p>');
+        detailChild.text(data[i]['channel']);
+        childSection.append(detailChild);
+
+        detailChild = $('<p class="grow-0 text-sm"></p>');
+        detailChild.text(data[i]['rawlength']);
+        childSection.append(detailChild);
+
+        detailSection.append(childSection);
+        mainDiv.append(detailSection);
+
+        detailSection = $('<div class="shrink-0 flex flex-col gap-4"></div>');
+        let playButton = $('<button class="grow rounded-lg bg-black bg-opacity-20 px-2"><i class="fa fa-play" aria-hidden="true"></i></button>');
+        let queueButton = $('<button class="grow rounded-lg bg-black bg-opacity-20 px-2"><i class="fa fa-clone" aria-hidden="true"></i></button>');
+
+        detailSection.append(playButton);
+        detailSection.append(queueButton);
+
+        mainDiv.on("dblclick", function (e) {
+            // play
+        });
+
+        mainDiv.append(detailSection);
+        searchTray.append(mainDiv);
+    }
+}
+
 function searchResult() {
     searchHint.hide();
     resultController.abort();
+    continueController.abort();
+    continueToken = "";
     searchTray.empty();
-    searchQuery.blur()
+    searchQuery.blur();
+    searchTopPosition = 0;
 
     if (searchQuery.val() != "") {
         resultController = new AbortController();
@@ -128,18 +209,67 @@ function searchResult() {
         }).then(function (res) {
             if (res.status == 200) {
                 res.json().then(function (data) {
-                    for (let i = 0; i < data.length; i++) {
-                        searchTray.append($("<p>" + data[i]['name'] + "</p>"));
-                    }
+                    appendResult(data);
+                    continueToken = data[data.length - 1];
                 });
             } else {
-                // no result
+                searchEmpty();
             }
         });
     } else {
-        // no result
+        searchEmpty();
     }
 }
+
+function searchContinue() {
+    if (searchPageDom.scrollTop() < searchTopPosition){
+        return;
+    }
+
+    searchTopPosition = searchPageDom.scrollTop() <= 0 ? 0 : searchPageDom.scrollTop();
+    if (searchPageDom.scrollTop() + searchPageDom.height() < searchPageDom.prop('scrollHeight')){
+        return;
+    }
+
+    if (continueToken && !continueLock) {
+        continueLock = true;
+        fetch("actions/search.php?&c=" + encodeURIComponent(continueToken), {
+            method: "get",
+            signal: resultController.signal,
+        }).then(function (res) {
+            if (res.status == 200) {
+                res.json().then(function (data) {
+                    appendResult(data);
+                    continueToken = data[data.length - 1];
+                    continueLock = false;
+                });
+            }
+            continueLock = false;
+        }).catch(function (e) {
+            continueLock = false;
+        });
+    }
+}
+
+searchPageDom.on("wheel", searchContinue);
+searchPageDom.on("scroll", searchContinue);
+searchPageDom.on("resize", function (e) {
+    if (searchTopPosition == 0) {
+        return;
+    }
+
+    searchTopPosition = searchPageDom.scrollTop() <= 0 ? 0 : searchPageDom.scrollTop();
+});
+
+searchQuery.keydown(function (e) {
+    if (e.key === "Tab") {
+        if (hintLookup != -1) {
+            searchQuery.val(searchHint.children().eq(hintLookup).text());
+            getHint(searchQuery.val());
+            e.preventDefault();
+        }
+    }
+});
 
 searchQuery.keyup(function (e) {
     if (e.key === "Enter") {

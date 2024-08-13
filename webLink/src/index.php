@@ -31,17 +31,17 @@ if (isset($_SESSION['user'])) {
         <link href="./css/output.css" rel="stylesheet">
         <title>Little Hirishima Login</title>
         <link rel="preconnect" href="https://cdn.discordapp.com" />
-        <link rel="icon" href="https://cdn.discordapp.com/app-icons/1000885935107473458/30764c598519d21c84710865ff638dad.png?size=128" type="image/x-icon">
+        <link rel="icon" href="assets/bot.png" type="image/x-icon">
     </head>
     <body class="min-h-screen bg-gradient-to-b from-slate-900 to-zinc-950">
         <header class="flex p-4">
-            <img class="size-12 border-sky-700 rounded-xl" src="https://cdn.discordapp.com/app-icons/1000885935107473458/30764c598519d21c84710865ff638dad.png?size=128">
+            <img class="size-12 border-sky-700 rounded-xl" src="assets/bot.png">
             <h2 class="float-start ml-3 font-semibold text-white text-4xl">Little Hirishima</h2>
         </header>
         <div class="bg-white w-1/3 mx-auto bg-opacity-20 mt-52 rounded-md flex text-white">
             <div class="w-7/12">
                 <div class="flex pl-2 pt-2">
-                    <img class="size-8 border-sky-700 rounded-xl" src="https://cdn.discordapp.com/app-icons/1000885935107473458/30764c598519d21c84710865ff638dad.png?size=128">
+                    <img class="size-8 border-sky-700 rounded-xl" src="assets/bot.png">
                     <h2 class="float-start ml-3 font-semibold text-xl">Little Hirishima</h2>
                 </div>
                 <p class="p-2 text-justify">Yap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yap</p>
