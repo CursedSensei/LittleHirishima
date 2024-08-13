@@ -1,4 +1,4 @@
-# OLD README MAY CONTAIN UNDESCRIBABLE BULL$%@^ 
+# OLD README MAY CONTAIN UNDESCRIBABLE INFO
 # Little-Hirishima-Pycord
 
 My Python Discord Bot
@@ -32,7 +32,7 @@ Following changes that should be done before running it yourself:
   - Anime Download Location - variable name: ```bufferdirectory```
 
   
-  (The following changes can be found in ```music.play``` function... just find a long ass directory)
+  (The following changes can be found in ```music.play``` function... just find a long directory)
   
   - FFmpeg Location
   
