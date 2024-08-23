@@ -228,7 +228,7 @@ try:
         else:
             await ctx.respond("Bot is already paused", delete_after=6)
 
-    @client.slash_command(name='loop', description="Change mode for loop")
+    @client.slash_command(name='loop', description="Switch between three loop modes")
     async def loop(ctx: discord.ApplicationContext):
         await ctx.respond(voiceClient.loopState(ctx.guild_id))
 
