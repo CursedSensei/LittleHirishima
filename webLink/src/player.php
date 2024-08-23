@@ -123,8 +123,27 @@
                     </div>
                     <div class="grow relative flex min-h-0" style="width: 300%;">
                         <div class="h-full w-1/3" id="queuePage">
-                            <!-- <div class="h-24 w-full bg-black bg-opacity-20"></div> -->
-                            <div class="w-full h-full flex items-center justify-center text-2xl font-bold"><button class="border-2 border-white border-opacity-15 rounded-xl px-2" id="queueHint"><i class="fa fa-plus" aria-hidden="true"></i></button> &nbsp;Add To Queue</div>
+                            <div class="w-full flex gap-5 px-6 py-2 bg-black bg-opacity-0 hover:bg-opacity-15">
+                                <div class="shrink-0 flex flex-col justify-center gap-3 cursor-pointer">
+                                    <p class="rounded-lg bg-black bg-opacity-20 p-1"></p>
+                                    <p class="rounded-lg bg-black bg-opacity-20 p-1"></p>
+                                </div>
+                                <img class="h-20 shrink-0 aspect-video" src="https://i.ytimg.com/vi/vQjub8dkobc/hq720.jpg?sqp=-oaymwEXCNAFEJQDSFryq4qpAwkIARUAAIhCGAE=&amp;rs=AOn4CLDWACbMxarWRnx_4JalGSsUi5tgUg">
+                                <div class="grow w-1/5 overflow-hidden">
+                                    <a href="https://www.youtube.com/watch?v=vQjub8dkobc" class="font-bold text-xl text-nowrap hover:underline w-min" target="_blank" style="margin-left: 0px;">
+                                        【#ホロ7DTD】49日間サバイバル⁉3日目！【星街すいせい / ホロライブ】</a>
+                                    <div class="w-full flex py-3">
+                                        <p class="grow text-base">Suisei Channel</p>
+                                        <p class="grow-0 text-sm">2:11:59</p>
+                                    </div>
+                                </div>
+                                <div class="shrink-0 flex flex-col justify-center">
+                                    <button class="rounded-lg bg-black bg-opacity-20 px-2.5 py-0.5">
+                                        <i class="fa fa-play" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- <div class="w-full h-full flex items-center justify-center text-2xl font-bold"><button class="border-2 border-white border-opacity-15 rounded-xl px-2" id="queueHint"><i class="fa fa-plus" aria-hidden="true"></i></button> &nbsp;Add To Queue</div> -->
                         </div>
                         <div class="h-full w-1/3 overflow-y-auto flex flex-col" id="searchPage">
                             <div class="w-1/3 px-10 pt-3 pb-2 text-xl absolute">
