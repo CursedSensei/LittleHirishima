@@ -84,6 +84,50 @@ function radioTextStop(jDom) {
     jDom.stop(true, false);
 }
 
+const queueTest = $("#queueSwapRegion");
+var mouseY = 0;
+var queueY = -1;
+var mouseOff = 0;
+
+$(document).on("mouseup", function (e) {
+    if (queueY != -1) {
+        queueTest.parent().css("position", "");
+        queueTest.parent().css("top", "0px");
+        queueY = -1
+
+        queueTest.on("mousedown", function (e) {
+            const pos = queueTest.parent().position();
+        
+            queueY = pos.top;
+            mouseOff = mouseY;
+        
+            queueTest.parent().css("position", "absolute");
+        
+            queueTest.off("mousedown");
+        });
+    }
+});
+
+$(document).on("mousemove", function (e) {
+    mouseY = e.pageY;
+
+    if (queueY != -1) {
+        queueTest.parent().css("top", Math.max(queueY + mouseY - mouseOff, 0) + "px");
+    }
+});
+
+queueTest.on("mousedown", function (e) {
+    const pos = queueTest.parent().position();
+
+    queueY = pos.top;
+    mouseOff = mouseY;
+
+    queueTest.parent().css("position", "absolute");
+
+    queueTest.off("mousedown");
+});
+
+
 queueEmpty.on("click", function () {$("#searchBut").trigger("click");});
 
 const searchQuery = $("#searchQuery");
