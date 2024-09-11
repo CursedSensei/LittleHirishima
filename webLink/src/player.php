@@ -122,9 +122,10 @@
                         <button name="recent" class="w-1/3 border-b border-gray-700 hover:font-semibold hover:border-gray-500 bg-black hover:bg-opacity-20 bg-opacity-30"><i class="fa fa-history" aria-hidden="true"></i> Recent</button>
                     </div>
                     <div class="grow relative flex min-h-0" style="width: 300%;">
+                        <?php // Player Queue?>
                         <div class="h-full w-1/3" id="queuePage">
-                            <div class="w-full flex gap-5 px-6 py-2 bg-black bg-opacity-0 hover:bg-opacity-15">
-                                <button class="shrink-0 flex flex-col justify-center gap-3" id="queueSwapRegion" draggable="false">
+                            <div class="w-full flex gap-5 px-6 py-2 bg-black bg-opacity-0 hover:bg-opacity-15 select-none">
+                                <button class="shrink-0 flex flex-col justify-center gap-3 p-1" draggable="false">
                                     <p class="rounded-lg bg-black bg-opacity-20 p-1"></p>
                                     <p class="rounded-lg bg-black bg-opacity-20 p-1"></p>
                                 </button>
@@ -144,7 +145,7 @@
                                 </div>
                             </div>
                             <div class="w-full flex gap-5 px-6 py-2 bg-black bg-opacity-0 hover:bg-opacity-15">
-                                <button class="shrink-0 flex flex-col justify-center gap-3" draggable="false">
+                                <button class="shrink-0 flex flex-col justify-center gap-3 p-1" draggable="false">
                                     <p class="rounded-lg bg-black bg-opacity-20 p-1"></p>
                                     <p class="rounded-lg bg-black bg-opacity-20 p-1"></p>
                                 </button>

@@ -84,47 +84,57 @@ function radioTextStop(jDom) {
     jDom.stop(true, false);
 }
 
-const queueTest = $("#queueSwapRegion");
+$("#queuePage > div > button").on("mousedown", queueMove);
+
+var queueShadow = $('<div class="w-full bg-black bg-opacity-15 animate-pulse"></div>');
+var queueSelected = null;
 var mouseY = 0;
 var queueY = -1;
 var mouseOff = 0;
 
-$(document).on("mouseup", function (e) {
-    if (queueY != -1) {
-        queueTest.parent().css("position", "");
-        queueTest.parent().css("top", "0px");
-        queueY = -1
+function queueMove(e) {
+    queueSelected = $(this).parent();
+    const pos = queueSelected.position();
 
-        queueTest.on("mousedown", function (e) {
-            const pos = queueTest.parent().position();
-        
-            queueY = pos.top;
-            mouseOff = mouseY;
-        
-            queueTest.parent().css("position", "absolute");
-        
-            queueTest.off("mousedown");
-        });
+    queueY = pos.top;
+    mouseOff = mouseY;
+
+    queueShadow.outerHeight(queueSelected.outerHeight());
+    queueSelected.after(queueShadow);
+
+    queueSelected.css("width", queueSelected.outerWidth() + "px");
+    queueSelected.css("position", "absolute");
+    queueSelected.css("z-index", "10");
+
+    queueSelected.off("mousedown");
+}
+
+function queueSwap(e) {
+    if (queueY != -1) {
+        if (queueShadow.index() !== queueSelected.index() - 1 && queueShadow.index() !== queueSelected.index() + 1) {
+            // swap call
+        }
+        queueShadow.remove();
+        queueSelected.css("position", "");
+        queueSelected.css("top", "");
+        queueSelected.css("width", "");
+
+        queueY = -1;
+
+        queueSelected.find("button").first().on("mousedown", queueMove);
     }
-});
+}
+
+$(document).on("mouseup", queueSwap);
+
+window.addEventListener("focusout", queueSwap);
 
 $(document).on("mousemove", function (e) {
     mouseY = e.pageY;
 
     if (queueY != -1) {
-        queueTest.parent().css("top", Math.max(queueY + mouseY - mouseOff, 0) + "px");
+        queueSelected.css("top", Math.max(queueY + mouseY - mouseOff, 0) + "px");
     }
-});
-
-queueTest.on("mousedown", function (e) {
-    const pos = queueTest.parent().position();
-
-    queueY = pos.top;
-    mouseOff = mouseY;
-
-    queueTest.parent().css("position", "absolute");
-
-    queueTest.off("mousedown");
 });
 
 
