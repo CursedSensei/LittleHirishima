@@ -47,7 +47,7 @@ if (isset($_SESSION['user'])) {
                 <p class="p-2 text-justify">Yap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yapYap yap yap</p>
             </div>
             <div class="w-5/12 flex float-end border-l-2 border-black">
-                <a class="inline-flex items-center m-auto shadow-md px-4 py-2 rounded-3xl border border-gray-800 bg-blue-800 hover:bg-blue-600 transition-colors duration-100" href="https://discord.com/oauth2/authorize?client_id=1000885935107473458&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%2Fbot%2Findex.php&scope=identify+guilds">
+                <a class="inline-flex items-center m-auto shadow-md px-4 py-2 rounded-3xl border border-gray-800 bg-blue-800 hover:bg-blue-600 transition-colors duration-100" href="https://discord.com/oauth2/authorize?client_id=1000885935107473458&response_type=code&redirect_uri=<?= (empty($_SERVER['HTTPS']) ? 'http' : 'https') ?>%3A%2F%2F<?= $_SERVER['HTTP_HOST'] ?>%2Fbot%2Findex.php&scope=identify+guilds">
                     <svg class="fill-current w-4 h-4 mr-2" viewBox="0 -28.5 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" fill="#000000">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
