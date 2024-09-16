@@ -55,7 +55,7 @@ class voiceClient(__baseClient):
                             await self.next()
                         elif self.loop == REPEAT_QUEUE:
                             if len(self.queue) == 0:
-                                self.loop_ind = 0
+                                self.loop_ind = -1
                             else:
                                 self.loop_ind += 1
                                 try:

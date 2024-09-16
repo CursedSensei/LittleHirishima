@@ -140,11 +140,14 @@ try:
             song_mes = asyncio.create_task(ctx.respond(embed = song.embed(client, title = "Song to play", color=discord.Colour.orange())))
             
             if await vClient.play(song, force = True):
-                await (await song_mes).edit(embed = song.embed(client))
+                song_mes = await song_mes
                 if vClient.loop == REPEAT_QUEUE:
+                    await song_mes.edit(embed = song.embed(client, title = f"Now Playing (#{vClient.loop_ind + 2} in Queue)"))
                     vClient.loop_ind += 1
                     vClient.queue.insert(vClient.loop_ind, song)
                     updateVoice(vClient.guild_id, vClient.loop, vClient.queue)
+                else:
+                    await song_mes.edit(embed = song.embed(client))
             else:
                 await (await song_mes).edit(embed = song.embed(client, title = "Song Cancelled", color=discord.Colour.red()))
 
