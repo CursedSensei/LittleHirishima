@@ -167,8 +167,10 @@ try:
             if song == None:
                 return
             
-            if voiceClient.queueGuild(ctx.guild_id, add=song):
-                await ctx.respond(embed = song.embed(client, "Song added to queue"))
+            position = voiceClient.queueGuild(ctx.guild_id, add=song)
+
+            if position:
+                await ctx.respond(embed = song.embed(client, f"Song added to queue (#{position})"))
         elif remove:
             try:
                 if remove == "all":
@@ -265,7 +267,10 @@ try:
             if vClient.song == None:
                 await ctx.respond("No song is currently played", delete_after=6)
             else:
-                await ctx.respond(embed = vClient.song.embed(client, timed = True))
+                if vClient.loop == REPEAT_QUEUE:
+                    await ctx.respond(embed = vClient.song.embed(client, title = f"Now Playing (#{vClient.loop_ind + 1} in Queue)", timed = True))
+                else:
+                    await ctx.respond(embed = vClient.song.embed(client, timed = True))
         else:
             await ctx.respond("Bot is not in a voice channel", delete_after=3)
 

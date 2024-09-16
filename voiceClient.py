@@ -259,7 +259,12 @@ class voiceClient(__baseClient):
 
         guildData.updateVoice(guild_id, loop, queue)
 
-        return True if add or shuffle else removed
+        if add:
+            return len(queue)
+        elif shuffle:
+            return True
+        return removed
+
 
     def cleanup(self) -> None:
         self.client.stop()
