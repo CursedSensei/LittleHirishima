@@ -32,8 +32,8 @@ def loadVoice(guild_id : int) -> tuple[list, int]:
     guildSpace = os.path.join(guildSpace, 'voice.json')
     if not os.path.exists(guildSpace):
         with open(guildSpace, "w") as w:
-            json.dump([DEFAULT], w)
-        return ([], DEFAULT)
+            json.dump([REPEAT_QUEUE], w)
+        return ([], REPEAT_QUEUE)
     
     with open(guildSpace, "r") as r:
         voice = json.load(r)
