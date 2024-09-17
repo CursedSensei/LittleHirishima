@@ -34,13 +34,13 @@ class webClient(__baseClient):
 
         seen = time.time()
         while time.time() - seen <= 20:
-            for i in os.listdir(REQUESTSDIRECTORY):
+            for i in os.listdir(PIPESDIRECTORY):
                 if i == self.id:
                     with open(i, "r") as r:
                         request = r.read().split("\n")
 
                     if request[0] == "info":
-                        with open(os.path.join(REQUESTSDIRECTORY, i + ".out"), "w") as w:
+                        with open(os.path.join(PIPESDIRECTORY, i + ".out"), "w") as w:
                             json.dump({
                                 "song": self.song.toDict() if self.song else None,
                                 "is_connected": self.is_connected,
