@@ -255,7 +255,11 @@ try:
             if song:
                 song_mes = asyncio.create_task(ctx.respond(embed = song.embed(client, title = "Next song in queue", color=discord.Colour.orange())))
                 if await taskPlay:
-                    await (await song_mes).edit(embed = song.embed(client))
+                    song_mes = await song_mes
+                    if vClient.loop == REPEAT_QUEUE:
+                        await song_mes.edit(embed = song.embed(client, title = f"Now Playing (#{vClient.loop_ind + 2} in Queue)"))
+                    else:
+                        await song_mes.edit(embed = song.embed(client))
                 else:
                     await (await song_mes).edit(embed = song.embed(client, title = "Song Cancelled", color=discord.Colour.red()))
             else:
