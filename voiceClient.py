@@ -70,9 +70,10 @@ class voiceClient(__baseClient):
         except:
             from traceback import format_exc
             from botPath import WORKERERRORPATH
+            from time import strftime
 
             with open(WORKERERRORPATH, "w") as w:
-                w.write(format_exc())
+                w.write(f"[{strftime('%x')}][{strftime('%X')}] Guild Name: {self.client.guild.name}\n\n" + format_exc())
             
             await self.client.disconnect()
 

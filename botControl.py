@@ -15,42 +15,34 @@ def initializeAdmin(client : discord.Bot):
             return
 
         if message.content == "_destroy":
-            await removeCommand(message)
             if message.author.id == 413231303534837762:
+                await removeCommand(message)
                 await client.close()
-            else:
-                await message.channel.send(f"fuck you {message.author.mention} your not my daddy.", delete_after=3)
-            return
+                return
 
         if message.content == "_commit":
-            await removeCommand(message)
             if message.author.id == 413231303534837762:
+                await removeCommand(message)
                 subprocess.run("git pull", cwd=ROOT_DIR, shell = True)
                 subprocess.Popen(["python3", os.path.join(os.path.dirname(os.path.abspath(__file__)), 'little_hirishima.pyw')], start_new_session = True)
                 await client.close()
-            else:
-                last = await message.channel.send(f"fuck you {message.author.mention} your not my daddy.", delete_after=3)
-            return
+                return
 
         if message.content =="_shutdownbot":
-            await removeCommand(message)
             if message.author.id == 413231303534837762:
+                await removeCommand(message)
                 os.system("sudo shutdown now")
-            else:
-                last = await message.channel.send(f"fuck you {message.author.mention} your not my daddy.", delete_after=3)
-            return
+                return
 
         if message.content =="_restartbot":
-            await removeCommand(message)
             if message.author.id == 413231303534837762:
+                await removeCommand(message)
                 os.system("sudo reboot")
-            else:
-                last = await message.channel.send(f"fuck you {message.author.mention} your not my daddy.", delete_after=3)
-            return
+                return
 
         if message.content.startswith("_buffer"):
-            await removeCommand(message)
             if message.author.id == 413231303534837762:
+                await removeCommand(message)
                 if message.content == "_buffer":
                     response = ["```","List of animes buffered:",""]
                     for i in os.listdir(ANIMEDIRECTORY):
@@ -74,9 +66,7 @@ def initializeAdmin(client : discord.Bot):
                         await message.channel.send("Removed from buffer", delete_after=3)
                     else:
                         await message.channel.send("This anime is not buffered", delete_after=3)
-            else:
-                last = await message.channel.send(f"fuck you {message.author.mention} your not my daddy.", delete_after=3)
-            return
+                return
 
         sentmessage = message.content
         if "<@" in sentmessage and ">" in sentmessage:
@@ -91,9 +81,3 @@ def initializeAdmin(client : discord.Bot):
             return
         with open(CHATLOG,"a", encoding='utf-8') as c:
             c.write(f"[{time.strftime('%x')}][{time.strftime('%X')}]-{{{message.guild.name}}}-{{{message.channel}}}-<{message.author}> {sentmessage}\n")
-        if "@Little Hirishima" in sentmessage and message.guild.id != 990191738524139590:
-            response_set = ["I AM A HORNY BITCH","I LOVE MIKE TYSON","I'M A PIECE OF SHIT","DICK AND BALLS I LOVE","PUT IT DEEP IN ME","YOU'RE WARM IN MY STOMACH"]
-            response = [f"The fuck you want? {message.author.mention}","Ain't human but watcha want?","Hi friend","Ui-MAMA",
-            "yeh you can't talk with me", "you sir can suck a dick",f"{message.guild.get_member(413231303534837762).mention} help this man","Who are you?",
-            "shhhhh","...",f'Please write this in a piece of paper to prove that you\'re human\n```\n"{random.choice(response_set)}"\n```']
-            await message.channel.send(random.choice(response))
