@@ -10,3 +10,4 @@ Pc log.txt
 .vscode/
 
 **/__pycache__/
+lib/yt-dlp_linux
