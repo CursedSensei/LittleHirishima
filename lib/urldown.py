@@ -44,7 +44,7 @@ def download_file(url, path, link):
 
 def get_link(url):
 	jar = requests.cookies.RequestsCookieJar()
-	jar.set('auth', '4mGRLICwi0PoZEQvhOb7Qbl1BTFu6Ibbb8sRh2ryYLWYWrqae%2Fcba0MzhSA7zyuxagc%2Bz9BZs2hi5LbgQuxIVA%3D%3D', domain=url.split("/")[2], path=r'/')
+	jar.set('auth', 'RnDQRcGBC0t1OOAAWMOapB0cjCwYnIDCeQMr0gbs0wGUUiShV85tKiRi%2FgO8TuvOCxRHgLVgFUDZCkwBszSWWA%3D%3D', domain=url.split("/")[2], path=r'/')
 	link = requests.get(url, cookies=jar)
 	ohlink = False
 	links = []
