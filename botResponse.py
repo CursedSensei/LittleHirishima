@@ -70,12 +70,14 @@ class OllamaSession:
                         }
                     ])
 
+                    print(response.message)
+
                     for i in response.message.tool_calls:
                         if (i.function.name == "chat"):
                             self.channel.send(i.function.arguments.get('message'))
                             lastChat = time()
 
-                self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 30 - (time() - lastChat)))
+                await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 30 - (time() - lastChat)))
         except:
             sessions.pop(self.channel.id)
 
