@@ -1,7 +1,6 @@
 from ollama import AsyncClient
 from discord import TextChannel, Bot
 from asyncio import create_task, wait_for
-from json import dumps
 from time import time
 
 ollamaClient = AsyncClient("http://192.168.1.4:11434")
@@ -28,10 +27,11 @@ class OllamaSession:
                             for item in message.guild.emojis:
                                 if f"<:{item.name}:{item.id}>" in sentmessage:
                                     sentmessage = sentmessage.replace(f"<:{item.name}:{item.id}>",f":{item.name}:")
-                        context.insert(0, {'user': message.author.name, 'chat': sentmessage, 'mention_command': f'<@{message.author.id}>'})
+                        context.insert(0, '<' + message.author.name + '> ' + sentmessage)
 
                     await wait_for(ollamaClient.ps(), timeout=3)
 
+                    print(context)
                     response = await ollamaClient.chat(model='llama3.1', messages=[
                         {
                             'role': 'system',
@@ -39,7 +39,7 @@ class OllamaSession:
                         },
                         {
                             'role': 'user',
-                            'content': "[CONTEXT]\nChat History: " + dumps(context),
+                            'content': "[CONTEXT]\nChat History: \n\n" + '\n'.join(context),
                         },
                     ], tools=[
                         {
@@ -74,7 +74,7 @@ class OllamaSession:
 
                     for i in response.message.tool_calls:
                         if (i.function.name == "chat"):
-                            self.channel.send(i.function.arguments.get('message'))
+                            await self.channel.send(i.function.arguments.get('message'))
                             lastChat = time()
 
                 await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 30 - (time() - lastChat)))
