@@ -1,6 +1,7 @@
 import discord
 from botPath import *
-import subprocess, os, shutil, sys, time, random
+from botResponse import OllamaSession
+import subprocess, os, shutil, sys, time
 
 def initializeAdmin(client : discord.Bot):
     async def removeCommand(message : discord.Message):
@@ -68,11 +69,14 @@ def initializeAdmin(client : discord.Bot):
                         await message.channel.send("This anime is not buffered", delete_after=3)
                 return
 
+        isMentioned = False
         sentmessage = message.content
         if "<@" in sentmessage and ">" in sentmessage:
             for item in message.guild.members:
                 if f"<@{item.id}>" in sentmessage:
                     sentmessage = sentmessage.replace(f"<@{item.id}>",f"@{item.name}")
+                    if item.id == client.user.id:
+                        isMentioned = True
         if "<:" in sentmessage and ">" in sentmessage:
             for item in message.guild.emojis:
                 if f"<:{item.name}:{item.id}>" in sentmessage:
@@ -81,3 +85,6 @@ def initializeAdmin(client : discord.Bot):
             return
         with open(CHATLOG,"a", encoding='utf-8') as c:
             c.write(f"[{time.strftime('%x')}][{time.strftime('%X')}]-{{{message.guild.name}}}-{{{message.channel}}}-<{message.author}> {sentmessage}\n")
+
+        if isMentioned:
+            OllamaSession.addOllama(message.channel, client)
