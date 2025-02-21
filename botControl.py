@@ -1,6 +1,6 @@
 import discord
 from botPath import *
-from botResponse import OllamaSession
+#from botResponse import OllamaSession
 import subprocess, os, shutil, sys, time
 
 def initializeAdmin(client : discord.Bot):
@@ -87,4 +87,5 @@ def initializeAdmin(client : discord.Bot):
             c.write(f"[{time.strftime('%x')}][{time.strftime('%X')}]-{{{message.guild.name}}}-{{{message.channel}}}-<{message.author}> {sentmessage}\n")
 
         if isMentioned:
-            OllamaSession.addOllama(message.channel, client)
+            pass
+            #OllamaSession.addOllama(message.channel, client)
