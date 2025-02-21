@@ -340,7 +340,7 @@ except ClientConnectorError:
     import subprocess, time, os
 
     time.sleep(10)
-    subprocess.Popen(["python3", os.path.abspath(__file__)], start_new_session = True)
+    subprocess.Popen([sys.executable, os.path.abspath(__file__)], start_new_session = True)
 except:
     import traceback
     with open(botPath.ERRORPATH,"w") as f:

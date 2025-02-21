@@ -75,13 +75,13 @@ class OllamaSession:
                             self.channel.send(i.function.arguments.get('message'))
                             lastChat = time()
 
-                self.bot.wait_for('message', lambda mes: mes.channel == self.channel, max(0, 30 - (time() - lastChat)))
+                self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 30 - (time() - lastChat)))
         except:
             sessions.pop(self.channel.id)
 
     @staticmethod
     def addOllama(channel: TextChannel, bot: Bot):
         if sessions.get(channel.id) == None:
-            sessions.update({channel.id, OllamaSession(channel, bot)})
+            sessions.update({channel.id: OllamaSession(channel, bot)})
 
 sessions: dict[int, OllamaSession] = {}
