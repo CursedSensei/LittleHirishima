@@ -41,7 +41,7 @@ class OllamaSession:
                         },
                         {
                             'role': 'user',
-                            'content': "Context:\n\n[datetime] <user> message\n\n" + '\n'.join(context) + '\n\nCurrent Datetime: ' + str(datetime.utcnow()) + '\n\nEvaluate:',
+                            'content': "Context:\n\n[datetime] <user> message\n\n" + '\n'.join(context) + '\n\nCurrent Datetime: ' + str(datetime.utcnow()),
                         },
                     ], tools=[
                         {
