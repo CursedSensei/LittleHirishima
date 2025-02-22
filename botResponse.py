@@ -35,11 +35,11 @@ class OllamaSession:
                     response = await ollamaClient.chat(model='llama3.1', messages=[
                         {
                             'role': 'system',
-                            'content': '[INSTRUCTIONS]\n Your name is Little Hirishima. Evaluate whether you should chat in this discord channel or no. If you\'re gonna chat, specify what response you should make. You should not be eager to start a conversation, but always assist or respond those who needs you.\n'
+                            'content': 'Your name is Little Hirishima. Evaluate whether you should chat in this chat or no. If you\'re gonna chat, specify what response you should make where you answer right away. You should not be eager to start a conversation, but always assist or respond those who called you.'
                         },
                         {
                             'role': 'user',
-                            'content': "[CONTEXT]\nChat History: \n\n" + '\n'.join(context),
+                            'content': "Context:\n\n<user> message\n\n" + '\n'.join(context) + '\n\nEvaluate:',
                         },
                     ], tools=[
                         {
@@ -79,6 +79,7 @@ class OllamaSession:
 
                 await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 30 - (time() - lastChat)))
         except:
+            print(self.channel.id + ' Session AI closed')
             sessions.pop(self.channel.id)
 
     @staticmethod
