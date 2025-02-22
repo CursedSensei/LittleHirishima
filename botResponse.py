@@ -37,7 +37,7 @@ class OllamaSession:
                     response = await ollamaClient.chat(model='llama3.1', messages=[
                         {
                             'role': 'system',
-                            'content': 'Your name is Little Hirishima. All responses from user Little Hirishima are your old responses. Do not repeat your response. Evaluate whether you should chat in this chat or no. If you\'re gonna chat, specify what response you should make. Make sure your response is complete without need of clarifications. You should not be eager to start a conversation, but always assist or respond those who called you.'
+                            'content': 'Your name is Little Hirishima. Evaluate whether you should chat in this chat or no. Focus on the latest chat. If you\'re gonna chat, specify your complete response. You should not be eager to start a conversation, but always assist or respond those who called you.'
                         },
                         {
                             'role': 'user',
