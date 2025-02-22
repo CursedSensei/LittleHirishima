@@ -2,6 +2,7 @@ from ollama import AsyncClient
 from discord import TextChannel, Bot
 from asyncio import create_task, wait_for
 from time import time
+from datetime import datetime
 
 ollamaClient = AsyncClient("http://192.168.1.4:11434")
 
@@ -27,7 +28,8 @@ class OllamaSession:
                             for item in message.guild.emojis:
                                 if f"<:{item.name}:{item.id}>" in sentmessage:
                                     sentmessage = sentmessage.replace(f"<:{item.name}:{item.id}>",f":{item.name}:")
-                        context.insert(0, '<' + message.author.name + '> ' + sentmessage)
+
+                        context.insert(0, '[' + str(message.created_at) + '] <' + message.author.name + '> ' + sentmessage)
 
                     await wait_for(ollamaClient.ps(), timeout=3)
 
@@ -39,7 +41,7 @@ class OllamaSession:
                         },
                         {
                             'role': 'user',
-                            'content': "Context:\n\n<user> message\n\n" + '\n'.join(context) + '\n\nEvaluate:',
+                            'content': "Context:\n\n[datetime] <user> message\n\n" + '\n'.join(context) + '\n\nCurrent Datetime: ' + str(datetime.utcnow()) + '\n\nEvaluate:',
                         },
                     ], tools=[
                         {
