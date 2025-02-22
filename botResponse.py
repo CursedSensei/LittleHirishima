@@ -77,7 +77,7 @@ class OllamaSession:
                             await self.channel.send(i.function.arguments.get('message'))
                             lastChat = time()
 
-                await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 30 - (time() - lastChat)))
+                await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 120 - (time() - lastChat)))
         except:
             print(self.channel.id, ' Session AI closed')
             sessions.pop(self.channel.id)
