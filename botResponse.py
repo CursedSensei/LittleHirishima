@@ -48,13 +48,13 @@ class OllamaSession:
                             'type': 'function',
                             'function': {
                                 'name': 'chat',
-                                'description': "Chat to the channel. This can be used multiple times.",
+                                'description': "Chat to the channel.",
                                 "parameters": {
                                     'type': 'object',
                                     'properties': {
                                         'message': {
                                             'type': 'string',
-                                            'description': 'Message to chat to channel.'
+                                            'description': 'Message to chat to channel. Merge all the responses you want to chat here.'
                                         }
                                     }
                                 },
