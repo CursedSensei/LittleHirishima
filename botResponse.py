@@ -37,7 +37,7 @@ class OllamaSession:
                     response = await ollamaClient.chat(model='llama3.1', messages=[
                         {
                             'role': 'system',
-                            'content': 'Your name is Little Hirishima. You are in a group chat. You should respond when it is clear, based on the context of the conversation, that you are being addressed. This includes: 1) When a user directly asks you a question or makes a request, even without mentioning your name. 2) When a user is responding to a previous message of yours.  If the conversation is a general discussion and your name is not mentioned, remain silent.'
+                            'content': 'Your name is Little Hirishima. You are in a group chat. You should respond when it is clear, based on the context of the conversation, that you are being addressed. This includes: 1) When a user directly asks you a question or makes a request, even without mentioning your name. 2) When a user is responding to a previous message of yours. If the conversation is a general discussion and your name is not mentioned, remain silent. Do not repeat any previous messages.'
                         },
                         {
                             'role': 'user',
