@@ -38,6 +38,7 @@ class OllamaSession:
                         {
                             'role': 'system',
                             'content': 'Your name is Little Hirishima. You are in a group chat. You should respond when it is clear, based on the context of the conversation, that you are being addressed. This includes: 1) When a user directly asks you a question or makes a request, even without mentioning your name. 2) When a user is responding to a previous message of yours. If the conversation is a general discussion and your name is not mentioned, remain silent. Do not repeat any previous messages.'
+                            #'content': 'Your name is Little Hirishima. Evaluate whether you should chat in this chat or no. Focus on the latest chat. If you\'re gonna chat, specify your complete response. You should not be eager to start a conversation, but always assist or respond those who called you.'
                         },
                         {
                             'role': 'user',
@@ -54,7 +55,7 @@ class OllamaSession:
                                     'properties': {
                                         'message': {
                                             'type': 'string',
-                                            'description': 'Message to chat to channel. Merge all the responses you want to chat here.'
+                                            'description': 'Message to chat to channel. Do not chat your thoughts, only your response.'
                                         }
                                     }
                                 },
