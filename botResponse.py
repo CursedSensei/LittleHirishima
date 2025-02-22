@@ -48,7 +48,7 @@ class OllamaSession:
                             'type': 'function',
                             'function': {
                                 'name': 'chat',
-                                'description': "Chat to the channel",
+                                'description': "Chat to the channel. This can be used multiple times.",
                                 "parameters": {
                                     'type': 'object',
                                     'properties': {
