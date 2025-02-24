@@ -30,7 +30,6 @@ class OllamaSession:
                                 if f"<:{item.name}:{item.id}>" in sentmessage:
                                     sentmessage = sentmessage.replace(f"<:{item.name}:{item.id}>",f":{item.name}:")
 
-                        context.insert(0, '[' + str(message.created_at) + '] <' + message.author.name + '> ' + sentmessage)
                         context.insert(0, {
                             'role': 'user' if message.author.id != botID else 'assistant',
                             'content': '[' + str(message.created_at) + '] <' + message.author.name + '> ' + sentmessage
@@ -47,8 +46,8 @@ class OllamaSession:
                     response = await ollamaClient.chat(model='llama3.1', messages=[
                         {
                             'role': 'system',
-                            'content': 'Your name is Little Hirishima. You are in a group chat. You should respond when it is clear, based on the context of the conversation, that you are being addressed. This includes: 1) When a user directly asks you a question or makes a request, even without mentioning your name. 2) When a user is responding to a previous message of yours. If the conversation is a general discussion and your name is not mentioned, remain silent. Do not repeat any previous messages.'
-                            #'content': 'Your name is Little Hirishima. Evaluate whether you should chat in this chat or no. Focus on the latest chat. If you\'re gonna chat, specify your complete response. You should not be eager to start a conversation, but always assist or respond those who called you.'
+                            #'content': 'Your name is Little Hirishima. You are in a group chat. You should respond when it is clear, based on the context of the conversation, that you are being addressed. This includes: 1) When a user directly asks you a question or makes a request, even without mentioning your name. 2) When a user is responding to a previous message of yours. If the conversation is a general discussion and your name is not mentioned, remain silent. Do not repeat any previous messages.'
+                            'content': 'Your name is Little Hirishima. Evaluate whether you should chat in this chat or no. Focus on the most recent chat. If you\'re gonna chat, specify your complete response. You should not be eager to start a conversation, but always assist or respond those who called you.'
                         },
                     ] + context, tools=[
                         {

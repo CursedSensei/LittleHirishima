@@ -11,3 +11,5 @@ Pc log.txt
 
 **/__pycache__/
 lib/yt-dlp_linux
+
+venv/
