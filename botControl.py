@@ -57,7 +57,7 @@ def initializeAdmin(client : discord.Bot):
                 gitPullProcess = subprocess.Popen('sudo', '-u', 'aoi', 'git', 'pull', cwd='/home/aoi/Desktop/stackture-server')
                 while gitPullProcess.poll() == None:
                     await sleep(3)
-                stacktureProcess: subprocess.Popen = subprocess.Popen('sudo', '-u', 'aoi', 'run.bash', cwd="/home/aoi/Desktop/stackture-server")
+                stacktureProcess = subprocess.Popen('sudo', '-u', 'aoi', 'run.bash', cwd="/home/aoi/Desktop/stackture-server")
                 message.channel.send('Pulled and Restarted :D', delete_after=5)
                 return
         
@@ -65,7 +65,7 @@ def initializeAdmin(client : discord.Bot):
             if message.guild.id == 1338837641797435488:
                 stacktureProcess.terminate()
                 await removeCommand(message)
-                stacktureProcess: subprocess.Popen = subprocess.Popen('sudo', '-u', 'aoi', 'run.bash', cwd="/home/aoi/Desktop/stackture-server")
+                stacktureProcess = subprocess.Popen('sudo', '-u', 'aoi', 'run.bash', cwd="/home/aoi/Desktop/stackture-server")
                 message.channel.send('Restarted :D', delete_after=5)
                 return
 
