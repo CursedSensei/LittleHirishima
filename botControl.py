@@ -4,7 +4,7 @@ from botResponse import OllamaSession
 import subprocess, os, shutil, sys, time
 from asyncio import sleep
 
-stacktureProcess: subprocess.Popen = subprocess.Popen(['sudo', '-u', 'aoi', 'run.bash'], cwd="/home/aoi/Desktop/stackture-server")
+stacktureProcess: subprocess.Popen = subprocess.Popen(['sudo', '-u', 'aoi', './run.bash'], cwd="/home/aoi/Desktop/stackture-server")
 
 def initializeAdmin(client : discord.Bot):
     async def removeCommand(message : discord.Message):
