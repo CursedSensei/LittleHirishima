@@ -58,7 +58,7 @@ def initializeAdmin(client : discord.Bot):
                 while gitPullProcess.poll() == None:
                     await sleep(3)
                 stacktureProcess = subprocess.Popen(['sudo', '-u', 'aoi', './run.bash'], cwd="/home/aoi/Desktop/stackture-server")
-                message.channel.send('Pulled and Restarted :D', delete_after=5)
+                await message.channel.send('Pulled and Restarted :D', delete_after=5)
                 return
         
         if message.content =="_start":
@@ -66,7 +66,7 @@ def initializeAdmin(client : discord.Bot):
                 stacktureProcess.terminate()
                 await removeCommand(message)
                 stacktureProcess = subprocess.Popen(['sudo', '-u', 'aoi', './run.bash'], cwd="/home/aoi/Desktop/stackture-server")
-                message.channel.send('Restarted :D', delete_after=5)
+                await message.channel.send('Restarted :D', delete_after=5)
                 return
 
         if message.content.startswith("_buffer"):
