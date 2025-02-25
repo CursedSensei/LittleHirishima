@@ -4,7 +4,7 @@ from botResponse import OllamaSession
 import subprocess, os, shutil, sys, time
 from asyncio import sleep
 
-stacktureProcess: subprocess.Popen = subprocess.Popen(['./run.bash'], cwd="/home/aoi/Desktop/stackture-server")
+stacktureProcess: subprocess.Popen = subprocess.Popen(['/home/aoi/.cargo/bin/cargo', 'run'], env={'OPENSSL_DIR': '/usr', 'OPENSSL_LIB_DIR': '/usr/local/lib64', 'OPENSSL_INCLUDE_DIR': '/usr/include'}, cwd="/home/aoi/Desktop/stackture-server")
 
 def initializeAdmin(client : discord.Bot):
     async def removeCommand(message : discord.Message):
@@ -57,7 +57,7 @@ def initializeAdmin(client : discord.Bot):
                 gitPullProcess = subprocess.Popen(['git', 'pull'], cwd='/home/aoi/Desktop/stackture-server')
                 while gitPullProcess.poll() == None:
                     await sleep(3)
-                stacktureProcess = subprocess.Popen(['./run.bash'], cwd="/home/aoi/Desktop/stackture-server")
+                stacktureProcess = subprocess.Popen(['/home/aoi/.cargo/bin/cargo', 'run'], env={'OPENSSL_DIR': '/usr', 'OPENSSL_LIB_DIR': '/usr/local/lib64', 'OPENSSL_INCLUDE_DIR': '/usr/include'}, cwd="/home/aoi/Desktop/stackture-server")
                 await message.channel.send('Pulled and Restarted :D', delete_after=5)
                 return
         
@@ -65,7 +65,7 @@ def initializeAdmin(client : discord.Bot):
             if message.guild.id == 1338837641797435488:
                 stacktureProcess.terminate()
                 await removeCommand(message)
-                stacktureProcess = subprocess.Popen(['./run.bash'], cwd="/home/aoi/Desktop/stackture-server")
+                stacktureProcess = subprocess.Popen(['/home/aoi/.cargo/bin/cargo', 'run'], env={'OPENSSL_DIR': '/usr', 'OPENSSL_LIB_DIR': '/usr/local/lib64', 'OPENSSL_INCLUDE_DIR': '/usr/include'}, cwd="/home/aoi/Desktop/stackture-server")
                 await message.channel.send('Restarted :D', delete_after=5)
                 return
 
