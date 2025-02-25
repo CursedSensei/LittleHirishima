@@ -4,7 +4,7 @@ from botResponse import OllamaSession
 import subprocess, os, shutil, sys, time
 from asyncio import sleep
 
-stacktureProcess: subprocess.Popen = subprocess.Popen(['sudo', '-u', 'aoi', './run.bash'], cwd="/home/aoi/Desktop/stackture-server")
+stacktureProcess: subprocess.Popen = subprocess.Popen(['./run.bash'], cwd="/home/aoi/Desktop/stackture-server")
 
 def initializeAdmin(client : discord.Bot):
     async def removeCommand(message : discord.Message):
@@ -54,10 +54,10 @@ def initializeAdmin(client : discord.Bot):
             if message.guild.id == 1338837641797435488:
                 stacktureProcess.terminate()
                 await removeCommand(message)
-                gitPullProcess = subprocess.Popen(['sudo', '-u', 'aoi', 'git', 'pull'], cwd='/home/aoi/Desktop/stackture-server')
+                gitPullProcess = subprocess.Popen(['git', 'pull'], cwd='/home/aoi/Desktop/stackture-server')
                 while gitPullProcess.poll() == None:
                     await sleep(3)
-                stacktureProcess = subprocess.Popen(['sudo', '-u', 'aoi', './run.bash'], cwd="/home/aoi/Desktop/stackture-server")
+                stacktureProcess = subprocess.Popen(['./run.bash'], cwd="/home/aoi/Desktop/stackture-server")
                 await message.channel.send('Pulled and Restarted :D', delete_after=5)
                 return
         
@@ -65,7 +65,7 @@ def initializeAdmin(client : discord.Bot):
             if message.guild.id == 1338837641797435488:
                 stacktureProcess.terminate()
                 await removeCommand(message)
-                stacktureProcess = subprocess.Popen(['sudo', '-u', 'aoi', './run.bash'], cwd="/home/aoi/Desktop/stackture-server")
+                stacktureProcess = subprocess.Popen(['./run.bash'], cwd="/home/aoi/Desktop/stackture-server")
                 await message.channel.send('Restarted :D', delete_after=5)
                 return
 
