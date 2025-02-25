@@ -11,7 +11,10 @@ def initializeAdmin(client : discord.Bot):
         dmchannel = str(message.channel)
         if not dmchannel.startswith("Direct Message"):
             last = message.channel.last_message
-            await last.delete()
+            try:
+                await last.delete()
+            except:
+                pass
 
     @client.event
     async def on_message(message : discord.Message):
