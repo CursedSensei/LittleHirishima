@@ -7,8 +7,6 @@ from asyncio import sleep
 stacktureProcess: subprocess.Popen = subprocess.Popen('sudo', '-u', 'aoi', 'run.bash', cwd="/home/aoi/Desktop/stackture-server")
 
 def initializeAdmin(client : discord.Bot):
-    global stacktureProcess
-
     async def removeCommand(message : discord.Message):
         dmchannel = str(message.channel)
         if not dmchannel.startswith("Direct Message"):
