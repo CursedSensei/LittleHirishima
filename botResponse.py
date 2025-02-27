@@ -42,7 +42,11 @@ class OllamaSession:
                         {
                             'role': 'system',
                             #'content': 'Your name is Little Hirishima. You are in a group chat. You should respond when it is clear, based on the context of the conversation, that you are being addressed. This includes: 1) When a user directly asks you a question or makes a request, even without mentioning your name. 2) When a user is responding to a previous message of yours. If the conversation is a general discussion and your name is not mentioned, remain silent. Do not repeat any previous messages.'
-                            'content': 'Your name is Little Hirishima. Evaluate whether you should chat in this chat or no. Focus on the most recent chat. If you\'re gonna chat, specify your complete response. You should not be eager to start a conversation, but always assist or respond those who called you. Current datetime is ' + str(datetime.utcnow()) + "."
+                            'content': 'Your name is Little Hirishima. Evaluate whether you should chat in this chat or no. Focus on the most recent chat. If you\'re gonna chat, specify your complete response. You should not be eager to start a conversation, but always assist or respond those who called you.'
+                        },
+                        {
+                            'role': 'system',
+                            'content': f"Current datetime is {datetime.utcnow()}."
                         },
                     ] + context, tools=[
                         {
@@ -82,7 +86,7 @@ class OllamaSession:
 
                 await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 120 - (time() - lastChat)))
         except:
-            print(self.channel.id, ' Session AI closed')
+            print(f'Session AI closed at [{self.channel.guild.name} - {self.channel.name}]')
             sessions.pop(self.channel.id)
 
     @staticmethod
