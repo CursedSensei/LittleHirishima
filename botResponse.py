@@ -81,7 +81,11 @@ class OllamaSession:
 
                     for i in response.message.tool_calls:
                         if (i.function.name == "chat"):
-                            await self.channel.send(i.function.arguments.get('message'))
+                            AIMessage = i.function.arguments.get('message')
+                            AIIdx = 0
+                            while len(AIMessage[AIIdx, AIIdx + 1475]):
+                                await self.channel.send(AIMessage[AIIdx : AIIdx + 1475])
+                                AIIdx += 1475
                             lastChat = time()
 
                 await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 120 - (time() - lastChat)))
