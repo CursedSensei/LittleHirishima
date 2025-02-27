@@ -83,7 +83,7 @@ class OllamaSession:
                         if (i.function.name == "chat"):
                             AIMessage = i.function.arguments.get('message')
                             AIIdx = 0
-                            while len(AIMessage[AIIdx, AIIdx + 1475]):
+                            while len(AIMessage[AIIdx : AIIdx + 1475]):
                                 await self.channel.send(AIMessage[AIIdx : AIIdx + 1475])
                                 AIIdx += 1475
                             lastChat = time()
