@@ -4,10 +4,10 @@ from botResponse import OllamaSession
 import subprocess, os, shutil, sys, time
 from asyncio import sleep
 
-env = os.environ.copy()
-env['PATH'] += ':/home/aoi/.cargo/bin'
-env.update({'OPENSSL_DIR': '/usr', 'OPENSSL_LIB_DIR': '/usr/local/lib64', 'OPENSSL_INCLUDE_DIR': '/usr/include'})
-stacktureProcess: subprocess.Popen = subprocess.Popen(['/home/aoi/.cargo/bin/cargo', 'run'], env=env, cwd="/home/aoi/Desktop/stackture-server")
+# env = os.environ.copy()
+# env['PATH'] += ':/home/aoi/.cargo/bin'
+# env.update({'OPENSSL_DIR': '/usr', 'OPENSSL_LIB_DIR': '/usr/local/lib64', 'OPENSSL_INCLUDE_DIR': '/usr/include'})
+# stacktureProcess: subprocess.Popen = subprocess.Popen(['/home/aoi/.cargo/bin/cargo', 'run'], env=env, cwd="/home/aoi/Desktop/stackture-server")
 
 
 def initializeAdmin(client : discord.Bot):
@@ -22,7 +22,6 @@ def initializeAdmin(client : discord.Bot):
 
     @client.event
     async def on_message(message : discord.Message):
-        global stacktureProcess
         if message.author == client.user:
             return
 
@@ -30,7 +29,6 @@ def initializeAdmin(client : discord.Bot):
             if message.author.id == 413231303534837762:
                 await removeCommand(message)
                 await client.close()
-                stacktureProcess.terminate()
                 return
 
         if message.content == "_commit":
@@ -39,7 +37,6 @@ def initializeAdmin(client : discord.Bot):
                 subprocess.run("git pull", cwd=ROOT_DIR, shell = True)
                 subprocess.Popen([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'little_hirishima.pyw')], start_new_session = True)
                 await client.close()
-                stacktureProcess.terminate()
                 return
 
         if message.content =="_shutdownbot":
@@ -53,23 +50,10 @@ def initializeAdmin(client : discord.Bot):
                 await removeCommand(message)
                 os.system("sudo reboot")
                 return
-            
-        if message.content =="_pull":
-            if message.guild.id == 1338837641797435488:
-                stacktureProcess.terminate()
-                await removeCommand(message)
-                gitPullProcess = subprocess.Popen(['git', 'pull'], cwd='/home/aoi/Desktop/stackture-server')
-                while gitPullProcess.poll() == None:
-                    await sleep(3)
-                stacktureProcess = subprocess.Popen(['/home/aoi/.cargo/bin/cargo', 'run'], env=env, cwd="/home/aoi/Desktop/stackture-server")
-                await message.channel.send('Pulled and Restarted :D', delete_after=5)
-                return
         
         if message.content =="_start":
             if message.guild.id == 1338837641797435488:
-                stacktureProcess.terminate()
                 await removeCommand(message)
-                stacktureProcess = subprocess.Popen(['/home/aoi/.cargo/bin/cargo', 'run'], env=env, cwd="/home/aoi/Desktop/stackture-server")
                 await message.channel.send('Restarted :D', delete_after=5)
                 return
 
