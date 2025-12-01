@@ -85,14 +85,14 @@ def initializeAdmin(client : discord.Bot):
                         await message.channel.send("This anime is not buffered", delete_after=3)
                 return
 
-        isMentioned = False
+        # isMentioned = False
         sentmessage = message.content
         if "<@" in sentmessage and ">" in sentmessage:
             for item in message.guild.members:
                 if f"<@{item.id}>" in sentmessage:
                     sentmessage = sentmessage.replace(f"<@{item.id}>",f"@{item.name}")
-                    if item.id == client.user.id:
-                        isMentioned = True
+                    # if item.id == client.user.id:
+                    #     isMentioned = True
         if "<:" in sentmessage and ">" in sentmessage:
             for item in message.guild.emojis:
                 if f"<:{item.name}:{item.id}>" in sentmessage:
