@@ -102,5 +102,5 @@ def initializeAdmin(client : discord.Bot):
         with open(CHATLOG,"a", encoding='utf-8') as c:
             c.write(f"[{time.strftime('%x')}][{time.strftime('%X')}]-{{{message.guild.name}}}-{{{message.channel}}}-<{message.author}> {sentmessage}\n")
 
-        if isMentioned:
-            OllamaSession.addOllama(message.channel, client)
+        # if isMentioned:
+        #     OllamaSession.addOllama(message.channel, client)
