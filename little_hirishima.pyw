@@ -341,7 +341,7 @@ except ClientConnectorError:
 
     time.sleep(10)
     #subprocess.Popen([sys.executable, os.path.abspath(__file__)], start_new_session = True)
-    os.system(f'tmux send-keys -t "little_hirishima:0" C-m "{sys.executable} {os.path.abspath(__file__)}" C-m')
+    os.system(f'tmux send-keys -t "little_hirishima:0" C-m "{sys.executable} {botPath.MAINFILEPATH}" C-m')
 except:
     import traceback
     with open(botPath.ERRORPATH,"w") as f:

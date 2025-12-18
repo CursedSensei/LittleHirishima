@@ -37,7 +37,7 @@ def initializeAdmin(client : discord.Bot):
                 await removeCommand(message)
                 subprocess.run("git pull", cwd=ROOT_DIR, shell = True)
                 #subprocess.Popen([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'little_hirishima.pyw')], start_new_session = True)
-                os.system(f'tmux send-keys -t "little_hirishima:0" C-m "{sys.executable} {os.path.abspath(__file__)}" C-m')
+                os.system(f'tmux send-keys -t "little_hirishima:0" C-m "{sys.executable} {MAINFILEPATH}" C-m')
                 await client.close()
                 return
 
