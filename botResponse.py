@@ -95,6 +95,7 @@ class OllamaSession:
 
     @staticmethod
     def addOllama(channel: TextChannel, bot: Bot):
+        return
         if sessions.get(channel.id) == None:
             sessions.update({channel.id: OllamaSession(channel, bot)})
         botID = bot.user.id
