@@ -70,7 +70,11 @@ try:
         vChannel: VoiceChannel = ctx.author.voice.channel
 
         if vClient == None:
-            voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect())
+            try:
+                await voiceClient.create(ctx.guild_id, vChannel.id, vChannel)
+            except:
+                await ctx.respond("Bot failed to connect", delete_after=6)
+                return
             await ctx.respond(f"Bot is connected to {vChannel.mention}")
         elif vClient.channel_id == vChannel.id:
             await ctx.respond("Bot is already connected to your voice channel", delete_after=3)
@@ -131,7 +135,11 @@ try:
             if not query:
                 await ctx.respond("Bot is not connected to a voice channel", delete_after=6)
                 return
-            vClient = voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect())
+            try:
+                vClient = await voiceClient.create(ctx.guild_id, vChannel.id, vChannel)
+            except:
+                await ctx.respond("Bot failed to connect", delete_after=6)
+                return
         elif vClient.channel_id != vChannel.id:
             await ctx.respond("You must be connected with the bot's channel to play music", delete_after=3)
             return

@@ -293,11 +293,11 @@ class voiceClient(__baseClient):
         return None
 
     @staticmethod
-    async def create(guild_id : int, channel_id : int, client : discord.VoiceClient) -> "voiceClient":
-        vc = voiceClient(guild_id, channel_id, client)
+    async def create(guild_id : int, channel_id : int, channel : discord.VoiceChannel) -> "voiceClient":
+        vc = voiceClient(guild_id, channel_id)
         voiceClient.__voiceClients[guild_id] = vc
         try:
-            await vc.connect()
+            await vc.connect(channel)
         except Exception as e:
             voiceClient.__voiceClients.pop(guild_id)
             raise e
