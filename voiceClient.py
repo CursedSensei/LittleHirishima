@@ -1,3 +1,4 @@
+from typing import Optional
 import guildData
 import asyncio, subprocess
 import discord, fcntl
@@ -286,7 +287,7 @@ class voiceClient(__baseClient):
     __voiceClients = {}
 
     @staticmethod
-    def query(guild_id : int) -> "voiceClient" | None:
+    def query(guild_id : int) -> Optional["voiceClient"]:
         if guild_id in voiceClient.__voiceClients:
             return voiceClient.__voiceClients[guild_id]
         return None
