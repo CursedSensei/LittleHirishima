@@ -16,19 +16,22 @@ class __baseClient:
     loop_ind: int = -1                      # current index for REPEAT_QUEUE
     is_paused: bool = False                 # Song is paused
     is_loading = asyncio.Event()            # Song is being loaded. (Async play lock)
+    is_initialized = False                  # Is voiceClient initialized
     cancel: bool = False                    # Cancel request to a song that is about to play
 
     ytdlp_Proc: YoutubeStreamer = None      # Youtube Downloader Handle
 
 class voiceClient(__baseClient):
-    def __init__(self, guild_id : int, channel_id : int, client : discord.VoiceClient) -> None:
+    def __init__(self, guild_id : int, channel_id : int) -> None:
         self.guild_id = guild_id
         self.channel_id = channel_id
-        self.client = client
 
         self.queue, self.loop = guildData.loadVoice(guild_id)
 
         self.is_loading.set()
+
+    async def connect(self, channel : discord.VoiceChannel):
+        self.client = await channel.connect()
         asyncio.create_task(self.worker())
 
     async def disconnect(self) -> None:
@@ -37,6 +40,7 @@ class voiceClient(__baseClient):
         self.cleanup()
 
     async def worker(self) -> None:
+        self.is_initialized = True
         try:
             while self.client.is_connected():
                 await self.is_loading.wait()
@@ -282,13 +286,18 @@ class voiceClient(__baseClient):
     __voiceClients = {}
 
     @staticmethod
-    def query(guild_id : int):
+    def query(guild_id : int) -> "voiceClient" | None:
         if guild_id in voiceClient.__voiceClients:
             return voiceClient.__voiceClients[guild_id]
         return None
 
     @staticmethod
-    def create(guild_id : int, channel_id : int, client : discord.VoiceClient):
+    async def create(guild_id : int, channel_id : int, client : discord.VoiceClient) -> "voiceClient":
         vc = voiceClient(guild_id, channel_id, client)
         voiceClient.__voiceClients[guild_id] = vc
+        try:
+            await vc.connect()
+        except Exception as e:
+            voiceClient.__voiceClients.pop(guild_id)
+            raise e
         return vc

@@ -9,6 +9,7 @@ import json, asyncio
 import discord
 from re import match
 from discord.ext import commands
+from discord import VoiceChannel
 from aiohttp.client_exceptions import ClientConnectorError
 
 try:
@@ -45,11 +46,11 @@ try:
                 return
             elif before_vcstate.channel != after_vcstate.channel:
                 vClient = voiceClient.query(before_vcstate.channel.guild.id)
-                if vClient != None:
+                if vClient != None and vClient.is_initialized:
                     await vClient.disconnect()
         elif len(before_vcstate.channel.members) == 1 and before_vcstate.channel.members[0] == client.user:
             vClient = voiceClient.query(before_vcstate.channel.guild.id)
-            if vClient != None:
+            if vClient != None and vClient.is_initialized:
                 await vClient.disconnect()
 
 
@@ -66,7 +67,7 @@ try:
 
         await ctx.defer()
         vClient = voiceClient.query(ctx.guild_id)
-        vChannel = ctx.author.voice.channel
+        vChannel: VoiceChannel = ctx.author.voice.channel
 
         if vClient == None:
             voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect())
@@ -88,6 +89,10 @@ try:
         if vClient == None:
             await ctx.respond(f"Bot is not connected to a voice channel", delete_after=6)
         elif vClient.channel_id == vChannel.id:
+            if vClient.is_initialized == False:
+                await ctx.respond("Bot is still connecting. Try again later", delete_after=6)
+                return
+
             await vClient.disconnect()
 
             await ctx.respond(f"Bot successfully disconnected from {vChannel.mention}")
@@ -129,6 +134,9 @@ try:
             vClient = voiceClient.create(ctx.guild_id, vChannel.id, await vChannel.connect())
         elif vClient.channel_id != vChannel.id:
             await ctx.respond("You must be connected with the bot's channel to play music", delete_after=3)
+            return
+        elif vClient.is_initialized == False:
+            await ctx.respond("Bot is still connecting. Try again later", delete_after=6)
             return
         
         if not query:
@@ -227,6 +235,9 @@ try:
         elif vClient.channel_id != vChannel.id:
             await ctx.respond("You must be connected with the bot's channel to play music", delete_after=3)
             return
+        elif vClient.is_initialized == False:
+            await ctx.respond("Bot is still connecting. Try again later", delete_after=6)
+            return
 
         if vClient.pause():
             await ctx.respond("Bot is paused")
@@ -245,6 +256,10 @@ try:
 
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
+            if vClient.is_initialized == False:
+                await ctx.respond("Bot is still connecting. Try again later", delete_after=6)
+                return
+
             await ctx.defer()
 
             if index:
@@ -271,6 +286,10 @@ try:
     async def playing(ctx: discord.ApplicationContext):
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
+            if vClient.is_initialized == False:
+                await ctx.respond("Bot is still connecting. Try again later", delete_after=6)
+                return
+
             if vClient.song == None:
                 await ctx.respond("No song is currently played", delete_after=6)
             else:
@@ -299,6 +318,10 @@ try:
 
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
+            if vClient.is_initialized == False:
+                await ctx.respond("Bot is still connecting. Try again later", delete_after=6)
+                return
+
             await ctx.defer()
             if vClient.song == None:
                 await ctx.respond("No song is currently played", delete_after=6)
@@ -322,6 +345,10 @@ try:
     async def replay(ctx: discord.ApplicationContext):
         vClient = voiceClient.query(ctx.guild_id)
         if vClient:
+            if vClient.is_initialized == False:
+                await ctx.respond("Bot is still connecting. Try again later", delete_after=6)
+                return
+
             if vClient.song == None:
                 await ctx.respond("No song is currently played", delete_after=6)
             else:
@@ -337,7 +364,7 @@ try:
 except RuntimeError:
     pass
 except ClientConnectorError:
-    import subprocess, time, os
+    import time, os
 
     time.sleep(10)
     #subprocess.Popen([sys.executable, os.path.abspath(__file__)], start_new_session = True)
