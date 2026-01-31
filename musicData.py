@@ -7,6 +7,8 @@ from time import perf_counter
 from youtube_search import youtube_search
 
 class Music:
+    __slots__ = ('name', 'channel', 'thumb', 'id', 'length', 'time', 'offset', 'is_paused')
+
     def __init__(self, start = False, **kwargs) -> None:
         self.name = kwargs['name']
         self.channel = kwargs['channel']
@@ -78,6 +80,8 @@ class Music:
 
 
 class YoutubeStreamer:
+    __slots__ = ('ytdlp_proc', 'cursor', 'size', 'is_complete', 'buffer', 'seeked')
+
     def __init__(self, ytdlp_proc : subprocess.Popen) -> None:
         self.ytdlp_proc = ytdlp_proc
         self.cursor = 0
@@ -142,6 +146,8 @@ class YoutubeStreamer:
 
 
 class youtubeQuery:
+    __slots__ = ('result', 'length')
+    
     result: list[Music]
     length: int
     

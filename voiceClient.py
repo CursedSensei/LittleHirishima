@@ -8,6 +8,12 @@ from botPath import YTDLPEXECUTABLE
 from random import randint
 
 class __baseClient:
+    # __slots__ = (
+    #     "guild_id", "channel_id", "client", "song", "queue", "loop",
+    #     "loop_ind", "is_paused", "is_loading", "is_initialized", "cancel",
+    #     "ytdlp_Proc"
+    # )
+    
     guild_id: int                           # Guild/Server ID
     channel_id: int                         # Voice Channel ID
     client: discord.VoiceClient             # Voice Client Handle
