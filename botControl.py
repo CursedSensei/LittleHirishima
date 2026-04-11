@@ -1,4 +1,5 @@
 import discord
+from discord.ext import commands
 from botPath import *
 from botResponse import OllamaSession
 import subprocess, os, shutil, sys, time
@@ -10,7 +11,7 @@ from asyncio import sleep
 # stacktureProcess: subprocess.Popen = subprocess.Popen(['/home/aoi/.cargo/bin/cargo', 'run'], env=env, cwd="/home/aoi/Desktop/stackture-server")
 
 
-def initializeAdmin(client : discord.Bot):
+def initializeAdmin(client : commands.Bot):
     async def removeCommand(message : discord.Message):
         dmchannel = str(message.channel)
         if not dmchannel.startswith("Direct Message"):

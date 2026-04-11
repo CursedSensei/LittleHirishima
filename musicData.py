@@ -1,5 +1,6 @@
 import asyncio, subprocess
 import discord
+from discord.ext import commands
 from threading import Thread
 from botPath import *
 from time import perf_counter
@@ -45,7 +46,7 @@ class Music:
             return {"name": self.name, "channel": self.channel, "thumb": self.thumb, "id": self.id, "length": self.length, "plays": plays}
         return {"name": self.name, "channel": self.channel, "thumb": self.thumb, "id": self.id, "length": self.length}
 
-    def embed(self, bot : discord.Bot, title = "Now Playing", color = discord.Colour.blue(), timed = False) -> discord.Embed:
+    def embed(self, bot : commands.Bot, title = "Now Playing", color = discord.Colour.blue(), timed = False) -> discord.Embed:
         embed = discord.Embed(title=self.name, color=color, url="https://www.youtube.com/watch?v=" + self.id)
         embed.set_thumbnail(url=self.thumb)
         embed.set_author(name=title)
@@ -159,7 +160,7 @@ class youtubeQuery:
     async def search(query : str):
         return youtubeQuery([Music(name = i[0], channel = i[1], id = i[2], thumb = i[3], length = i[4]) for i in await youtube_search(query, 25)])
 
-    async def display(self, ctx: discord.ApplicationContext, bot: discord.Bot) -> Music:
+    async def display(self, ctx: discord.ApplicationContext, bot: commands.Bot) -> Music:
         select = discord.ui.Select(select_type=discord.ComponentType.string_select, placeholder="Choose a song")
 
         for i in range(0, self.length):

@@ -2,8 +2,9 @@ from botPath import *
 from botConst import *
 from musicData import Music
 import json, discord
+from discord.ext import commands
 
-async def loadGuilds(client : discord.Bot):
+async def loadGuilds(client : commands.Bot):
     guilds = []
     async for guild in client.fetch_guilds(limit=100):
         guilds.append(guild.id)

@@ -1,10 +1,11 @@
 from botPath import *
-import discord, threading, json, os, time, asyncio
+import threading, json, os, time, asyncio
+from discord.ext import commands
 from voiceClient import voiceClient, __baseClient
 from musicData import Music
 import guildData
 
-client: discord.Bot = None
+client: commands.Bot = None
 
 class webClient(__baseClient):
     __webClients = {}
@@ -113,7 +114,7 @@ class webClient(__baseClient):
         webClient.__webID += 1
 
 
-def initializeWebLink(bot : discord.Bot):
+def initializeWebLink(bot : commands.Bot):
     global client
     
     client = bot
