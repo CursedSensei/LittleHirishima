@@ -13,3 +13,4 @@ Pc log.txt
 lib/yt-dlp_linux
 
 venv/
+.venv/

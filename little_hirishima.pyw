@@ -12,6 +12,20 @@ from discord.ext import commands
 from discord import VoiceChannel
 from aiohttp.client_exceptions import ClientConnectorError
 
+#import logging
+#logging.basicConfig(
+#    level=logging.DEBUG,
+#    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+#    datefmt='%Y-%m-%d %H:%M:%S'
+#)
+#
+#logger = logging.getLogger('discord')
+#logger.setLevel(logging.DEBUG)
+#
+#handler = logging.FileHandler(filename='discord_bot.log', encoding='utf-8', mode='w')
+#handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+#logger.addHandler(handler)
+
 try:
     intents = discord.Intents.default()
     intents.members = True
