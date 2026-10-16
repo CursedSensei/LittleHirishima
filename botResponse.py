@@ -27,7 +27,7 @@ class AISession:
         create_task(self.worker())
 
     def __generate_system_prompt(self):
-        return SYSTEM_PROMPT + f"Current Time: {datetime.utcnow()}\nCurrent Mood: {self.mood:.2f}\n"
+        return {'role': 'system', 'content': SYSTEM_PROMPT + f"Current Time: {datetime.utcnow()}\nCurrent Mood: {self.mood:.2f}\n"}
 
     def __set_mood(self, newMood: float):
         self.mood = max(0.0, min(1.0, newMood))
