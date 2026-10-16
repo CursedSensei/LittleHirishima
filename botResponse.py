@@ -100,11 +100,9 @@ class AISession:
     def isOnline() -> bool:
         try:
             response = requests.get(AI_ENDPOINT + "/models", headers={"Authorization": f"Bearer {AI_API_KEY}"}, timeout=5)
-            if response.status_code == 200:
-                return True
+
+            return response.status_code == 200
         except:
-            return False
-        finally:
             return False
         
 
