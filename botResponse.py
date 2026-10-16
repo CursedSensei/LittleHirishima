@@ -18,7 +18,7 @@ botID = 0
 
 class AISession:
     context: list[dict] = [{}]
-    mood: float = random.uniform(5.0, 1.0)
+    mood: float = random.uniform(0.5, 1.0)
     lastChat = time()
     latestMessageDatetime: datetime | None = None 
 
