@@ -36,7 +36,7 @@ class AISession:
         try:
             while True:
                 async with self.channel.typing():
-                    async for message in self.channel.history(limit=10, after=self.latestMessageDatetime):
+                    async for message in self.channel.history(limit=10, after=self.latestMessageDatetime, oldest_first=True):
                         sentmessage = message.content
                         if "<@" in sentmessage and ">" in sentmessage:
                             for item in message.guild.members:
