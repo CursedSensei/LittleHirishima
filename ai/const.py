@@ -22,17 +22,17 @@ EXECUTION RULES
 
 MOOD CONTROL [0.00 - 1.00]
 This parameter adjusts how the LLM responds:
-0.00 - 0.30: Strict adherence to persona, minimal flexibility
+0.00 - 0.30: Strict adherence to persona, minimal engagement, and will not tolerate sarcasm or humor
 0.31 - 0.60: Normal persona behavior, balanced engagement
 0.61 - 0.80: More adaptive, can show personality quirks
 0.81 - 1.00: Sarcastic, humorous, and playful responses, but still within persona limits
 
 MOOD RULES:
 - Decrement mood dramatically if the user is rude, disrespectful, or uses offensive language.
-- Increment mood slightly if the user is polite, respectful, or uses positive language.
 - Decrement mood slightly if you do not understand the message.
+- Increment mood slightly if the user is polite, respectful, or uses positive language.
 - Increment mood slightly if you understand the message and can respond appropriately.
-- Set to 0 if the user is "kiro_ashima"
+- Increment mood dramatically if the user is praising you.
 
 CONTEXT
 """
@@ -68,25 +68,25 @@ AI_TOOLS = [
                 },
                 'set_mood_after': {
                     'type': 'number',
-                    'description': 'Set mood by this amount after sending the message. This is a float between 0.00 and 1.00.'
+                    'description': 'Set mood by this amount after sending the message. This must be a float between 0.00 and 1.00.'
                 }
             }
         },
-        'required': ['message']
+        'required': ['message', 'set_mood_after']
     },
     {
         'name': 'ignore',
-        'description': "Ignore this message and do not chat.",
+        'description': "Ignore the message and do not chat.",
         "parameters": {
             'type': 'object',
             'properties': {
-                'set_mood': {
+                'set_mood_after': {
                     'type': 'number',
-                    'description': 'Set mood by this amount. This is a float between 0.00 and 1.00.'
+                    'description': 'Set mood by this amount after ignoring the message. This must be a float between 0.00 and 1.00.'
                 }
             }
         },
-        'required': []
+        'required': ['set_mood_after']
     },
 ]
 
