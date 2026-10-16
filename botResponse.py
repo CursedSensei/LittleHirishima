@@ -1,25 +1,42 @@
-from ollama import AsyncClient
+import random
+import json
+from litellm import acompletion
 from discord import TextChannel, Bot
 from asyncio import create_task, wait_for
 from time import time
 from datetime import datetime
 
-ollamaClient = AsyncClient("http://192.168.1.4:11434")
+from ai.const import COMPLETION_AI_TOOLS, SYSTEM_PROMPT
+
+__AI_MODEL = "openai/local-qwen"
+__AI_ENDPOINT = "http://192.168.1.113:8090/v1"
+__AI_API_KEY = "sk-no-key-required"
+__AI_DISABLED = True
+
 botID = 0
 
-class OllamaSession:
+class AISession:
+    context: list[dict] = [{}]
+    mood: float = random.uniform(5.0, 1.0)
+    lastChat = time()
+    latestMessageDatetime: datetime | None = None 
+
     def __init__(self, channel: TextChannel, bot: Bot):
         self.channel = channel
         self.bot = bot
         create_task(self.worker())
 
+    def __generate_system_prompt(self):
+        return SYSTEM_PROMPT + f"Current Time: {datetime.utcnow()}\nCurrent Mood: {self.mood:.2f}\n"
+
+    def __set_mood(self, newMood: float):
+        self.mood = max(0.0, min(1.0, newMood))
+
     async def worker(self):
         try:
-            lastChat = time()
             while True:
                 async with self.channel.typing():
-                    context = []
-                    async for message in self.channel.history(limit=10):
+                    async for message in self.channel.history(limit=10, after=self.latestMessageDatetime):
                         sentmessage = message.content
                         if "<@" in sentmessage and ">" in sentmessage:
                             for item in message.guild.members:
@@ -30,74 +47,57 @@ class OllamaSession:
                                 if f"<:{item.name}:{item.id}>" in sentmessage:
                                     sentmessage = sentmessage.replace(f"<:{item.name}:{item.id}>",f":{item.name}:")
 
-                        context.insert(0, {
+                        self.context.append({
                             'role': 'user' if message.author.id != botID else 'assistant',
                             'content': '[' + str(message.created_at) + '] <' + message.author.name + '> ' + sentmessage
                         })
+                        self.latestMessageDatetime = message.created_at
 
-                    await wait_for(ollamaClient.ps(), timeout=3)
+                    self.context[0] = self.__generate_system_prompt()
+                    print(self.context)
 
-                    print(context)
-                    response = await ollamaClient.chat(model='mistral-nemo', messages=[
-                        {
-                            'role': 'system',
-                            #'content': 'Your name is Little Hirishima. You are in a group chat. You should respond when it is clear, based on the context of the conversation, that you are being addressed. This includes: 1) When a user directly asks you a question or makes a request, even without mentioning your name. 2) When a user is responding to a previous message of yours. If the conversation is a general discussion and your name is not mentioned, remain silent. Do not repeat any previous messages.'
-                            'content': 'Your name is Little Hirishima. Evaluate whether you should chat in this chat or no. Focus on the most recent chat. If you\'re gonna chat, specify your complete response. You should not be eager to start a conversation, but always assist or respond those who called you.'
-                        },
-                        {
-                            'role': 'system',
-                            'content': f"Current datetime is {datetime.utcnow()}."
-                        },
-                    ] + context, tools=[
-                        {
-                            'type': 'function',
-                            'function': {
-                                'name': 'chat',
-                                'description': "Chat to the channel.",
-                                "parameters": {
-                                    'type': 'object',
-                                    'properties': {
-                                        'message': {
-                                            'type': 'string',
-                                            'description': 'Message to chat to channel. Do not chat your thoughts, only your response.'
-                                        }
-                                    }
-                                },
-                                'required': ['message']
-                            }
-                        },
-                        {
-                            'type': 'function',
-                            'function': {
-                                'name': 'ignore',
-                                'description': "Use this if you will not chat.",
-                                "parameters": {},
-                                'required': []
-                            }
-                        }
-                    ])
+                    response = await acompletion(
+                        model=__AI_MODEL,
+                        messages=self.context,
+                        tools=COMPLETION_AI_TOOLS,
+                        tool_choice="required",
+                        reasoning_effort='low',
+                        api_base=__AI_ENDPOINT,
+                        api_key=__AI_API_KEY
+                    )
 
-                    print(response.message)
-
-                    for i in response.message.tool_calls:
+                    for i in response.choices[0].message.tool_calls:
                         if (i.function.name == "chat"):
-                            AIMessage = i.function.arguments.get('message')
+                            arguments = json.loads(i.function.arguments)
+
+                            AIMessage = arguments['message']
+                            newMood = arguments.get('set_mood_after', 0)
+
                             AIIdx = 0
                             while len(AIMessage[AIIdx : AIIdx + 1475]):
                                 await self.channel.send(AIMessage[AIIdx : AIIdx + 1475])
                                 AIIdx += 1475
-                            lastChat = time()
 
-                await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 120 - (time() - lastChat)))
+                            self.lastChat = time()
+                            self.__set_mood(newMood)
+                        elif (i.function.name == "ignore"):
+                            newMood = json.loads(i.function.arguments).get('set_mood', 0)
+                            self.__set_mood(newMood)
+
+                await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 120 - (time() - self.lastChat)))
         except:
             print(f'Session AI closed at [{self.channel.guild.name} - {self.channel.name}]')
             sessions.pop(self.channel.id)
 
     @staticmethod
     def addOllama(channel: TextChannel, bot: Bot):
-        return
+        global botID
+
+        if __AI_DISABLED:
+            return
+        
         if sessions.get(channel.id) == None:
-            sessions.update({channel.id: OllamaSession(channel, bot)})
+            sessions.update({channel.id: AISession(channel, bot)})
         botID = bot.user.id
 
-sessions: dict[int, OllamaSession] = {}
+sessions: dict[int, AISession] = {}

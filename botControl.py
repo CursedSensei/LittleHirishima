@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from botPath import *
-from botResponse import OllamaSession
+from botResponse import AISession
 import subprocess, os, shutil, sys, time
 from asyncio import sleep
 
@@ -106,4 +106,4 @@ def initializeAdmin(client : commands.Bot):
             c.write(f"[{time.strftime('%x')}][{time.strftime('%X')}]-{{{message.guild.name}}}-{{{message.channel}}}-<{message.author}> {sentmessage}\n")
 
         # if isMentioned:
-        #     OllamaSession.addOllama(message.channel, client)
+        #     AISession.addOllama(message.channel, client)
