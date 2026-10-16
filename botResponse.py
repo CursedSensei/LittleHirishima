@@ -36,7 +36,9 @@ class AISession:
         try:
             while True:
                 async with self.channel.typing():
-                    async for message in self.channel.history(limit=10, after=self.latestMessageDatetime, oldest_first=True):
+                    newContext = []
+
+                    async for message in self.channel.history(limit=10, after=self.latestMessageDatetime):
                         sentmessage = message.content
                         if "<@" in sentmessage and ">" in sentmessage:
                             for item in message.guild.members:
@@ -47,13 +49,17 @@ class AISession:
                                 if f"<:{item.name}:{item.id}>" in sentmessage:
                                     sentmessage = sentmessage.replace(f"<:{item.name}:{item.id}>",f":{item.name}:")
 
-                        self.context.append({
+                        newContext.insert(0, {
                             'role': 'user' if message.author.id != botID else 'assistant',
                             'content': '[' + str(message.created_at) + '] <' + message.author.name + '> ' + sentmessage
                         })
-                        self.latestMessageDatetime = message.created_at
+
+                        if (self.latestMessageDatetime is None) or (message.created_at > self.latestMessageDatetime):
+                            self.latestMessageDatetime = message.created_at
 
                     self.context[0] = self.__generate_system_prompt()
+                    self.context.extend(newContext)
+                    
                     print(self.context)
 
                     response = await acompletion(
