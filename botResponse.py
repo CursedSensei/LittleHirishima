@@ -8,10 +8,10 @@ from datetime import datetime
 
 from ai.const import COMPLETION_AI_TOOLS, SYSTEM_PROMPT
 
-__AI_MODEL = "openai/local-qwen"
-__AI_ENDPOINT = "http://192.168.1.113:8090/v1"
-__AI_API_KEY = "sk-no-key-required"
-__AI_DISABLED = True
+AI_MODEL = "openai/local-qwen"
+AI_ENDPOINT = "http://192.168.1.113:8090/v1"
+AI_API_KEY = "sk-no-key-required"
+AI_DISABLED = True
 
 botID = 0
 
@@ -57,13 +57,13 @@ class AISession:
                     print(self.context)
 
                     response = await acompletion(
-                        model=__AI_MODEL,
+                        model=AI_MODEL,
                         messages=self.context,
                         tools=COMPLETION_AI_TOOLS,
                         tool_choice="required",
                         reasoning_effort='low',
-                        api_base=__AI_ENDPOINT,
-                        api_key=__AI_API_KEY
+                        api_base=AI_ENDPOINT,
+                        api_key=AI_API_KEY
                     )
 
                     for i in response.choices[0].message.tool_calls:
@@ -93,7 +93,7 @@ class AISession:
     def addOllama(channel: TextChannel, bot: Bot):
         global botID
 
-        if __AI_DISABLED:
+        if AI_DISABLED:
             return
         
         if sessions.get(channel.id) == None:
