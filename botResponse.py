@@ -77,7 +77,7 @@ class AISession:
                             arguments = json.loads(i.function.arguments)
 
                             AIMessage = arguments['message']
-                            newMood = arguments.get('set_mood_after', 0)
+                            newMood = arguments.get('set_mood_after', self.mood)
 
                             AIIdx = 0
                             while len(AIMessage[AIIdx : AIIdx + 1475]):
@@ -87,7 +87,7 @@ class AISession:
                             self.lastChat = time()
                             self.__set_mood(newMood)
                         elif (i.function.name == "ignore"):
-                            newMood = json.loads(i.function.arguments).get('set_mood', 0)
+                            newMood = json.loads(i.function.arguments).get('set_mood_after', self.mood)
                             self.__set_mood(newMood)
 
                 await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 120 - (time() - self.lastChat)))
