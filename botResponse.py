@@ -1,5 +1,6 @@
 import random
 import json
+import requests
 from litellm import acompletion
 from discord import TextChannel, Bot
 from asyncio import create_task, wait_for
@@ -96,10 +97,22 @@ class AISession:
             sessions.pop(self.channel.id)
 
     @staticmethod
+    def isOnline() -> bool:
+        try:
+            response = requests.get(AI_ENDPOINT + "/models", headers={"Authorization": f"Bearer {AI_API_KEY}"}, timeout=5)
+            if response.status_code == 200:
+                return True
+        except:
+            return False
+        finally:
+            return False
+        
+
+    @staticmethod
     def addOllama(channel: TextChannel, bot: Bot):
         global botID
 
-        if AI_DISABLED:
+        if AI_DISABLED or not AISession.isOnline():
             return
         
         if sessions.get(channel.id) == None:
