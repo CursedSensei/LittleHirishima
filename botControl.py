@@ -88,14 +88,14 @@ def initializeAdmin(client : commands.Bot):
                         await message.channel.send("This anime is not buffered", delete_after=3)
                 return
 
-        # isMentioned = False
+        isMentioned = False
         sentmessage = message.content
         if "<@" in sentmessage and ">" in sentmessage:
             for item in message.guild.members:
                 if f"<@{item.id}>" in sentmessage:
                     sentmessage = sentmessage.replace(f"<@{item.id}>",f"@{item.name}")
-                    # if item.id == client.user.id:
-                    #     isMentioned = True
+                    if item.id == client.user.id:
+                        isMentioned = True
         if "<:" in sentmessage and ">" in sentmessage:
             for item in message.guild.emojis:
                 if f"<:{item.name}:{item.id}>" in sentmessage:
@@ -105,5 +105,5 @@ def initializeAdmin(client : commands.Bot):
         with open(CHATLOG,"a", encoding='utf-8') as c:
             c.write(f"[{time.strftime('%x')}][{time.strftime('%X')}]-{{{message.guild.name}}}-{{{message.channel}}}-<{message.author}> {sentmessage}\n")
 
-        # if isMentioned:
-        #     AISession.addOllama(message.channel, client)
+        if isMentioned:
+            AISession.addOllama(message.channel, client)
