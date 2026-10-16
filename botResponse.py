@@ -11,6 +11,7 @@ from ai.const import COMPLETION_AI_TOOLS, SYSTEM_PROMPT
 AI_MODEL = "openai/local-qwen"
 AI_ENDPOINT = "http://192.168.1.113:8090/v1"
 AI_API_KEY = "sk-no-key-required"
+AI_TIMEOUT_SECONDS = 30.0
 AI_DISABLED = True
 
 botID = 0
@@ -59,8 +60,6 @@ class AISession:
 
                     self.context[0] = self.__generate_system_prompt()
                     self.context.extend(newContext)
-                    
-                    print(self.context)
 
                     response = await acompletion(
                         model=AI_MODEL,
@@ -69,7 +68,8 @@ class AISession:
                         tool_choice="required",
                         reasoning_effort='low',
                         api_base=AI_ENDPOINT,
-                        api_key=AI_API_KEY
+                        api_key=AI_API_KEY,
+                        timeout=AI_TIMEOUT_SECONDS
                     )
 
                     for i in response.choices[0].message.tool_calls:
