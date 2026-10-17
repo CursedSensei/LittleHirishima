@@ -91,7 +91,7 @@ class AISession:
                             newMood = json.loads(i.function.arguments).get('set_mood_after', self.mood)
                             self.__set_mood(newMood)
 
-                await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel, timeout=max(0, 120 - (time() - self.lastChat)))
+                await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel and mes.author.id != botID, timeout=max(0, 120 - (time() - self.lastChat)))
         except:
             print(f'Session AI closed at [{self.channel.guild.name} - {self.channel.name}]')
             sessions.pop(self.channel.id)
