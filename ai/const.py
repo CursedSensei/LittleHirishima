@@ -77,11 +77,11 @@ AI_TOOLS = [
                 },
                 'set_mood_after': {
                     'type': 'number',
-                    'description': 'Set mood by this amount after sending the message. This must be a float between 0.00 and 1.00.'
+                    'description': 'Set mood by this amount after sending the message. This must be a float in two decimal places between 0.00 and 1.00.'
                 }
             }
         },
-        'required': ['message', 'set_mood_after']
+        'required': ['message']
     },
     {
         'name': 'ignore',
@@ -91,11 +91,11 @@ AI_TOOLS = [
             'properties': {
                 'set_mood_after': {
                     'type': 'number',
-                    'description': 'Set mood by this amount after ignoring the message. This must be a float between 0.00 and 1.00.'
+                    'description': 'Set mood by this amount after ignoring the message. This must be a float in two decimal places between 0.00 and 1.00.'
                 }
             }
         },
-        'required': ['set_mood_after']
+        'required': []
     },
 ]
 
