@@ -1,10 +1,9 @@
 import random
 import json
-import requests
 import httpx
 from litellm import acompletion
 from discord import TextChannel, Bot
-from asyncio import create_task, wait, FIRST_COMPLETED
+from asyncio import create_task, wait, FIRST_COMPLETED, create_task
 from time import time
 from datetime import datetime
 
@@ -66,27 +65,25 @@ class AISession:
                     self.context[0] = self.__generate_system_prompt()
                     self.context.extend(newContext)
 
-                    done, pending = await wait({
+                    msg_task = create_task(self.__wait_for_message(), name="wait_for_message")
+                    llm_task = create_task(acompletion(
+                        model=AI_MODEL,
+                        messages=self.context,
+                        tools=COMPLETION_AI_TOOLS,
+                        tool_choice="required",
+                        reasoning_effort='low',
+                        api_base=AI_ENDPOINT,
+                        api_key=AI_API_KEY,
+                        timeout=AI_TIMEOUT_SECONDS
+                    ))
 
-                        self.__wait_for_message(),
-                        acompletion(
-                            model=AI_MODEL,
-                            messages=self.context,
-                            tools=COMPLETION_AI_TOOLS,
-                            tool_choice="required",
-                            reasoning_effort='low',
-                            api_base=AI_ENDPOINT,
-                            api_key=AI_API_KEY,
-                            timeout=AI_TIMEOUT_SECONDS
-                        )
-
-                        }, return_when=FIRST_COMPLETED)
+                    done, pending = await wait({msg_task, llm_task}, return_when=FIRST_COMPLETED)
                     
                     for task in pending:
                         task.cancel()
 
                     done_task = done.pop()
-                    if done_task.get_name() == "__wait_for_message":
+                    if done_task.get_name() == "wait_for_message":
                         continue
 
                     response = done_task.result()
