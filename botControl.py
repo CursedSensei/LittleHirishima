@@ -106,4 +106,4 @@ def initializeAdmin(client : commands.Bot):
             c.write(f"[{time.strftime('%x')}][{time.strftime('%X')}]-{{{message.guild.name}}}-{{{message.channel}}}-<{message.author}> {sentmessage}\n")
 
         if isMentioned:
-            AISession.addOllama(message.channel, client)
+            await AISession.addOllama(message.channel, client)

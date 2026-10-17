@@ -1,9 +1,10 @@
 import random
 import json
 import requests
+import httpx
 from litellm import acompletion
 from discord import TextChannel, Bot
-from asyncio import create_task, wait_for
+from asyncio import create_task, wait, FIRST_COMPLETED
 from time import time
 from datetime import datetime
 
@@ -97,9 +98,10 @@ class AISession:
             sessions.pop(self.channel.id)
 
     @staticmethod
-    def isOnline() -> bool:
+    async def isOnline() -> bool:
         try:
-            response = requests.get(AI_ENDPOINT + "/models", headers={"Authorization": f"Bearer {AI_API_KEY}"}, timeout=5)
+            async with httpx.AsyncClient() as client:
+                response = await client.get(AI_ENDPOINT + "/models", timeout=5.0)
 
             return response.status_code == 200
         except:
@@ -107,10 +109,10 @@ class AISession:
         
 
     @staticmethod
-    def addOllama(channel: TextChannel, bot: Bot):
+    async def addOllama(channel: TextChannel, bot: Bot):
         global botID
 
-        if AI_DISABLED or not AISession.isOnline():
+        if AI_DISABLED or not await AISession.isOnline():
             return
         
         if sessions.get(channel.id) == None:
