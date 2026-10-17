@@ -35,6 +35,9 @@ class AISession:
     def __set_mood(self, newMood: float):
         self.mood = max(0.0, min(1.0, newMood))
 
+    async def __wait_for_message(self, timeout: float | None = None) -> None:
+        await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel and mes.author.id != botID, timeout=timeout)
+
     async def worker(self):
         try:
             while True:
@@ -63,16 +66,30 @@ class AISession:
                     self.context[0] = self.__generate_system_prompt()
                     self.context.extend(newContext)
 
-                    response = await acompletion(
-                        model=AI_MODEL,
-                        messages=self.context,
-                        tools=COMPLETION_AI_TOOLS,
-                        tool_choice="required",
-                        reasoning_effort='low',
-                        api_base=AI_ENDPOINT,
-                        api_key=AI_API_KEY,
-                        timeout=AI_TIMEOUT_SECONDS
-                    )
+                    done, pending = await wait({
+
+                        self.__wait_for_message(),
+                        acompletion(
+                            model=AI_MODEL,
+                            messages=self.context,
+                            tools=COMPLETION_AI_TOOLS,
+                            tool_choice="required",
+                            reasoning_effort='low',
+                            api_base=AI_ENDPOINT,
+                            api_key=AI_API_KEY,
+                            timeout=AI_TIMEOUT_SECONDS
+                        )
+
+                        }, return_when=FIRST_COMPLETED)
+                    
+                    for task in pending:
+                        task.cancel()
+
+                    done_task = done.pop()
+                    if done_task.get_name() == "__wait_for_message":
+                        continue
+
+                    response = done_task.result()
 
                     for i in response.choices[0].message.tool_calls:
                         if (i.function.name == "chat"):
@@ -92,7 +109,7 @@ class AISession:
                             newMood = json.loads(i.function.arguments).get('set_mood_after', self.mood)
                             self.__set_mood(newMood)
 
-                await self.bot.wait_for('message', check=lambda mes: mes.channel == self.channel and mes.author.id != botID, timeout=max(0, 120 - (time() - self.lastChat)))
+                await self.__wait_for_message(timeout=max(0, 120 - (time() - self.lastChat)))
         except:
             print(f'Session AI closed at [{self.channel.guild.name} - {self.channel.name}]')
             sessions.pop(self.channel.id)
